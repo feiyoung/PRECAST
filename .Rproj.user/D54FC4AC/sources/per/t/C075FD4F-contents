@@ -1,0 +1,153 @@
+---
+title: 'PRECAST: simulation'
+author: "Wei Liu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PRECAST: simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Generate the simulated data
+First, we generate the multiple spatial transcriptomics data with lattice neighborhood, i.e. ST platform by using the function `gendata_seulist` in `PRECAST` package.
+```{r  eval = TRUE}
+library(Seurat)
+library(PRECAST)
+seuList <- gendata_seulist(height1=20, width1=20, height2=24, width2=25,p=200, K=4, alpha=20,     sigma2=0.1)
+seuList
+head(seuList[[1]]) 
+## Must include the columns named "row" and "col" for saving the spatial coordinates
+
+```
+
+## Fit PRECAST using simulated data
+
+### Prepare the PRECASTObject with preprocessing step.
+```{r  eval = TRUE}
+## Create 
+PRECASTObj <-  CreatePRECASTObject(seuList)
+
+```
+### Add the model setting
+```{r  eval = TRUE}
+## check the number of genes/features after filtering step
+PRECASTObj@seulist
+
+## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
+PRECASTObj <-  AddAdjList(PRECASTObj, platform = "ST")
+
+## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the information in the algorithm.
+PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=TRUE, verbose=TRUE, seed=2022)
+```
+
+### Fit PRECAST 
+For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. First, we try using user-specified number of clusters. For convenience, we give a single K here.
+```{r  eval = TRUE}
+### Given K
+PRECASTObj <- PRECAST(PRECASTObj, K=5)
+
+```
+
+Select a best model and use ARI to check the performance of clustering
+```{r  eval = TRUE}
+## backup the fitting results in resList
+resList <- PRECASTObj@resList
+# PRECASTObj@resList <- resList
+PRECASTObj <- selectModel(PRECASTObj)
+true_cluster <- lapply(seuList, function(x) x$true_cluster)
+str(true_cluster)
+mclust::adjustedRandIndex(unlist(PRECASTObj@resList$cluster), unlist(true_cluster))
+```
+
+Integrate the two samples by the function `IntegrateSpaData`.
+```{r  eval = TRUE}
+seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
+seuInt 
+## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
+```
+Show the spatial scatter plot for clusters
+```{r  eval = TRUE}
+p12 <- SpaPlot(seuInt, batch=NULL,point_size=2, combine=TRUE)
+p12
+# users can plot each sample by setting combine=FALSE
+```
+
+Show the spatial UMAP/tNSE RGB plot
+
+```{r  eval = TRUE}
+seuInt <- AddUMAP(seuInt) 
+SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
+
+#seuInt <- AddTSNE(seuInt) 
+#SpaPlot(seuInt, batch=NULL,item='RGB_TSNE',point_size=2, combine=T, text_size=15)
+```
+
+Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.
+```{r  eval = TRUE}
+seuInt <- AddTSNE(seuInt, n_comp = 2) 
+library(patchwork)
+cols_cluster <- c("#E04D50", "#4374A5", "#F08A21","#2AB673", "#FCDDDE",  "#70B5B0", "#DFE0EE" ,"#D0B14C")
+p1 <- dimPlot(seuInt,  font_family='serif', cols=cols_cluster) # Times New Roman
+p2 <- dimPlot(seuInt, item='batch', point_size = 1,  font_family='serif')
+p1 + p2 
+# It is noted that only sample batch 1 has cluster 4, and only sample batch 2 has cluster 7. 
+```
+Show the UMAP plot based on the extracted features from PRECAST.
+```{r  eval = TRUE}
+dimPlot(seuInt, reduction = 'UMAP3', item='cluster', cols=cols_cluster, font_family='serif')
+```
+
+Users can also use the visualization functions in Seurat package:
+```{r  eval = TRUE}
+DimPlot(seuInt, reduction = 'position')
+DimPlot(seuInt, reduction = 'tSNE')
+DimPlot(seuInt, reduction = 'PRECAST')
+```
+
+
+
+
+Combined differential expression analysis 
+```{r  eval = TRUE}
+dat_deg <- FindAllMarkers(seuInt)
+library(dplyr)
+n <- 10
+dat_deg %>%
+  group_by(cluster) %>%
+  top_n(n = n, wt = avg_log2FC) -> top10
+
+seuInt <- ScaleData(seuInt)
+seus <- subset(seuInt, downsample = 400)
+color_id <- as.numeric(levels(Idents(seus)))
+
+
+
+## HeatMap
+p1 <- doHeatmap(seus, features = top10$gene, cell_label= "Domain",
+                grp_label = F, grp_color = cols_cluster,
+                pt_size=6,slot = 'scale.data') +
+  theme(legend.text = element_text(size=16),
+        legend.title = element_text(size=18, face='bold'),
+        axis.text.y = element_text(size=7, face= "italic", family='serif'))
+p1
+
+```
+
+
+
+
+
+
+
+## Session information
+```{r  eval = TRUE}
+sessionInfo()
+```

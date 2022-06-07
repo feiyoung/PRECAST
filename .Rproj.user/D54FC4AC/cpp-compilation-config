@@ -1,0 +1,22 @@
+{
+    "args": [
+        "-std=gnu++11",
+        "-IB:/ProgramFiles/R/R-4.1.2/include",
+        "-DNDEBUG",
+        "-IB:/ProgramFiles/R/R-4.1.2/library/Rcpp/include",
+        "-IB:/ProgramFiles/R/R-4.1.2/library/RcppArmadillo/include",
+        "-nostdinc",
+        "-IC:/rtools40/mingw64/include/c++/8.3.0",
+        "-IC:/rtools40/mingw64/include/c++/8.3.0/x86_64-w64-mingw32",
+        "-IC:/rtools40/mingw64/include/c++/8.3.0/backward",
+        "-IC:/rtools40/mingw64/lib/gcc/x86_64-w64-mingw32/8.3.0/include",
+        "-IC:/rtools40/mingw64/include",
+        "-IC:/rtools40/mingw64/lib/gcc/x86_64-w64-mingw32/8.3.0/include-fixed",
+        "-IC:/rtools40/mingw64/x86_64-w64-mingw32/include"
+    ],
+    "pch": "RcppArmadillo",
+    "is_cpp": true,
+    "hash": "165423972316476986491647698619",
+    "compiler": "15831801441610807778",
+    "rversion": "4.1.2"
+}

@@ -1,0 +1,27 @@
+{
+    "id": "5E04AE8F",
+    "path": "D:/LearnFiles/Research paper/IntegrateDRcluster/RcppCode/iDR.SC_Fromyangyi/PRECAST/R/Visualization.R",
+    "project_path": "R/Visualization.R",
+    "type": "r_source",
+    "hash": "3660651339",
+    "contents": "",
+    "dirty": false,
+    "created": 1654495792534.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "119,15",
+        "scrollLine": "0"
+    },
+    "folds": "256|63|263|0|\n269|82|402|0|\n",
+    "lastKnownWriteTime": 1654527099,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1654527099943,
+    "read_only": false,
+    "read_only_alternatives": []
+}

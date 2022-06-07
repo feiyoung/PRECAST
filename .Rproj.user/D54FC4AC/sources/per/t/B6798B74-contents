@@ -1,0 +1,38 @@
+Package: PRECAST
+Type: Package
+Title: A Probabilistic Embedding and Clustering with Alignment for spatial transcriptomics data integration
+Version: 1.0
+Date: 2022-06-06
+Author: Wei Liu [aut, cre], Yi Yang [aut], Jin Liu [aut]
+Maintainer: Wei Liu <wei.liu@duke-nus.edu.sg>
+Description: PRECAST is an efcient data integration method for multiple spatial transcriptomics data 
+    with non- cluster-relevant eﬀects such as the complex batch eﬀects. PRECAST unifes spatial factor 
+    analysis simultaneously with spatial clustering and embedding alignment, requiring only partially 
+    shared cell/domain clusters across datasets.
+License: GPL-3
+Imports: 
+    GiRaF,
+    MASS,
+    Matrix,
+    mclust,
+    methods,
+    purrr,
+    S4Vectors,
+    RColorBrewer,
+    Seurat,
+    stats,
+    DR.SC, 
+    Rcpp (>= 1.0.5)
+LinkingTo: Rcpp, RcppArmadillo
+Depends: 
+    parallel,
+    R (>= 4.0.0)
+Suggests: 
+    knitr,
+    rmarkdown
+LazyData: true
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+NeedsCompilation: yes
+RoxygenNote: 7.1.1

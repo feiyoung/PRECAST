@@ -1,0 +1,42 @@
+---
+title: "PRECAST: installation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PRECAST}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Install the PRECAST
+This vignette provides an introduction to the R package `PRECAST`, where the function `PRECAST` implements the model `PRECAST`, a PRobabilistic Embedding and Clustering with alignment for Spatial Transcriptomics data integration .
+The package can be installed with the following command from [Github](https://github.com/feiyoung/PRECAST):
+
+`install.packages('remotes')`
+`remotes::install_github("feiyoung/PRECAST")`
+
+or install from [CRAN](https://cran.r-project.org/)
+
+`install.packages("PRECAST")`
+
+
+
+
+The package can be loaded with the command:
+```{r  eval=TRUE}
+
+library("PRECAST")
+```
+
+
+## Setup on Linux or MacOS system
+For running big data, users can use the following system command to set the C_stack unlimited in case of `R Error: C stack usage is too close to the limit`.
+```{Linux}
+ulimit -s unlimited
+```

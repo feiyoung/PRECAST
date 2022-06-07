@@ -1,0 +1,26 @@
+{
+    "id": "57F4A36D",
+    "path": "D:/LearnFiles/Research paper/IntegrateDRcluster/RcppCode/iDR.SC_Fromyangyi/PRECAST/NAMESPACE",
+    "project_path": "NAMESPACE",
+    "type": "r_namespace",
+    "hash": "1692217164",
+    "contents": "",
+    "dirty": false,
+    "created": 1654525573091.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "18,17",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1654495780,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1654495780,
+    "read_only": false,
+    "read_only_alternatives": []
+}
