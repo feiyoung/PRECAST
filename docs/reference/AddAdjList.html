@@ -68,15 +68,15 @@
     <dl><dt>PRECASTObj</dt>
 <dd><p>a PRECASTObj object created by <a href="CreateiDRSCObject.html">CreatePRECASTObject</a>.</p></dd>
 <dt>type</dt>
-<dd></dd>
+<dd><p>an optional string, specify which type of neighbors' definition. Here we provide two definition: one is "fixed_distance", the other is "fixed_number".</p></dd>
 <dt>platform</dt>
 <dd><p>a string, specify the platform of the provided data, default as "Visium". There are many platforms to be supported, including ("Visuim", "ST", "SeqFISH", 'merFISH', 'slide-seqv2', 'seqscope', "HDST"), which means there are spatial coordinates information in the metadata of PRECASTObj. The platform helps to calculate the adjacency matrix by defining the neighborhoods.</p></dd>
 <dt>...</dt>
-<dd><p>other arguments to be passed to getAdj  and <a href="getAdj_fixedNumber.html">getAdj_fixedNumber</a> funciton.</p></dd>
+<dd><p>other arguments to be passed to getAdj, getAdj_auto  and <a href="getAdj_fixedNumber.html">getAdj_fixedNumber</a> funciton.</p></dd>
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Nothing</p>
+    <p>When the type = "fixed_distance", then the spots within the Euclidean distance cutoffs from one spot are regarded as the neighbors of this spot. When the type = "fixed_number",  the K-nearest spots are regarded as the neighbors of each spot.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
@@ -95,12 +95,6 @@
     <div class="dont-index"><p><a href="AddParSetting.html">AddParSetting</a>.</p></div>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"></span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

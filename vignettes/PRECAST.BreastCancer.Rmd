@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 The package can be loaded with the command:
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 library("PRECAST")
 ```
 
@@ -44,7 +44,7 @@ save(human_breast_cancer2, file= paste0(dir.file, 1, "\\human_breast_cancer2_PRE
 ### load the  Human breast cancer data and Prepare the PRECASTObject.
 
 Human breast cancer data have been pre-processed and saved as the `PRECASTObj` format.
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 ## Create 
 dir.file <- "E:\\Research paper\\IntegrateDRcluster\\iDR-SC\\Human_Breast_Cancer\\BlockA_Section1\\"
 load(paste0(dir.file, "human_breast_cancer2_PRECASTObj.rds"))
@@ -52,7 +52,7 @@ PRECASTObj <- human_breast_cancer2
 rm(human_breast_cancer2)
 ```
 ### Add the model setting
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 ## check the number of genes/features after filtering step
 PRECASTObj@seulist
 
@@ -60,22 +60,24 @@ PRECASTObj@seulist
 PRECASTObj <-  AddAdjList(PRECASTObj, platform = "Visium")
 
 ## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the information in the algorithm.
-PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, verbose=TRUE, maxIter=30, int.model=NULL)
+PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, verbose=TRUE, int.model=NULL)
 
 ```
 
 
 ### Fit PRECAST 
 For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. First, we try using user-specified number of clusters. For convenience, we give the selected number of clusters by MBIC (K=14).
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 ### Given K
-PRECASTObj <- PRECAST(PRECASTObj, K=14)
+# PRECASTObj <- PRECAST(PRECASTObj, K=14)
 
-# save(PRECASTObj, file= paste0(dir.file, 1, "\\human_breast_cancer2_PRECASTObj.rds"))
+# To save compilation time ,we use the cached data.
+# save(PRECASTObj, file= paste0(dir.file,  "\\human_breast_resList_PRECASTObj.rds"))
+load(paste0(dir.file,  "\\human_breast_resList_PRECASTObj.rds"))
 ```
 
 Select a best model 
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
 PRECASTObj <- selectModel(PRECASTObj)
@@ -83,13 +85,13 @@ PRECASTObj <- selectModel(PRECASTObj)
 ```
 
 Integrate the two samples by the function `IntegrateSpaData`.
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
 seuInt 
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
 Show the spatial scatter plot for clusters
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 cols_cluster <-  c( "#FD7446" ,"#709AE1", "#31A354","#9EDAE5",
  "#DE9ED6" ,"#BCBD22", "#CE6DBD" ,"#DADAEB" ,
  "yellow", "#FF9896","#91D1C2", "#C7E9C0" ,"#6B6ECF", "#7B4173" )
@@ -98,9 +100,9 @@ p12
 # users can plot each sample by setting combine=FALSE
 ```
 
-Show the spatial UMAP/tNSE RGB plot
+Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.
 
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 seuInt <- AddUMAP(seuInt) 
 SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
 
@@ -110,7 +112,7 @@ SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size
 
 
 Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 seuInt <- AddTSNE(seuInt, n_comp = 2) 
 library(patchwork)
 p1 <- dimPlot(seuInt, item='cluster', point_size = 0.5, font_family='serif', cols=cols_cluster) # Times New Roman
@@ -120,7 +122,8 @@ p1 + p2
 
 
 Combined differential expression analysis 
-```{r  eval =FALSE}
+```{r  eval = TRUE}
+library(Seurat)
 dat_deg <- FindAllMarkers(seuInt)
 library(dplyr)
 n <- 10
@@ -135,9 +138,9 @@ seus <- subset(seuInt, downsample = 400)
 ```
 
 Plot DE genes' heatmap for each spatial domains identified by PRECAST.
-```{r  eval =FALSE, fig.height=7, fig.width= 7}
+```{r  eval = TRUE, fig.height=7, fig.width= 7}
 color_id <- as.numeric(levels(Idents(seus)))
-
+library(ggplot2)
 ## HeatMap
 p1 <- doHeatmap(seus, features = top10$gene, cell_label= "Domain",
                 grp_label = F, grp_color = cols_cluster[color_id],
@@ -155,6 +158,6 @@ save(dat_deg, file= paste0(dir.file, 1, "\\human_breast_cancer2_DEGs.rds"))
 ```
 
 ## Session information
-```{r  eval =FALSE}
+```{r  eval = TRUE}
 sessionInfo()
 ```

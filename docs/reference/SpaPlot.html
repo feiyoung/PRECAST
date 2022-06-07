@@ -60,7 +60,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SpaPlot</span><span class="op">(</span><span class="va">seuInt</span>, batch<span class="op">=</span><span class="cn">NULL</span>, item<span class="op">=</span><span class="cn">NULL</span>, point_size<span class="op">=</span><span class="fl">2</span>,text_size<span class="op">=</span><span class="fl">20</span>, 
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SpaPlot</span><span class="op">(</span><span class="va">seuInt</span>, batch<span class="op">=</span><span class="cn">NULL</span>, item<span class="op">=</span><span class="cn">NULL</span>, point_size<span class="op">=</span><span class="fl">2</span>,text_size<span class="op">=</span><span class="fl">16</span>, 
                     cols<span class="op">=</span><span class="cn">NULL</span>,font_family<span class="op">=</span><span class="st">''</span>, border_col<span class="op">=</span><span class="st">"gray10"</span>,
                     fill_col<span class="op">=</span><span class="st">'white'</span>, ncol<span class="op">=</span><span class="fl">2</span>, combine <span class="op">=</span> <span class="cn">TRUE</span>, title_name<span class="op">=</span><span class="st">"Sample"</span><span class="op">)</span></code></pre></div>
     </div>
@@ -71,6 +71,8 @@
 <dd><p>an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".</p></dd>
 <dt>batch</dt>
 <dd><p>an optional positive integer, specify the number of features to be extracted.</p></dd>
+<dt>item</dt>
+<dd><p>an optional string, which column is plotted in the meta data of seuInt.</p></dd>
 <dt>point_size</dt>
 <dd><p>the size of point in the scatter plot.</p></dd>
 <dt>text_size</dt>

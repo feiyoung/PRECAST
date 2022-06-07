@@ -61,14 +61,14 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for SeqK_PRECAST_Object</span>
-<span class="fu">selectModel</span><span class="op">(</span><span class="va">SeqKObject</span>, criteria <span class="op">=</span> <span class="st">'MBIC'</span>,pen_const<span class="op">=</span><span class="fl">1</span>, return_para_est<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">selectModel</span><span class="op">(</span><span class="va">obj</span>, criteria <span class="op">=</span> <span class="st">'MBIC'</span>,pen_const<span class="op">=</span><span class="fl">1</span>, return_para_est<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
   <span class="co"># S3 method for PRECASTObj</span>
-<span class="fu">selectModel</span><span class="op">(</span><span class="va">PRECASTObj</span>, criteria <span class="op">=</span> <span class="st">'MBIC'</span>,pen_const<span class="op">=</span><span class="fl">1</span>, return_para_est<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu">selectModel</span><span class="op">(</span><span class="va">obj</span>, criteria <span class="op">=</span> <span class="st">'MBIC'</span>,pen_const<span class="op">=</span><span class="fl">1</span>, return_para_est<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>SeqKObject</dt>
+    <dl><dt>obj</dt>
 <dd><p>a SeqK_PRECAST_Object or  PRECASTObj object after PRECAST model fitting.</p></dd>
 <dt>criteria</dt>
 <dd><p>a string, specify the criteria used for selecting the number of clusters, supporting "MBIC", "BIC" and "AIC".</p></dd>
