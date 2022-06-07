@@ -56,9 +56,9 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
   #height1=30; width1=30;height2=height1; width2=width1; 
   #p =100; q=10; K=7;  G=4; beta=1.2; sigma2=1; alpha=8; seed=1; view=TRUE
   
-  suppressMessages(require(GiRaF))
-  suppressMessages(require(MASS))
-  suppressMessages(require(Seurat))
+  # suppressMessages(require(GiRaF))
+  # suppressMessages(require(MASS))
+  # suppressMessages(require(Seurat))
   
   
   
@@ -220,15 +220,18 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
 
 
 
-filter_spot <- function(seu, min_feature=0){ # each spots at least include 1 non-zero features
-  subset(seu, subset = nFeature_RNA > min_feature)
+filter_spot <- function(seu, min_feature=0, assay="RNA"){ # each spots at least include 1 non-zero features
+  col_name <- paste0("nFeature_",assay)
+  idx <- seu@meta.data[,col_name] > min_feature
+  seu[, idx]
+  # subset(seu, subset = nFeature_RNA > min_feature)
 }
-
-filter_gene <- function(seu, min_spots=20){
-  if(sum(dim(seu[["RNA"]]@counts))!=0){
-    gene_flag <- Matrix::rowSums(seu[["RNA"]]@counts>0)>min_spots
-  }else if(sum(dim(seu[["RNA"]]@data))!=0){
-    gene_flag <- Matrix::rowSums(seu[["RNA"]]@data>0)>min_spots
+# filter_spot(seu, assay='PRE_CAST')
+filter_gene <- function(seu, min_spots=20, assay="RNA"){
+  if(sum(dim(seu[[assay]]@counts))!=0){
+    gene_flag <- Matrix::rowSums(seu[[assay]]@counts>0)>min_spots
+  }else if(sum(dim(seu[[assay]]@data))!=0){
+    gene_flag <- Matrix::rowSums(seu[[assay]]@data>0)>min_spots
   }else{
     stop("filter_gene: Seuat object must provide slots count or data in assay!")
   }
@@ -310,7 +313,7 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1
                               rawData.preserve=FALSE,verbose=TRUE){
   
   # premin.spots = 20;  premin.features=20; postmin.spots=15; postmin.features=15;verbose=TRUE
-  suppressMessages(require(Seurat))
+  #suppressMessages(require(Seurat))
   
 
   
@@ -393,8 +396,8 @@ AddParSetting <- function(PRECASTObj, ...){
 
 
 PRECAST <- function(PRECASTObj, K=NULL, q= 15){
-  suppressMessages(require(Matrix))
-  suppressMessages(require(Seurat))
+  # suppressMessages(require(Matrix))
+  # suppressMessages(require(Seurat))
   if(is.null(K)) K <- 4:12
   
   if(is.null(PRECASTObj@seulist)) stop("The slot seulist in PRECASTObj is NULL!")
@@ -408,10 +411,10 @@ PRECAST <- function(PRECASTObj, K=NULL, q= 15){
 }
 
 ## select model
-selectModel.PRECASTObj <- function(PRECASTObj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
-  reslist <- selectModel.SeqK_PRECAST_Object(PRECASTObj@resList, pen_const = pen_const, criteria = criteria, return_para_est)
-  PRECASTObj@resList <- reslist
-  return(PRECASTObj)
+selectModel.PRECASTObj <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
+  reslist <- selectModel.SeqK_PRECAST_Object(obj@resList, pen_const = pen_const, criteria = criteria, return_para_est)
+  obj@resList <- reslist
+  return(obj)
 }
 
 
@@ -465,8 +468,8 @@ get_correct_mean_exp <- function(XList,  hVList, hW){
 }
 
 IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL){
-  suppressMessages(require(Matrix))
-  suppressMessages(require(Seurat))
+  # suppressMessages(require(Matrix))
+  # suppressMessages(require(Seurat))
   if(is.null(PRECASTObj@seulist)) stop("The slot seulist in PRECASTObj is NULL!")
   
   XList <- lapply(PRECASTObj@seulist, function(x) Matrix::t(x[["RNA"]]@data))
@@ -485,11 +488,11 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL)
   lower_species <- tolower(species) 
   houseKeep <- switch (lower_species,
     human = {
-      data(Human_HK_genes)
+      # data(Human_HK_genes)
        intersect((genelist), Mouse_HK_genes$Gene)
       },
     mouse={
-      data(Mouse_HK_genes)
+      #data(Mouse_HK_genes)
       intersect((genelist), Mouse_HK_genes$Gene)
     },
     unkown={

@@ -1,8 +1,8 @@
 \name{doHeatmap}
 \alias{doHeatmap}
-\title{Spatial heatmap}
+\title{Heatmap for spots-by-feature matrix}
 \description{
-  Plot spatial heatmap for a Seurat object with spatial transcriptomics data.
+  Plot  heatmap for a Seurat object with expressioin data.
 }
 \usage{
   doHeatmap(seu, features=NULL, cell_label='Cell type', grp_label = FALSE,

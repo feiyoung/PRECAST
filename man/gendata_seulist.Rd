@@ -15,6 +15,7 @@
  \item{q}{number of true latent features to generate gene expression}
  \item{K}{number of clusters (spatial domains/cell types).}
  \item{G}{the number of neighbors. The latter must be one of G = 4 or G = 8, which respectively correspond to a first order and a second order dependency structure. By default, G = 4.}
+ \item{beta}{the smoothing parameter in Potts model.}
  \item{sigma2}{Variance of error term in probabilitic PCA model.}
  \item{alpha}{a positive factor of mixture mean values.}
  \item{seed}{random seed for generate data}

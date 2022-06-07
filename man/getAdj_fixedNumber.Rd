@@ -1,6 +1,6 @@
 \name{getAdj_fixedNumber}
 \alias{getAdj_fixedNumber}
-\title{Calculate adjacency matrix by user-specified radius}
+\title{Calculate adjacency matrix by user-specified number of neighbors}
 \usage{
 getAdj_fixedNumber(pos, number=6)
 }

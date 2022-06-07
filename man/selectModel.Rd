@@ -7,11 +7,11 @@
   Select best PRECAST model from candidated models with different number of clusters.
 }
 \usage{
-  \method{selectModel}{SeqK_PRECAST_Object}(SeqKObject, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
-  \method{selectModel}{PRECASTObj}(PRECASTObj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
+  \method{selectModel}{SeqK_PRECAST_Object}(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
+  \method{selectModel}{PRECASTObj}(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
 }
 \arguments{
-  \item{SeqKObject}{a SeqK_PRECAST_Object or  PRECASTObj object after PRECAST model fitting.}
+  \item{obj}{a SeqK_PRECAST_Object or  PRECASTObj object after PRECAST model fitting.}
   \item{criteria}{a string, specify the criteria used for selecting the number of clusters, supporting "MBIC", "BIC" and "AIC".}
   \item{pen_const}{an optional positive value, the adjusted constant used in the MBIC criteria. }
   \item{return_para_est}{an optional logical value, whether return the other paramters' estimators in PRECAST.}

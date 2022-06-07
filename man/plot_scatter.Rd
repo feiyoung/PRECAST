@@ -1,11 +1,12 @@
 \name{plot_scatter}
 \alias{plot_scatter}
-\title{Spatial heatmap}
+\title{Scatter plot for two-dimensional embeddings}
 \description{
-  Plot spatial heatmap for a Seurat object with spatial transcriptomics data.
+  Scatter plot for two-dimensional embeddings
 }
 \usage{
-  plot_scatter(embed_use, meta_data, label_name, xy_names=c('tSNE1', 'tSNE2'), no_guides = FALSE, 
+  plot_scatter(embed_use, meta_data, label_name, 
+    xy_names=c('tSNE1', 'tSNE2'), no_guides = FALSE, 
     palette_use = tableau_color_pal()(10), 
     point_size = 0.5, point_alpha=1, 
     base_size = 12, do_points = TRUE, do_density = FALSE, border_col='gray',
@@ -31,7 +32,7 @@
   Nothing
 }
 \value{
-  For Seurat object, return a Seurat object. For objcet "matrix" and "dgCMatrix", return a object "matrix" with rownames same as the colnames of \code{X}, and colnames "WPCA1" to "WPCAq".
+  Return a ggplot2 object.
 }
 
 \author{

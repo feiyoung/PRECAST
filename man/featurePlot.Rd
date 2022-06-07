@@ -1,8 +1,8 @@
 \name{featurePlot}
 \alias{featurePlot}
-\title{Spatial heatmap}
+\title{Spatial expression heatmap}
 \description{
-  Plot spatial heatmap for a Seurat object with spatial transcriptomics data.
+  Plot spatial heatmap for a feature of Seurat object with spatial transcriptomics data.
 }
 \usage{
   featurePlot(seu, feature=NULL, cols=NULL, pt_size=1, title_size =16, quant=0.5, 
@@ -22,7 +22,7 @@
   Nothing
 }
 \value{
-  For Seurat object, return a Seurat object. For objcet "matrix" and "dgCMatrix", return a object "matrix" with rownames same as the colnames of \code{X}, and colnames "WPCA1" to "WPCAq".
+  Return a ggplot2 object.
 }
 
 \author{

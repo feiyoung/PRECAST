@@ -55,7 +55,7 @@ matlist2mat <- function(XList){
 
 # Vector based plot function##############################
 barPlot <- function(vec, ylabel='ARI', cols=NULL,...){
-  require(ggplot2)
+  # require(ggplot2)
   
   
   ## filter vec
@@ -71,7 +71,8 @@ barPlot <- function(vec, ylabel='ARI', cols=NULL,...){
   
   
   ## CCor
-  p1 <- ggplot(df_use, aes(x=Method, y=value, fill=Method)) + 
+  p1 <- ggplot(df_use, aes(x=aes_string('Method'), y=aes_string('value'), 
+     fill=aes_string('Method'))) + 
     geom_bar(position = "dodge", stat="identity",width = 1, ...) + # , ...
     #geom_errorbar( aes(ymin=value-sd, ymax=value+sd), width=0.4, colour="orange",  size=1.3, position=position_dodge(.9)) + 
     #facet_grid(beta~Error , scales="fixed",labeller = label_bquote(beta == .(beta))) 
@@ -89,7 +90,7 @@ barPlot <- function(vec, ylabel='ARI', cols=NULL,...){
 # Matrix based plot function -------------------------------------------------------
 plot_RGB <- function(position, embed_3d, pointsize=2,textsize=15){
   
-  suppressMessages(require(ggplot2))
+  # suppressMessages(require(ggplot2))
   
   info = as.data.frame(position)
   colnames(info) = c("sdimx","sdimy")
@@ -120,14 +121,15 @@ plot_scatter <- function (
      point_size = 0.5, point_alpha=1, 
     base_size = 12, do_points = TRUE, do_density = FALSE, border_col='gray',
     legend_pos='right', legend_dir='vertical') {
-  require(dplyr)
-  require(ggthemes)
-  require(ggrepel)
-  require(data.table)
+  # require(dplyr)
+  # require(ggthemes)
+  # require(ggrepel)
+  # require(data.table)
   plt_df <- embed_use %>% data.frame() %>% cbind(meta_data) %>% 
     dplyr::sample_frac(1L)
   plt_df$given_name <- plt_df[[label_name]]
   
+  if(is.null(palette_use)) palette_use <- tableau_color_pal()(10)
   plt <- plt_df %>% ggplot(aes_string(colnames(plt_df)[1],colnames(plt_df)[2], col = label_name, 
                                       fill = label_name)) + #  + theme_tufte(base_size = base_size, ticks= show_ticks)
     theme(axis.text.x=element_text(size=base_size, color=1),
@@ -160,7 +162,7 @@ plot_scatter <- function (
 
 
 volinPlot <- function(mat, ylabel='ARI', cols=NULL){
-  require(ggplot2)
+  # require(ggplot2)
   ## filter mat
   N <- nrow(mat)
   mat_use <- mat[,which(colSums(is.na(mat)) != N)]
@@ -169,8 +171,9 @@ volinPlot <- function(mat, ylabel='ARI', cols=NULL){
   df_use <- data.frame(value=as.vector(mat_use), Method=rep(colnames(mat_use), each=N))
   df_use$Method <- factor(df_use$Method, levels=colnames(mat_use))
   
-  p1 <- ggplot(df_use, aes(x = Method, y = value, fill = Method)) + 
-    geom_violin(aes(fill = Method ), color = "transparent", alpha = 0.5) +
+  p1 <- ggplot(df_use, aes_string(x = 'Method', y = 'value',
+                           fill = 'Method')) + 
+    geom_violin(aes_string(fill = 'Method' ), color = "transparent", alpha = 0.5) +
     geom_boxplot(outlier.alpha = 0, coef = 0, color = "gray40", width = 0.4) +
     labs(x = "", y = ylabel) +
     theme_classic() + theme( axis.text.x = element_blank() ) + theme(text = element_text(size=20))
@@ -186,7 +189,7 @@ volinPlot <- function(mat, ylabel='ARI', cols=NULL){
 
 boxPlot <- function(mat, ylabel='ARI', cols=NULL, ...){
   
-  require(ggplot2)
+  # require(ggplot2)
   ## filter mat
   N <- nrow(mat)
   mat_use <- mat[,which(colSums(is.na(mat)) != N)]
@@ -194,7 +197,8 @@ boxPlot <- function(mat, ylabel='ARI', cols=NULL, ...){
   
   df_use <- data.frame(value=as.vector(mat_use), Method=rep(colnames(mat_use), each=N))
   df_use$Method <- factor(df_use$Method, levels=colnames(mat_use))
-  p1 <- ggplot(df_use, aes(x=Method, y=value, fill=Method)) +
+  p1 <- ggplot(df_use, aes_string(x="Method", y="value",
+                           fill="Method") ) +
     geom_boxplot(...) +  
     # facet_grid(beta~Error,scales= "fixed",labeller = label_bquote(beta == .(beta)) )+ 
     labs(x=NULL, y= ylabel) + scale_x_discrete(breaks = NULL)
@@ -213,7 +217,7 @@ boxPlot <- function(mat, ylabel='ARI', cols=NULL, ...){
 
 doHeatmap <- function(seu, features=NULL, cell_label='Cell type', grp_label = FALSE,
                       pt_size=4, grp_color=NULL, ...){
-  require(ggplot2)
+  # require(ggplot2)
   ngrp <- nlevels(Idents(seu))
   if(is.null(grp_color)){
     gg_color_hue <- function(n) {
@@ -241,7 +245,7 @@ featurePlot <- function(seu, feature=NULL, cols=NULL, pt_size=1, title_size=16,
   dat$Expression <- seu[[assay]]@scale.data[feature,]
   if(is.null(cols)) cols <- c("#0571B0",  "#CA0020")
   med <- quantile(seu[[assay]]@scale.data[feature,], quant)
-  ggplot(data=dat, aes(x=Spatial_1, y=Spatial_2, color=Expression)) + geom_point(size=pt_size) +
+  ggplot(data=dat, aes_string(x='Spatial_1', y='Spatial_2', color='Expression')) + geom_point(size=pt_size) +
     scale_colour_gradient2(
       low = cols[1],
       mid = "white",
@@ -255,7 +259,7 @@ ridgePlot <- function (object, features,group.names='Domain' , cols = NULL, iden
                          assay = NULL, group.by = NULL, y.max = NULL, same.y.lims = FALSE, 
                          log = FALSE, ncol = NULL, slot = "data", stack = FALSE, 
                          combine = TRUE, fill.by = "feature") {
-  require(ggplot2)
+  # require(ggplot2)
   return(ExIPlot(object = object,group.names =group.names, type = "ridge", features = features, 
                  idents = idents, ncol = ncol, sort = sort, assay = assay, 
                  y.max = y.max, same.y.lims = same.y.lims, cols = cols, 
@@ -284,6 +288,37 @@ ExIPlot <- function (object, features, group.names='Domain', type = "violin", id
     ncol <- ncol %||% ifelse(test = length(x = features) > 
                                9, yes = 4, no = min(length(x = features), 3))
   }
+  Interleave <- function (...) 
+  {
+    return(as.vector(x = t(x = as.data.frame(x = list(...)))))
+  }
+  Col2Hex <- function (...) 
+  {
+    colors <- as.character(x = c(...))
+    alpha <- rep.int(x = 255, times = length(x = colors))
+    if (sum(sapply(X = colors, FUN = grepl, pattern = "^#")) != 
+        0) {
+      hex <- colors[which(x = grepl(pattern = "^#", x = colors))]
+      hex.length <- sapply(X = hex, FUN = nchar)
+      if (9 %in% hex.length) {
+        hex.alpha <- hex[which(x = hex.length == 9)]
+        hex.vals <- sapply(X = hex.alpha, FUN = substr, start = 8, 
+                           stop = 9)
+        dec.vals <- sapply(X = hex.vals, FUN = strtoi, base = 16)
+        alpha[match(x = hex[which(x = hex.length == 9)], 
+                    table = colors)] <- dec.vals
+      }
+    }
+    colors <- t(x = col2rgb(col = colors))
+    colors <- mapply(FUN = function(i, alpha) {
+      return(rgb(colors[i, , drop = FALSE], alpha = alpha, 
+                 maxColorValue = 255))
+    }, i = 1:nrow(x = colors), alpha = alpha)
+    return(colors)
+  }
+  
+  
+  
   data <- FetchData(object = object, vars = features, slot = slot)
   pt.size <- pt.size %||% AutoPointSize(data = object)
   features <- colnames(x = data)
@@ -402,9 +437,6 @@ ExIPlot <- function (object, features, group.names='Domain', type = "violin", id
   return(plots)
 }
 
-
-
-
 # Plot  Theme -------------------------------------------------------------------
 
 
@@ -413,7 +445,7 @@ doHeatmap.matrix <- function(corMat, cluster_orderd,legend_title='Cell type', gr
   
   doHeatmap <- function(seu, features=NULL, cell_label='Cell type', grp_label = FALSE,
                         pt_size=4, grp_color=NULL, ...){
-    require(ggplot2)
+    # require(ggplot2)
     ngrp <- nlevels(Idents(seu))
     if(is.null(grp_color)){
       gg_color_hue <- function(n) {
@@ -430,7 +462,7 @@ doHeatmap.matrix <- function(corMat, cluster_orderd,legend_title='Cell type', gr
              alpha =  "none")
   }
   
-  require(Seurat)
+  # require(Seurat)
   seu <- CreateSeuratObject(counts=corMat)
   Idents(seu) <- factor(cluster_orderd, levels=1: max(cluster_orderd))
   
@@ -442,19 +474,19 @@ doHeatmap.matrix <- function(corMat, cluster_orderd,legend_title='Cell type', gr
 }
 
 
-barPlot_enrich <- function(top_dat, source='Ont', term_name="Term", nlog10P='nlog10P',
-                           bar_width=0.8, base_size=20, font_family='serif', cols= ggthemes::canva_pal()(4)){
-  # source='Ont'; term_name="Term"; nlog10P='nlog10P'
-  require(ggplot2) # y=term_name,
-  order_idx <- order(top_dat[,nlog10P])
-  top_dat <- top_dat[order_idx,]
-  top_dat[, term_name] <- factor(top_dat[, term_name], levels=top_dat[order_idx,term_name])
-  p1 <- ggplot(data=top_dat, aes_string(x=term_name,y=nlog10P, fill=source)) +
-    scale_fill_manual(values=cols)+
-    geom_bar(position = "dodge", stat="identity",width =bar_width)+ coord_flip() +
-    theme_classic() + theme(text=element_text(size=base_size, family=font_family)) 
-  return(p1)
-}
+# barPlot_enrich <- function(top_dat, source='Ont', term_name="Term", nlog10P='nlog10P',
+#                            bar_width=0.8, base_size=20, font_family='serif', cols= ggthemes::canva_pal()(4)){
+#   # source='Ont'; term_name="Term"; nlog10P='nlog10P'
+#   require(ggplot2) # y=term_name,
+#   order_idx <- order(top_dat[,nlog10P])
+#   top_dat <- top_dat[order_idx,]
+#   top_dat[, term_name] <- factor(top_dat[, term_name], levels=top_dat[order_idx,term_name])
+#   p1 <- ggplot(data=top_dat, aes_string(x=term_name,y=nlog10P, fill=source)) +
+#     scale_fill_manual(values=cols)+
+#     geom_bar(position = "dodge", stat="identity",width =bar_width)+ coord_flip() +
+#     theme_classic() + theme(text=element_text(size=base_size, family=font_family)) 
+#   return(p1)
+# }
 
 
 

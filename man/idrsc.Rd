@@ -5,11 +5,11 @@
   ICM-EM algorithm for fitting PRECAST model
 }
 \usage{
-  ICM.EM(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, platform = "ST",
-                  beta_grid=seq(0.2,4, by=0.2),
-                   maxIter_ICM=6,maxIter=20, epsLogLik=1e-5, verbose=TRUE,
-                   mix_prop_heter=TRUE, Sigma_equal=FALSE, Sigma_diag=TRUE,error_heter=TRUE, Sp2=TRUE,
-                   wpca_int=FALSE, int.model='EEE', seed=1,coreNum = 1, coreNum_int=coreNum)
+  ICM.EM(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
+      platform = "ST", beta_grid=seq(0.2,4, by=0.2),maxIter_ICM=6,
+      maxIter=20, epsLogLik=1e-5, verbose=TRUE,mix_prop_heter=TRUE, 
+      Sigma_equal=FALSE, Sigma_diag=TRUE,error_heter=TRUE, Sp2=TRUE,
+      wpca_int=FALSE, int.model='EEE', seed=1,coreNum = 1, coreNum_int=coreNum)
 }
 \arguments{
  \item{XList}{an M-length list consisting of multiple matrices with class \code{dgCMatrix} or \code{matrix} that specify the log-normalization gene expression matrix for each data sample used for iDR-SC model.}
@@ -25,13 +25,14 @@
   \item{maxIter}{an optional positive value, represents the maximum iterations of EM.}
   \item{epsLogLik}{an optional positive vlaue, tolerance vlaue of relative variation rate of the observed pseudo log-loglikelihood value, defualt as '1e-5'.}
   \item{verbose}{an optional logical value, whether output the information of the ICM-EM algorithm.}
-  \item{mix_prop_heter}{}
-  \item{Sigma_equal}{}
-  \item{Sigma_diag}{}
+  \item{mix_prop_heter}{an optional logical value, specify whether betar are distict, default as \code{TRUE}.}
+  \item{Sigma_equal}{an optional logical value, specify whether Sigmaks are equal, default as FALSE.}
+  \item{Sigma_diag}{an optional logical value, specify whether Sigmaks are diagonal matrices, default as \code{TRUE}.}
   \item{error_heter}{an optional logical value, whether use the heterogenous error for DR-SC model, default as \code{TRUE}. If \code{error_heter=FALSE}, then the homogenuous error is used for probabilistic PCA model in iDR-SC.}
   \item{Sp2}{an optional logical value, whether add the ICAR model component in the model, default as TRUE. We provide this interface for those users  who don't want to include the  ICAR model.}
-  \item{wpca.int}{an optional logical value, means whether use the weighted PCA to obtain the initial values of loadings and other paramters, default as \code{FALSE} which means the ordinary PCA  is used.}
-  \item{int.model}{}
+  \item{wpca_int}{an optional logical value, means whether use the weighted PCA to obtain the initial values of loadings and other paramters, default as \code{FALSE} which means the ordinary PCA  is used.}
+  \item{int.model}{an optional string, specify which Gaussian mixture model is used in evaluting the initial values for PRECAST, default as "EEE"; and see \code{Mclust} for more models' names.}
+  \item{seed}{an optional integer, the random seed in fitting PRECAST model.}
   \item{coreNum}{an optional positive integer, means the number of thread used in parallel computating.}
   \item{coreNum_int}{an optional positive integer, means the number of cores used in parallel computation for initial values when \code{K} is a vector, default as same as \code{coreNum}.}
 }
@@ -67,7 +68,8 @@ nothing
 \dontrun{
   ## we generate the spatial transcriptomics data with lattice neighborhood, i.e. ST platform.
   q <- 10; K <- 4
-  dat <- PRECAST:::gendataInte_sp(width1 = 20, height1 = 20,height2=21, width2=21, p=100,q=q, K=K, sigma2 = 9,
+  dat <- PRECAST:::gendataInte_sp(width1 = 20, height1 = 20,height2=21, 
+  width2=21, p=100,q=q, K=K, sigma2 = 9,
                         beta=c(0.5, 1.0))
   AdjList <- lapply(list(dat$pos1, dat$pos2), getAdj_reg, platform='ST')
   message(sapply(AdjList, dim))

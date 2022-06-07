@@ -1,14 +1,15 @@
 \name{ridgePlot}
 \alias{ridgePlot}
-\title{Spatial heatmap}
+\title{ridgePlot for features in Seurat}
 \description{
-  Plot spatial heatmap for a Seurat object with spatial transcriptomics data.
+  ridgePlot for features in Seurat object.
 }
 \usage{
-  ridgePlot(object, features, group.names='Domain' , cols = NULL, idents = NULL, sort = FALSE, 
-                         assay = NULL, group.by = NULL, y.max = NULL, same.y.lims = FALSE, 
-                         log = FALSE, ncol = NULL, slot = "data", stack = FALSE, 
-                         combine = TRUE, fill.by = "feature")
+  ridgePlot(object, features, group.names='Domain' , 
+     cols = NULL, idents = NULL, sort = FALSE, 
+     assay = NULL, group.by = NULL, y.max = NULL, same.y.lims = FALSE, 
+     log = FALSE, ncol = NULL, slot = "data", stack = FALSE, 
+     combine = TRUE, fill.by = "feature")
 }
 \arguments{
   \item{object}{an object named "Seurat".}

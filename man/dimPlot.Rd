@@ -5,7 +5,7 @@
   Run a weighted PCA dimensionality reduction
 }
 \usage{
-  dimPlot(seuInt, item=NULL, reduction=NULL, point_size=2,text_size=20, 
+  dimPlot(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16, 
                     cols=NULL,font_family='', border_col="gray10",
                     fill_col="white")
 }

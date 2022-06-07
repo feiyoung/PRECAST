@@ -27,3 +27,34 @@ export(getAdj, getAdj_manual, getAdj_auto, RunWPCA, read10XVisium)
 importFrom(purrr, discard, keep)
 importFrom(S4Vectors,DataFrame)
 export(discard, keep, DataFrame)
+
+import(ggplot2)
+import(parallel)
+
+
+
+importFrom(cowplot, plot_grid, theme_cowplot)
+importFrom(dplyr,sample_frac, "%>%")
+importFrom(ggthemes, tableau_color_pal)
+importFrom(patchwork, wrap_plots)
+importFrom(pbapply, pbapply)
+importFrom(scater, calculateTSNE, calculateUMAP)
+importFrom(GiRaF, sampler.mrf)
+importFrom(MASS, mvrnorm)
+importFrom(Matrix, t, sparseMatrix)
+importFrom(mclust, Mclust, mclustBIC)
+export(Mclust, mclustBIC)
+
+importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, 
+           "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", FetchData,
+           AutoPointSize, Key,
+           NoLegend) #  Interleave, Col2Hex, MultiExIPlot,
+
+importFrom(grDevices, hcl, rgb, col2rgb)
+importFrom(stats,quantile,coef, dist, rnorm, median, 
+           cov, rpois, lm, sd, hclust)
+importFrom("methods", "new")
+importFrom("utils", "data")
+importFrom(scales, hue_pal)
+
+# importFrom(ggridges, geom_density_ridges, theme_ridges)

@@ -1,6 +1,6 @@
 \name{ICM.EM_structure}
 \alias{ICM.EM_structure}
-\title{SRT data integration}
+\title{ICM-EM algorithm implementation with organized paramters}
 \description{
   Efficient data integration as well as  spatial clustering for multiple spatial transcriptomics data
 }
@@ -46,8 +46,8 @@ nothing
 \dontrun{
   ## we generate the spatial transcriptomics data with lattice neighborhood, i.e. ST platform.
   q <- 10; K <- 4
-  dat <- PRECAST:::gendataInte_sp(width1 = 20, height1 = 20,height2=21, width2=21, p=100,q=q, K=K, sigma2 = 9,
-                        beta=c(0.5, 1.0))
+  dat <- PRECAST:::gendataInte_sp(width1 = 20, height1 = 20,height2=21,
+  width2=21, p=100,q=q, K=K, sigma2 = 9,beta=c(0.5, 1.0))
   AdjList <- lapply(list(dat$pos1, dat$pos2), getAdj_reg, platform='ST')
   message(sapply(AdjList, dim))
   resList <- ICM.EM_structure(list(dat$X1, dat$X2),  AdjList = AdjList, 

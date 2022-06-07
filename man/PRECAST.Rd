@@ -28,6 +28,3 @@
 \seealso{
   None
 }
-\examples{
-
-}

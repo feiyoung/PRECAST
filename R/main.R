@@ -22,6 +22,9 @@ ICM.EM_structure  <- function(XList,  K, AdjList, q=15,parameterList=NULL){
   if(is.null(parameterList)){
     parameterList <- model_set()
   }
+  ### initialize variables
+  beta_grid <- maxIter_ICM<- maxIter<- epsLogLik<- verbose<-mix_prop_heter<- Sigma_equal<- Sigma_diag<- NULL
+  error_heter<-Sp2<- wpca_int<-int.model<- seed<- coreNum <- coreNum_int <- NULL
   n_par <- length(parameterList)
   for(i in 1:n_par){
     assign(names(parameterList)[i], parameterList[[i]])
@@ -77,7 +80,7 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   }
   ## yangyi
   
-  require(mclust)
+  # require(mclust)
   message('Start computing intial values... \n')
   princ1 <- wpca(Xmat, q, weighted = wpca_int)
   hZ <- princ1$PCs
@@ -200,7 +203,7 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
   }
   ## yangyi
   
-  require(mclust)
+  # require(mclust)
   message('Start computing intial values... \n')
   princ1 <- wpca(Xmat, q, weighted = wpca_int)
   hZ <- princ1$PCs
@@ -280,8 +283,8 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
 
 ## Define a new function mycluster to avoid using parallel::clusterExport in parallel
 mycluster <- function(Z, G, int.model='EEE', verbose=FALSE){
-  require(mclust)
-  mclus2 <- Mclust(Z, G=G,modelNames =int.model ,verbose=verbose)
+  # require(mclust)
+  mclus2 <- mclust::Mclust(Z, G=G,modelNames =int.model ,verbose=verbose)
   return(mclus2)
 }
 parafun_int <- function(k, Z, alpha, Sigma_equal, Sigma_diag,int.model='EEE', verbose=FALSE){
@@ -365,17 +368,17 @@ degree_freedom <- function(K, paraList){
   return(dfree)
 }
 
-selectModel <- function(...) UseMethod("selectModel")
-selectModel.SeqK_PRECAST_Object <- function(SeqKObject, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
-  if(!inherits(SeqKObject, 'SeqK_PRECAST_Object')) stop('SeqKObject must be "SeqK_PRECAST_Object"!\n')
-  para_settings <- attr(SeqKObject, 'para_settings')
+selectModel <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE) UseMethod("selectModel")
+selectModel.SeqK_PRECAST_Object <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
+  if(!inherits(obj, 'SeqK_PRECAST_Object')) stop('obj must be "SeqK_PRECAST_Object"!\n')
+  para_settings <- attr(obj, 'para_settings')
   K_set <- para_settings$K
   nK <- length(K_set)
   icVec <-  rep(Inf, nK)
-  if(length(SeqKObject) != nK) stop("The length of SeqKObject must be equal to length of K!")
+  if(length(obj) != nK) stop("The length of obj must be equal to length of K!")
   n <- para_settings$n; p <- para_settings$p
   for(k in 1:nK){
-      resList <- SeqKObject[[k]]
+      resList <- obj[[k]]
       dfree <- degree_freedom(K_set[k], para_settings)
       icVec[k] <- switch(criteria, 
              MAIC = -2.0* resList$loglik +dfree * 2 * log(log(p+n))*pen_const,
@@ -388,7 +391,7 @@ selectModel.SeqK_PRECAST_Object <- function(SeqKObject, criteria = 'MBIC',pen_co
   }
   bestK <- K_set[which.min(icVec)]
   icMat <- cbind(K=K_set, IC=icVec)
-  resList <- SeqKObject[[which.min(icVec)]]
+  resList <- obj[[which.min(icVec)]]
   cluster_PCList <- list(bestK= bestK, cluster=resList$cluster, hZ = resList$hZ, Rf = resList$Rf,
                          hV=resList$hV, hW = resList$W,icMat=icMat)
   if(return_para_est){
@@ -414,8 +417,8 @@ gendataInte_sp <- function(height1=30, width1=30,height2=height1, width2=width1,
   if(q <2) stop("error:gendata_sp::q must be greater than 2!")
   
   if(length(beta) <2) beta <- rep(beta, 2)
-  require(GiRaF)
-  require(MASS)
+  # require(GiRaF)
+  # require(MASS)
   n1 <- height1 * width1 # # of cell in each indviduals 
   n2 <- height2 * width2
   index1 <- 1:n1; index2 <- (n1+1):(n1+n2)
@@ -503,8 +506,8 @@ gendataInte_sp <- function(height1=30, width1=30,height2=height1, width2=width1,
 
 
 find_neighbors <- function(pos, platform=c('ST', "Visium")) {
-  require(purrr)
-  require(S4Vectors)
+  # require(purrr)
+  # require(S4Vectors)
   if (tolower(platform) == "visium") {
     ## Spots to left and right, two above, two below
     offsets <- data.frame(x.offset=c(-2, 2, -1,  1, -1, 1),
@@ -569,9 +572,9 @@ find_neighbors <- function(pos, platform=c('ST', "Visium")) {
 }
 getAdj_reg <- function(pos, platform= "Visium"){
   ij <- find_neighbors(pos, platform)
-  library(Matrix)
+  # library(Matrix)
   n <- nrow(pos)
-  Adj_sp <- sparseMatrix(ij[,1], ij[,2], x = 1, dims=c(n, n))
+  Adj_sp <- Matrix::sparseMatrix(ij[,1], ij[,2], x = 1, dims=c(n, n))
   return(Adj_sp)
 }
 # getAdj <- function(pos, platform="Visisum"){
@@ -622,7 +625,7 @@ getAdj_reg <- function(pos, platform= "Visium"){
 
 getAdj_fixedNumber <- function(pos, number=6){
   if(nrow(pos)< 6*4) stop("nrow of pos must be greater than 4*number!")
-  require(Matrix)
+  # require(Matrix)
   Adj_sp <- get_fixedNumber_neighbors(pos, number)
   return(Adj_sp)
 }
@@ -646,7 +649,7 @@ wpca <- function(X, q, weighted=T){
 ## Get basic information
 ## format the log-normalized gene expression based on the selected genes.
 getXList <- function(seuList, genelist){
-  require(Seurat)
+  # require(Seurat)
   set.seed(101)
   seuList <- lapply(seuList, NormalizeData)
   XList <- list()

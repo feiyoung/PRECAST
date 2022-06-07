@@ -5,13 +5,14 @@
   Plot spatial heatmap for a Seurat object with spatial transcriptomics data.
 }
 \usage{
-  SpaPlot(seuInt, batch=NULL, item=NULL, point_size=2,text_size=20, 
+  SpaPlot(seuInt, batch=NULL, item=NULL, point_size=2,text_size=16, 
                     cols=NULL,font_family='', border_col="gray10",
                     fill_col='white', ncol=2, combine = TRUE, title_name="Sample")
 }
 \arguments{
   \item{seuInt}{an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".}
   \item{batch}{an optional positive integer, specify the number of features to be extracted.}
+  \item{item}{an optional string, which column is plotted in the meta data of seuInt.}
   \item{point_size}{the size of point in the scatter plot.}
   \item{text_size}{the text size in the plot.}
   \item{cols}{colors used in the plot}

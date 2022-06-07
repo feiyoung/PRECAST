@@ -1,8 +1,8 @@
 \name{IntegrateSpaData}
 \alias{IntegrateSpaData}
-\title{Add UMAP embeddings for a Seurat object}
+\title{Integrate multiple SRT data}
 \description{
-  Run a weighted PCA dimensionality reduction
+  Integrate multiple SRT data based on the PRECASTObj by PRECAST model fitting.
 }
 \usage{
   IntegrateSpaData(PRECASTObj, species="Human", custom_housekeep=NULL)

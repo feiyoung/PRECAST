@@ -1,8 +1,8 @@
 \name{boxPlot}
 \alias{boxPlot}
-\title{Spatial heatmap}
+\title{Boxplot for a matrix}
 \description{
-  Plot spatial heatmap for a Seurat object with spatial transcriptomics data.
+  Boxplot for a matrix.
 }
 \usage{
   boxPlot(mat, ylabel='ARI', cols=NULL, ...)
@@ -11,7 +11,7 @@
   \item{mat}{a matrix with columns.}
   \item{ylabel}{an optional string, the name of ylabel.}
   \item{cols}{colors used in the plot}
-  \item{...}{Other parameters passed to \link{geom_boxplot}.}
+  \item{...}{Other parameters passed to geom_boxplot.}
 }
 \details{
   Nothing

@@ -71,6 +71,7 @@ For function `PRECAST`, users can specify the number of clusters $K$ or set `K` 
 ### Given K
 PRECASTObj <- PRECAST(PRECASTObj, K=14)
 
+# save(PRECASTObj, file= paste0(dir.file, 1, "\\human_breast_cancer2_PRECASTObj.rds"))
 ```
 
 Select a best model 
