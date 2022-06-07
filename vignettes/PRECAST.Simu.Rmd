@@ -128,7 +128,7 @@ seuInt <- ScaleData(seuInt)
 seus <- subset(seuInt, downsample = 400)
 color_id <- as.numeric(levels(Idents(seus)))
 
-
+library(ggplot2)
 
 ## HeatMap
 p1 <- doHeatmap(seus, features = top10$gene, cell_label= "Domain",

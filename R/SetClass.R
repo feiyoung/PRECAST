@@ -565,6 +565,8 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=16,
                          point_size=point_size,palette_use =cols[sort_id])
     }else if(item=="RGB_UMAP"){
       p1 <- plot_RGB(embed_use, seu@reductions$UMAP3@cell.embeddings, pointsize = point_size)
+    }else if(item=="RGB_TSNE"){
+      p1 <- plot_RGB(embed_use, seu@reductions$tSNE3@cell.embeddings, pointsize = point_size)
     }else{
       stop("SpaPlot: check the value of argument:item")
     }
