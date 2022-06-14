@@ -44,4 +44,3 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 NeedsCompilation: yes
-RoxygenNote: 7.1.1
