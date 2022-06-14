@@ -10,6 +10,7 @@ Description: This package provides an effcient data integration method for multi
     analysis simultaneously with spatial clustering and embedding alignment, requiring only partially 
     shared cell/domain clusters across datasets.
 License: GPL-3
+NeedsCompilation: yes
 Imports: 
     GiRaF,
     MASS,
@@ -42,4 +43,3 @@ Suggests:
 LazyData: true
 VignetteBuilder: knitr
 Encoding: UTF-8
-NeedsCompilation: yes
