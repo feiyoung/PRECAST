@@ -1,3 +1,4 @@
+# pkgdown::fig_settings(fig.height=6, fig.width=9)
 # pkgdown::build_site()
 
 

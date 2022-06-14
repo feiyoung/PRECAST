@@ -17,7 +17,7 @@
   Nothing
 }
 \value{
-  Return a revised Seurat object by adding tSNE reduction object.
+  Return a revised Seurat object by adding a embedding matrix to the Reduc slot in Seurat object.
 }
 
 \author{

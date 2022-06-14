@@ -18,7 +18,7 @@
   Nothing
 }
 \value{
-  ICM.EM_structure returns a \link{list} with class "SeqKiDRSC_Object" with the number of components equal to the length of \code{K}, where each component includes the model fitting results for one number of cluster and is a list consisting of following components:
+  ICM.EM_structure returns a \link{list} with class "SeqK_PRECAST_Object" with the number of components equal to the length of \code{K}, where each component includes the model fitting results for one number of cluster and is a list consisting of following components:
 \item{cluster}{an M-length list that includes the inferred class labels for each data sample.}
 \item{hZ}{an M-length list that includes the batch corrected low-dimensional embeddings for each data sample.}
 \item{hV}{an M-length list that includes the estimate the ICAR component for each sample.}

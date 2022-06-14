@@ -10,7 +10,7 @@
 \arguments{
   \item{seuInt}{a Seurat object.}
   \item{n_comp}{an optional positive integer, specify the number of features to be extracted.}
-  \item{reduction}{an optional string, means which dimensional reduction (e.g. PRECAST, PCA) to use for the tSNE. Default is PCA.}
+  \item{reduction}{an optional string, means which dimensional reduction (e.g. PRECAST, PCA) to use for the tSNE. Default is PRECAST.}
   \item{assay}{Name of assay that that t-SNE is being run on.}
   \item{seed}{an  optional integer, the random seed to evaluate tSNE.}
 }

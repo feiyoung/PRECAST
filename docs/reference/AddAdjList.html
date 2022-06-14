@@ -70,7 +70,7 @@
 <dt>type</dt>
 <dd><p>an optional string, specify which type of neighbors' definition. Here we provide two definition: one is "fixed_distance", the other is "fixed_number".</p></dd>
 <dt>platform</dt>
-<dd><p>a string, specify the platform of the provided data, default as "Visium". There are many platforms to be supported, including ("Visuim", "ST", "SeqFISH", 'merFISH', 'slide-seqv2', 'seqscope', "HDST"), which means there are spatial coordinates information in the metadata of PRECASTObj. The platform helps to calculate the adjacency matrix by defining the neighborhoods.</p></dd>
+<dd><p>a string, specify the platform of the provided data, default as "Visium". There are many platforms to be supported, including ("Visuim", "ST", "SeqFISH", 'merFISH', 'slide-seqv2', 'seqscope', "HDST"), which means there are spatial coordinates information in the metadata of PRECASTObj. The platform helps to calculate the adjacency matrix by defining the neighborhoods when type="fixed_distance" is chosen.</p></dd>
 <dt>...</dt>
 <dd><p>other arguments to be passed to getAdj, getAdj_auto  and <a href="getAdj_fixedNumber.html">getAdj_fixedNumber</a> funciton.</p></dd>
 </dl></div>

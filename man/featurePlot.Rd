@@ -10,7 +10,7 @@
 }
 \arguments{
   \item{seu}{an object named "Seurat". The object of class "Seurat" must include slot "scale.data".}
-  \item{feature}{an optional positive integer, specify the number of features to be extracted.}
+  \item{feature}{an optional string, specify the name of feature to be plotted. If it is null, the first feature will be plotted.}
   \item{cols}{colors used in the plot}
   \item{pt_size}{the size of point in the spatial heatmap plot.}
   \item{title_size}{the title size used for the plot.}

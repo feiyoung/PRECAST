@@ -12,8 +12,26 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  tidy = TRUE,
+  fig.width = 11,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
 )
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
 ```
 
 The package can be loaded with the command:
@@ -91,7 +109,7 @@ seuInt
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
 Show the spatial scatter plot for clusters
-```{r  eval = TRUE}
+```{r  eval = TRUE, fig.height = 4, fig.width=7.5}
 cols_cluster <-  c( "#FD7446" ,"#709AE1", "#31A354","#9EDAE5",
  "#DE9ED6" ,"#BCBD22", "#CE6DBD" ,"#DADAEB" ,
  "yellow", "#FF9896","#91D1C2", "#C7E9C0" ,"#6B6ECF", "#7B4173" )
@@ -102,10 +120,10 @@ p12
 
 Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.
 
-```{r  eval = TRUE}
+```{r  eval = TRUE, fig.height = 3, fig.width=5}
 seuInt <- AddUMAP(seuInt) 
-SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
-
+p13 <- SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
+p13
 #seuInt <- AddTSNE(seuInt) 
 #SpaPlot(seuInt, batch=NULL,item='RGB_TSNE',point_size=2, combine=T, text_size=15)
 ```
@@ -138,7 +156,7 @@ seus <- subset(seuInt, downsample = 400)
 ```
 
 Plot DE genes' heatmap for each spatial domains identified by PRECAST.
-```{r  eval = TRUE, fig.height=7, fig.width= 7}
+```{r  eval = TRUE, fig.height = 9, fig.width=11}
 color_id <- as.numeric(levels(Idents(seus)))
 library(ggplot2)
 ## HeatMap

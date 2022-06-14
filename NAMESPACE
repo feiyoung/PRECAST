@@ -47,8 +47,9 @@ export(Mclust, mclustBIC)
 
 importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, 
            "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", FetchData,
-           AutoPointSize, Key,
-           NoLegend) #  Interleave, Col2Hex, MultiExIPlot,
+           AutoPointSize, Key, ScaleData,
+           NoLegend)
+export(ScaleData)
 
 importFrom(grDevices, hcl, rgb, col2rgb)
 importFrom(stats,quantile,coef, dist, rnorm, median, 

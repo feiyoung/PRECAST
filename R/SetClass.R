@@ -501,8 +501,14 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL)
   )
   houseKeep <- c(houseKeep, custom_housekeep)
   if(length(houseKeep) < 5){
+    message("Using only PRECAST results to obtain the batch corrected gene expressions\n
+             since species is unkown or the genelist in PRECASTObj has less than 5 overlapp \n
+            with the housekeeping genes of given species.")
+    message("Users can specify the custom_housekeep by themself to use the housekeeping genes\n
+            based methods.")
     hX <- get_correct_mean_exp(XList,PRECASTObj@resList$hV, PRECASTObj@resList$hW)
   }else{
+    message("Using bouth housekeeping gene and PRECAST results to obtain the batch corrected gene expressions.")
     hX <- get_correct_exp(XList, PRECASTObj@resList$Rf, houseKeep, q_unwanted=min(10, length(houseKeep)))
   }
   meta_data <- data.frame(batch=factor(get_sampleID(XList)), cluster= factor(unlist(PRECASTObj@resList$cluster)))

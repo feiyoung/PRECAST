@@ -2,7 +2,7 @@
 \alias{dimPlot}
 \title{Low-dimensional embeddings' plot}
 \description{
-  Run a weighted PCA dimensionality reduction
+  Low-dimensional embeddings' plot colored by a specified meta data in the Seurat object.
 }
 \usage{
   dimPlot(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16, 
@@ -10,9 +10,9 @@
                     fill_col="white")
 }
 \arguments{
-  \item{seuInt}{an object named "Seurat". The object of class "Seurat" must include slot "scale.data".}
+  \item{seuInt}{an object named "Seurat". }
   \item{item}{the item used for coloring the plot in the meta data of seuInt object.}
-  \item{reduction}{the reduction used for plot in the seuInt object.}
+  \item{reduction}{the reduction used for plot in the seuInt object. If reduction is null, the last added one is used for plotting.}
   \item{point_size}{the size of point in the scatter plot.}
   \item{text_size}{the text size in the plot.}
   \item{cols}{colors used in the plot}
