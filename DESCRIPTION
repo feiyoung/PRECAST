@@ -7,6 +7,9 @@ Author: Wei Liu [aut, cre], Yi Yang [aut], Jin Liu [aut]
 Maintainer: Wei Liu <wei.liu@duke-nus.edu.sg>
 Description: This package provides an effcient data integration method for multiple spatial transcriptomics data with non-cluster-relevant eﬀects such as the complex batch eﬀects. It unifes spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially  shared cell/domain clusters across datasets.
 License: GPL-3
+Depends: 
+    parallel,
+    R (>= 4.0.0)
 Imports: 
     GiRaF,
     MASS,
@@ -29,9 +32,6 @@ Imports:
     DR.SC, 
     scales,
     Rcpp (>= 1.0.5)
-Depends: 
-    parallel,
-    R (>= 4.0.0)
 LazyData: true
 Suggests: 
     knitr,
@@ -43,4 +43,3 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 NeedsCompilation: yes
-RoxygenNote: 7.1.1
