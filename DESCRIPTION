@@ -40,7 +40,6 @@ Suggests:
     knitr,
     rmarkdown
 LazyData: true
-VignetteBuilder: 
-    knitr
+VignetteBuilder: knitr
 Encoding: UTF-8
 NeedsCompilation: yes
