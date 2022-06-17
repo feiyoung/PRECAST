@@ -21,7 +21,7 @@ First, we generate the multiple spatial transcriptomics data with lattice neighb
 ```{r  eval = FALSE}
 library(Seurat)
 library(PRECAST)
-seuList <- gendata_seulist(height1=20, width1=20, height2=24, width2=25,p=200, K=4, alpha=20,     sigma2=0.1)
+seuList <- gendata_seulist(height1=20, width1=20, height2=24, width2=25,p=200, K=4, alpha=20, sigma2=0.1)
 seuList
 head(seuList[[1]]) 
 ## Must include the columns named "row" and "col" for saving the spatial coordinates

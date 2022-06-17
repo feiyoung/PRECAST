@@ -72,9 +72,7 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
   sigmaZ = 2*c(1,2, 0.5);
   qvec=rep(2, 3); 
   ## generate deterministic parameters, fixed after generation
-  set.seed(1)
-  # sigma2 <- 1
-  set.seed(1)
+  
   if(length(sigma2)==1){
     Lambda1 <- sigma2*(abs(rnorm(p, sd=1)))
     Lambda2 <- sigma2*(abs(rnorm(p, sd=1)))
@@ -88,7 +86,7 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
   W <- qr.Q(qr(W1))
   Wlist <- list()
   for(r in 1:2){
-    set.seed(r+1) # sigma12 control the correlation strength, if sigma12 is small, correlation is strong
+     # sigma12 control the correlation strength, if sigma12 is small, correlation is strong
     Wtt1 <- matrix(rnorm(p* qvec[r]), p, qvec[r]) 
     W1 <- Wtt1 + sigmaW[r] * matrix(rnorm(p* qvec[r]), p, qvec[r])
     W1 <- qr.Q(qr(W1))
@@ -129,7 +127,7 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
   
   tau0Mat <- matrix(NA, 2, p)
   for(r in 1:2){
-    set.seed(r+5)
+    
     tau0 <- rnorm(p, sd=2)
     tau0Mat[r, ] <- tau0
   }
@@ -171,7 +169,7 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
   ## batch effect
   Zrlist <- list()
   for(r in 1:2){
-    set.seed(r+10)
+    
     Zrlist[[r]] <- matrix(rnorm(n_vec[r]* qvec[r], sd=sigmaZ[r]), n_vec[r], qvec[r])
   }
   sapply(Zrlist, dim)
@@ -501,11 +499,10 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL)
   )
   houseKeep <- c(houseKeep, custom_housekeep)
   if(length(houseKeep) < 5){
-    message("Using only PRECAST results to obtain the batch corrected gene expressions\n
-             since species is unkown or the genelist in PRECASTObj has less than 5 overlapp \n
-            with the housekeeping genes of given species.")
-    message("Users can specify the custom_housekeep by themself to use the housekeeping genes\n
-            based methods.")
+    message("Using only PRECAST results to obtain the batch corrected gene expressions
+ since species is unkown or the genelist in PRECASTObj has less than 5 overlapp 
+ with the housekeeping genes of given species.")
+    message("Users can specify the custom_housekeep by themselves to use the housekeeping genes based methods.")
     hX <- get_correct_mean_exp(XList,PRECASTObj@resList$hV, PRECASTObj@resList$hW)
   }else{
     message("Using bouth housekeeping gene and PRECAST results to obtain the batch corrected gene expressions.")

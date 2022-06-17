@@ -46,10 +46,10 @@
   None
 }
 \examples{
-\dontrun{
+
   data(PRECASTObj)
   PRECASTObj <- selectModel(PRECASTObj)
   seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
-  ridgePlot(seuInt, features=row.names(seuInt)[1:4], ncol=2)
-  }
+  ridgePlot(seuInt, features=row.names(seuInt)[1:2], ncol=2)
+ 
 }

@@ -65,15 +65,16 @@ nothing
  None
 }
 \examples{
-\dontrun{
+\donttest{
   ## we generate the spatial transcriptomics data with lattice neighborhood, i.e. ST platform.
+  library(Matrix)
   q <- 10; K <- 4
-  dat <- PRECAST:::gendataInte_sp(width1 = 20, height1 = 20,height2=21, 
-  width2=21, p=100,q=q, K=K, sigma2 = 9,
-                        beta=c(0.5, 1.0))
-  AdjList <- lapply(list(dat$pos1, dat$pos2), getAdj_reg, platform='ST')
-  message(sapply(AdjList, dim))
-  resList <- ICM.EM(list(dat$X1, dat$X2), posList = NULL, AdjList = AdjList, 
+  data(PRECASTObj)
+  posList <- lapply(PRECASTObj@seulist, function(x) cbind(x$row, x$col))
+  AdjList <- lapply(posList, getAdj_reg, platform='ST')
+  XList <- lapply(PRECASTObj@seulist, function(x) t(x[['RNA']]@data))
+  XList <- lapply(XList, scale, scale=FALSE)
+  resList <- ICM.EM(XList,AdjList = AdjList, 
                    q=q, K=K, verbose=TRUE)
 }
 }

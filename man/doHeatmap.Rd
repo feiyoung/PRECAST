@@ -34,11 +34,12 @@
   \link{featurePlot}, \link{ridgePlot}
 }
 \examples{
-\dontrun{
+
+  library(Seurat)
   data(PRECASTObj)
   PRECASTObj <- selectModel(PRECASTObj)
   seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
   seuInt <- ScaleData(seuInt)
   doHeatmap(seuInt, features=row.names(seuInt)[1:5])
-  }
+  
 }

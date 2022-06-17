@@ -13,11 +13,11 @@ are listed below.
 
 \item{\code{seulist}}{A Seurat list after the preprocessing step in preparation for PRECAST model.}
 
-\item{\code{AdjList}}{The covariates in experiments (if any covariate included).}
+\item{\code{AdjList}}{The adjacency matrix list for a PRECASTObj object.}
 
-\item{\code{parameterList}}{Cell/spot spatial coordinates to compute the kernel matrix.}
+\item{\code{parameterList}}{The model parameter settings  for a PRECASTObj object}
 
-\item{\code{resList}}{The kernel matrix for spatial relationship between locations.}
+\item{\code{resList}}{The results after fitting PRECAST models.}
 
 \item{\code{project}}{Name of the project.}
 

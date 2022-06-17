@@ -1,7 +1,6 @@
-# pkgdown::fig_settings(fig.height=6, fig.width=9)
 # pkgdown::build_site()
-
-
+# R CMD check --as-cran PRECAST_1.0.tar.gz
+# devtools::check_win_release()
 # iDR.SC <- function(...) UseMethod("iDR.SC")
 model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
                       error_heter=TRUE, Sp2=TRUE, wpca_int=FALSE,int.model='EEE',
@@ -46,14 +45,7 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   
   
   
-  # Sigma_equal= FALSE: Sigma_(r) denotes the case that mixture covariance related to  r and k
-  # Sigma_equal= TRUE: Sigma_r denotes the  case that mixture covariance only related to  r not k.
-  # error_heter = TRUE: Lambda_r; error_heter=FALSE: sigma^2_r I_p
-  # Sp2 means whether to include the CAR model.
-  # AdjList=NULL;platform = "ST";beta_grid=seq(0.5,5, by=0.5);
-  # maxIter_ICM=6;maxIter=3; epsLogLik=1e-5; verbose=TRUE; alpha=FALSE;pen_const=1;
-  # sample.heter=1;error_heter=TRUE;wpca_int=FALSE; mix_prop_heter=FALSE
-  # Sigma_diag=FALSE;error_heter=TRUE; Sp2=TRUE;int.model='EEE';seed=1
+  
   
   
   r_max <- length(XList)
@@ -93,8 +85,8 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   if(nK>1){
     ## at most use 80% CPU
     if(is.null(coreNum_int)){
-      cores <- ifelse(nK < parallel::detectCores()*0.8,  
-                      nK, parallel::detectCores()*0.8)
+      cores <- ifelse(nK < 10,  
+                      nK, 10)
     }else{
       cores <- coreNum_int
     }
@@ -104,9 +96,10 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
     }else{
       cl <- parallel::makeCluster(cores, type='FORK') # memory-shared type in linux or Mac.
     }
-    
+    # Mclust <- mclust::Mclust
+    # mclustBIC <- mclust::mclustBIC
     message("Starting parallel computing initial values...")
-    parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
+    # parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
     # Run
     
     intList <- parallel::parLapply(cl, X=K, parafun_int, Z=hZ, alpha=alpha, 
@@ -169,14 +162,7 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
   
   
   
-  # Sigma_equal= FALSE: Sigma_(r) denotes the case that mixture covariance related to  r and k
-  # Sigma_equal= TRUE: Sigma_r denotes the  case that mixture covariance only related to  r not k.
-  # error_heter = TRUE: Lambda_r; error_heter=FALSE: sigma^2_r I_p
-  # Sp2 means whether to include the CAR model.
-  # AdjList=NULL;platform = "ST";beta_grid=seq(0.5,5, by=0.5);
-  # maxIter_ICM=6;maxIter=3; epsLogLik=1e-5; verbose=TRUE; alpha=FALSE;pen_const=1;
-  # sample.heter=1;error_heter=TRUE;wpca_int=FALSE; mix_prop_heter=FALSE
-  # Sigma_diag=FALSE;error_heter=TRUE; Sp2=TRUE;int.model='EEE';seed=1
+  
   
   
   r_max <- length(XList)
@@ -202,7 +188,7 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
   for(r in 1:r_max){
     Xmat <- rbind(Xmat, XList[[r]])
   }
-  ## yangyi
+  
   
   # require(mclust)
   message('Start computing intial values... \n')
@@ -229,7 +215,7 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
     }
     
   message("Starting parallel computing initial values...")
-  parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
+  # parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
   # Run
   
   intList <- parallel::parLapply(cl, X=K, parafun_int, Z=hZ, alpha=alpha, 
@@ -424,9 +410,7 @@ gendataInte_sp <- function(height1=30, width1=30,height2=height1, width2=width1,
   n2 <- height2 * width2
   index1 <- 1:n1; index2 <- (n1+1):(n1+n2)
   ## generate deterministic parameters, fixed after generation
-  set.seed(1)
-  # sigma2 <- 1
-  set.seed(1)
+ 
   if(length(sigma2)==1){
     Lambda1 <- sigma2*(abs(rnorm(p, sd=1)))
     Lambda2 <- sigma2*(abs(rnorm(p, sd=1)))
@@ -651,7 +635,7 @@ wpca <- function(X, q, weighted=T){
 ## format the log-normalized gene expression based on the selected genes.
 getXList <- function(seuList, genelist){
   # require(Seurat)
-  set.seed(101)
+  
   seuList <- lapply(seuList, NormalizeData)
   XList <- list()
   nsample <- length(seuList)

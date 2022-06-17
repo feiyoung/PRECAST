@@ -35,11 +35,12 @@
   None
 }
 \examples{
-\dontrun{
+
+  library(Seurat)
   data(PRECASTObj)
   PRECASTObj <- selectModel(PRECASTObj)
   seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
   seuInt <- ScaleData(seuInt)
   featurePlot(seuInt, assay='PRE_CAST')
-  }
+  
 }
