@@ -31,7 +31,7 @@
   nothing
 }
 \seealso{
-  \link{featurePlot}, \link{ridgePlot}
+  \link{featurePlot}
 }
 \examples{
 

@@ -30,8 +30,9 @@
 \examples{
     x <- 1:100
     pos <- cbind(x, sin(pi/4*x))
-    
-    par(mfrow=c(1,2))
+    oldpar <- par(mfrow = c(1,2))
     plot(pos)
     plot(coordinate_rotate(pos, 40))
+    par(oldpar)
+    
 }

@@ -19,18 +19,16 @@ export(ICM.EM,ICM.EM_structure, selectModel.SeqK_PRECAST_Object,
        getAdj_reg, getAdj_fixedNumber)
 
 export(coordinate_rotate, firstup, SpaPlot,dimPlot,
-       plot_RGB, plot_scatter, volinPlot, boxPlot, doHeatmap, featurePlot, ridgePlot)
+       plot_RGB, plot_scatter, volinPlot, boxPlot, doHeatmap, featurePlot)
 
 importFrom(DR.SC,getAdj_auto, getAdj_manual, getAdj, RunWPCA, read10XVisium)
 # export(getAdj, getAdj_manual, getAdj_auto, RunWPCA, read10XVisium)
 
 importFrom(purrr, discard, keep)
-importFrom(S4Vectors,DataFrame)
 # export(discard, keep, DataFrame)
 
 import(ggplot2)
 import(parallel)
-import(ggrastr)
 import(gtools)
 
 importFrom(cowplot, plot_grid, theme_cowplot)
@@ -46,9 +44,7 @@ importFrom(mclust, Mclust, mclustBIC)
 #export(Mclust, mclustBIC)
 
 importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, 
-           "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", FetchData,
-           AutoPointSize, Key, ScaleData,
-           NoLegend)
+           "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData)
 # export(ScaleData)
 
 importFrom(grDevices, hcl, rgb, col2rgb)

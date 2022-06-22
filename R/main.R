@@ -507,7 +507,8 @@ find_neighbors <- function(pos, platform=c('ST', "Visium")) {
   
   ## Get array coordinates (and label by index of spot in SCE)
   colnames(pos) <- c("row", "col")
-  pos <- DataFrame(pos)
+  # pos <- DataFrame(pos) # reduce the dependency on S4Vector
+  pos <- as.data.frame(pos)
   spot.positions <- pos
   spot.positions$spot.idx <- seq_len(nrow(spot.positions))
   
