@@ -8,12 +8,14 @@ To install the the packages `PRECAST`, firstly, install the `remotes` package. B
 In addtion, "PRECAST" depends on the 'Rcpp' and 'RcppArmadillo' package, which also requires appropriate setting of Rtools and Xcode for Windows and Mac OS/X, respectively.
 ```{Rmd}
 # install BiocManager
-install.packages("BiocManager")
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 # install the package on Bioconducter
 BiocManager::install(c("scater"))
 
 # Install PRECAST from github
-install.packages("remotes")
+if (!require("remotes", quietly = TRUE))
+    install.packages("remotes")
 remotes::install_github("feiyoung/PRECAST")
 ```
 
