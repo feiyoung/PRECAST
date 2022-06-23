@@ -2,7 +2,7 @@
 PRECAST: a probabilistic embedding and clustering with alignment for spatial transcriptomics data integration.
 
 # Installation
-"PRECAST" depends on the 'Rcpp' and 'RcppArmadillo' package, which requires appropriate setup of computer. For the users that have set up system properly, the following installation command will work.
+"PRECAST" depends on the 'Rcpp' and 'RcppArmadillo' package, which requires appropriate setup of computer. For the users that have set up system properly for compiling C++ files, the following installation command will work.
 ```{Rmd}
 # Method 1: install PRECAST from CRAN
 install.packages('PRECAST')
