@@ -22,7 +22,7 @@ BiocManager::install(c("scater"))
 ```
 
 
-For the users that don't have set up system properly, the following setup on different system can be referred.
+For the users that don't have set up system properly, the following setup on different systems can be referred.
 ## Setup on Windows system
 First, download [Rtools](https://cran.r-project.org/bin/windows/Rtools/); second, add the Rtools directory to the environment variable. Users can follow [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/#:~:text=Go%20ahead%20and%20click%20on%20the%20Environment%20Variables,you%20have%20to%20decide%20which%20one%20to%20edit) to add Windows PATH Environment Variable.
 
@@ -47,7 +47,7 @@ BiocManager::install(c("scater"))
 If  dependent packages (such as `DR.SC`) not normally installed are in CRAN, then use the following command to install the dependent packages.
 ```{Linux}
 # install the package on CRAN
-BiocManager::install("DR.SC")
+install.packages("DR.SC")
 ```
 
 ## Other notes
