@@ -28,7 +28,23 @@ First, download [Rtools](https://cran.r-project.org/bin/windows/Rtools/); second
 
 
 ## Setup on MacOS system
-Installation about Xcode can be referred [here](https://stackoverflow.com/questions/8291146/xcode-installation-on-mac#:~:text=You%20get%20it%20from%20the%20Mac%20App%20Store.,find%20the%20app%2C%20and%20click%20the%20install%20button).
+
+
+First, install `homebrew` in terminal:
+```{Linux}
+/bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
+```
+Second install Xcode. Installation about Xcode can be referred [here](https://stackoverflow.com/questions/8291146/xcode-installation-on-mac#:~:text=You%20get%20it%20from%20the%20Mac%20App%20Store.,find%20the%20app%2C%20and%20click%20the%20install%20button).
+
+Third, install `Xcode CLT`:
+```{Linux}
+xcode-select --install
+```
+
+Forth, install "gcc" for compiling C++ and Fortran.
+```{Linux}
+brew install gcc
+```
 
 ## Setup on Linux  system
 If you use conda environment on Linux system and some dependent packages (such as `scater`) can not normally installed, you can search R package at [here](https://anaconda.org/). We take the `scater` package as example, and its search result is [here](https://anaconda.org/bioconda/bioconductor-scater). Then you can install it in conda environment by following command.
