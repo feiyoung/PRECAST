@@ -2,10 +2,7 @@
 PRECAST: a probabilistic embedding and clustering with alignment for spatial transcriptomics data integration.
 
 # Installation
-
-To install the the packages `PRECAST`, firstly, install the `remotes` package. Besides, `PRECAST` depends on the  `scater` R package on Bioconductor. Users require to install the `BiocManager`, then use the command below to install these two packages.
-
-In addtion, "PRECAST" depends on the 'Rcpp' and 'RcppArmadillo' package, which requires appropriate setup of computer. For the users that have set up system properly, the following installation command will work.
+"PRECAST" depends on the 'Rcpp' and 'RcppArmadillo' package, which requires appropriate setup of computer. For the users that have set up system properly, the following installation command will work.
 ```{Rmd}
 # Method 1: install PRECAST from CRAN
 install.packages('PRECAST')
@@ -17,7 +14,7 @@ if (!require("remotes", quietly = TRUE))
     install.packages("remotes")
 remotes::install_github("feiyoung/PRECAST")
 
-# If some dependent packages (such as `scater`) on BioConductor can not be installed nomrally, use following commands, then run abouve command.
+# If some dependent packages (such as `scater`) on Bioconductor can not be installed nomrally, use following commands, then run abouve command.
 if (!require("BiocManager", quietly = TRUE)) ## install BiocManager
     install.packages("BiocManager")
 # install the package on Bioconducter
