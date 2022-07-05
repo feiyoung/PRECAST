@@ -1,8 +1,8 @@
 Package: PRECAST
 Type: Package
 Title: Embedding and Clustering with Alignment for Spatial Datasets
-Version: 1.0
-Date: 2022-06-22
+Version: 1.1
+Date: 2022-06-29
 Authors@R: 
     c(person(given = "Wei",
              family = "Liu",
@@ -16,7 +16,7 @@ Authors@R:
              role = "aut"))
 Author: Wei Liu [aut, cre], Yi Yang [aut], Jin Liu [aut]
 Maintainer: Wei Liu <wei.liu@duke-nus.edu.sg>
-Description: An efficient data integration method is provided for multiple spatial transcriptomics data with non-cluster-relevant effects such as the complex batch effects. It unifies spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially shared cell/domain clusters across datasets. More details can be referred to Wei Liu, et al. (2022) <doi:10.1093/nar/gkac219>.
+Description: An efficient data integration method is provided for multiple spatial transcriptomics data with non-cluster-relevant effects such as the complex batch effects. It unifies spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially shared cell/domain clusters across datasets. More details can be referred to Wei Liu, et al. (2022) <doi:10.1101/2022.06.26.497672>.
 License: GPL-3
 Depends: 
     parallel,

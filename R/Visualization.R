@@ -117,7 +117,7 @@ plot_RGB <- function(position, embed_3d, pointsize=2,textsize=15){
 
 plot_scatter <- function (
     embed_use, meta_data, label_name, xy_names=c('tSNE1', 'tSNE2'), no_guides = FALSE, 
-    palette_use = tableau_color_pal()(10), 
+    cols = NULL, 
      point_size = 0.5, point_alpha=1, 
     base_size = 12, do_points = TRUE, do_density = FALSE, border_col='gray',
     legend_pos='right', legend_dir='vertical') {
@@ -129,7 +129,20 @@ plot_scatter <- function (
     dplyr::sample_frac(1L)
   plt_df$given_name <- plt_df[[label_name]]
   
-  if(is.null(palette_use)) palette_use <- tableau_color_pal()(10)
+  if(is.null(cols)){
+    gg_color_hue <- function(n) {
+      hues = seq(15, 375, length = n + 1)
+      hcl(h = hues, l = 65, c = 100)[1:n]
+    }
+    
+    cluster <- as.vector(plt_df$given_name)
+    ngrp <- length(unique(cluster))
+    
+      
+    cols  <- gg_color_hue(ngrp)
+  }
+  
+  
   plt <- plt_df %>% ggplot(aes_string(colnames(plt_df)[1],colnames(plt_df)[2], col = label_name, 
                                       fill = label_name)) + #  + theme_tufte(base_size = base_size, ticks= show_ticks)
     theme(axis.text.x=element_text(size=base_size, color=1),
@@ -146,7 +159,7 @@ plot_scatter <- function (
           panel.background= element_rect(fill = 'white', color=border_col))+
     guides(color = guide_legend(override.aes = list(stroke = 1, 
                                                     alpha = 1, shape = 16, size = 4)), alpha = "none") + 
-    scale_color_manual(values = palette_use) + scale_fill_manual(values = palette_use) + 
+    scale_color_manual(values = cols) + scale_fill_manual(values = cols) + 
     theme(plot.title = element_text(hjust = 0.5)) + labs(x = xy_names[1], 
                                                          y = xy_names[2])
   if (do_points) 

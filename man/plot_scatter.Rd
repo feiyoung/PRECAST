@@ -7,7 +7,7 @@
 \usage{
   plot_scatter(embed_use, meta_data, label_name, 
     xy_names=c('tSNE1', 'tSNE2'), no_guides = FALSE, 
-    palette_use = tableau_color_pal()(10), 
+    cols = NULL, 
     point_size = 0.5, point_alpha=1, 
     base_size = 12, do_points = TRUE, do_density = FALSE, border_col='gray',
     legend_pos='right', legend_dir='vertical')
@@ -17,12 +17,12 @@
   \item{meta_data}{an optional positive integer, specify the number of features to be extracted.}
   \item{label_name}{the size of point in the scatter plot.}
   \item{xy_names}{the text size in the plot.}
-  \item{no_guides}{colors used in the plot}
-  \item{palette_use}{the font family used for the plot.}
+  \item{no_guides}{whether display the legend.}
+  \item{cols}{colors used in the plot.}
   \item{point_size}{the point size of scatter plot.}
   \item{point_alpha}{the transparency of the plot.}
   \item{base_size}{the base text size.}
-  \item{do_points}{Plot point.}
+  \item{do_points}{Plot point plot.}
   \item{do_density}{Plot density plot}
   \item{border_col}{the border color in the plot.}
   \item{legend_pos}{the position of legend.}
