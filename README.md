@@ -35,7 +35,7 @@ Second, install "gfortran" for compiling C++ and Fortran at [here](https://githu
 
 
 ## Setup on Linux  system
-If you use conda environment on Linux system and some dependent packages (such as `scater`) can not normally installed, you can search R package at [here](https://anaconda.org/). We take the `scater` package as example, and its search result is [here](https://anaconda.org/bioconda/bioconductor-scater). Then you can install it in conda environment by following command.
+If you use conda environment on Linux system and some dependent packages (such as `scater`) can not normally installed, you can search R package at anaconda.org website. We take the `scater` package as example, and its search result is https://anaconda.org/bioconda/bioconductor-scater. Then you can install it in conda environment by following command.
 ```{Linux}
 
 conda install -c bioconda bioconductor-scater

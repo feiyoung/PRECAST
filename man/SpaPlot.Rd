@@ -5,7 +5,7 @@
   Plot spatial heatmap for a Seurat object with spatial transcriptomics data.
 }
 \usage{
-  SpaPlot(seuInt, batch=NULL, item=NULL, point_size=2,text_size=16, 
+  SpaPlot(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12, 
                     cols=NULL,font_family='', border_col="gray10",
                     fill_col='white', ncol=2, combine = TRUE, title_name="Sample")
 }

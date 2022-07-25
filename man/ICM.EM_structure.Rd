@@ -52,7 +52,8 @@ nothing
   AdjList <- lapply(posList, getAdj_reg, platform='ST')
   XList <- lapply(PRECASTObj@seulist, function(x) t(x[['RNA']]@data))
   XList <- lapply(XList, scale, scale=FALSE)
+  parList <- model_set(maxIter=4)
   resList <- ICM.EM_structure(XList,  AdjList = AdjList, 
-                   q=q, K=K)
+                   q=q, K=K, parameterList=parList)
 }
 }

@@ -533,7 +533,7 @@ gg_color_hue <- function(n) {
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
 
-SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=16, 
+SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12, 
                     cols=NULL,font_family='', border_col="gray10",
                     fill_col='white', ncol=2, combine = TRUE, title_name="Sample"){
   if(is.null(batch)){
@@ -565,7 +565,7 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=16,
     if(item %in% colnames(meta_data)){
       sort_id <- sort(as.numeric(as.character((unique(meta_data[, item])))))
       p1 <- plot_scatter(embed_use, meta_data, label_name=item, 
-                         point_size=point_size,palette_use =cols[sort_id])
+                         point_size=point_size, cols =cols[sort_id])
     }else if(item=="RGB_UMAP"){
       p1 <- plot_RGB(embed_use, seu@reductions$UMAP3@cell.embeddings, pointsize = point_size)
     }else if(item=="RGB_TSNE"){
@@ -586,7 +586,8 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=16,
     }
   }
   if(combine){
-    pList <- cowplot::plot_grid(plotlist = pList, ncol=ncol)
+    
+    pList <- patchwork::wrap_plots(pList, ncol=ncol)
   }
   return(pList)
 }
@@ -619,7 +620,7 @@ dimPlot <- function(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16
   
   embed_use <- seuInt[[reduction]]@cell.embeddings[,c(1,2)]
   p1 <- plot_scatter(embed_use, meta_data, label_name=item, 
-                     point_size=point_size,palette_use =cols)
+                     point_size=point_size,cols =cols)
  
   p1 <- p1 + mytheme_graybox(base_size = text_size, base_family = font_family, bg_fill  = fill_col,
                           border_color = border_col)

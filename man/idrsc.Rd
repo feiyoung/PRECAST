@@ -74,7 +74,8 @@ nothing
   AdjList <- lapply(posList, getAdj_reg, platform='ST')
   XList <- lapply(PRECASTObj@seulist, function(x) t(x[['RNA']]@data))
   XList <- lapply(XList, scale, scale=FALSE)
-  resList <- ICM.EM(XList,AdjList = AdjList, 
+  ## For illustration, maxIter is set to 4
+  resList <- ICM.EM(XList,AdjList = AdjList, maxIter=4,
                    q=q, K=K, verbose=TRUE)
 }
 }

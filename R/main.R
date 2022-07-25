@@ -1,5 +1,5 @@
 # pkgdown::build_site()
-# R CMD check --as-cran PRECAST_1.0.tar.gz
+# R CMD check --as-cran PRECAST_1.2.tar.gz
 # devtools::check_win_release()
 # iDR.SC <- function(...) UseMethod("iDR.SC")
 model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
