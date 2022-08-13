@@ -35,7 +35,7 @@ knitr::knit_hooks$set(time_it = local({
 ```
 
 The package can be loaded with the command:
-  ```{r  eval = TRUE}
+  ```{r  eval = FALSE}
 library("PRECAST")
 ```
 
@@ -43,7 +43,7 @@ library("PRECAST")
 ## Compare PRECAST with DR-SC in analyzing one sample
 
 Loading data and create a Seurat object.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 # Data website:
 # https://github.com/feiyoung/DR-SC.Analysis/tree/main/data/DLPFC_data
 ## Require two directories for eahc dataset: spatial and filtered_feature_bc_matrix
@@ -59,12 +59,12 @@ seu
 ### Prepare the PRECASTObject.
 
 Create a PRECASTObj object to prepare for PRECAST models.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 library(PRECAST)
 preobj <- CreatePRECASTObject(seuList = list(seu))
 ```
 ### Add the model setting
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## check the number of genes/features after filtering step
 preobj@seulist
 ## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
@@ -79,13 +79,13 @@ PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = FALSE, coreNum = 1,
 
 ### Fit PRECAST 
 For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. Here, we use user-specified number of clusters. 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ### Given K
 PRECASTObj <- PRECAST(PRECASTObj, K= 7)
 ```
 
 Select a best model 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
 PRECASTObj <- selectModel(PRECASTObj)
@@ -93,13 +93,13 @@ ari_precast <- mclust::adjustedRandIndex(PRECASTObj@resList$cluster[[1]], PRECAS
 ```
 
 Integrate the reults into a Seurat object seuInt by the function `IntegrateSpaData`.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
 seuInt 
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
 Save the spatial and tSNE scatter plots for clusters  from PRECAST
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 p_sp1 <- SpaPlot(seuInt, item='cluster', point_size = 3, combine = F)[[1]] + cowplot::theme_cowplot() + 
   ggplot2::ggtitle(paste0("PRECAST: ARI=", round(ari_precast, 2)) ) +
   ggplot2::xlab("row") + ggplot2::ylab("col")
@@ -111,7 +111,7 @@ p_tsne <- p_tsne + cowplot::theme_cowplot() + ggplot2::ggtitle("PRECAST")
 
 
 Fit DR-SC and Plot the spatial and tSNE scatter plots for clusters 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 seu_drsc <- DR.SC::DR.SC(PRECASTObj@seulist[[1]], K=7, verbose=T)
 ari_drsc <- mclust::adjustedRandIndex(seu_drsc$spatial.drsc.cluster, PRECASTObj@seulist[[1]]$layer_guess_reordered)
 p_tsne_drsc <- DR.SC::drscPlot(seu_drsc)
@@ -122,7 +122,7 @@ p_sp2 <- DR.SC::spatialPlotClusters(seu_drsc)+ cowplot::theme_cowplot()  +
 
 Compare the clustering performance of PRECAST and DR-SC.
 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 library(patchwork)
 p_sp1 + p_sp2
 
@@ -130,11 +130,11 @@ p_sp1 + p_sp2
 
 
 Compare the tSNE visualiztion performance of PRECAST and DR-SC.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 p_tsne + p_tsne_drsc
 ```
 
 ## Session information
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 sessionInfo()
 ```

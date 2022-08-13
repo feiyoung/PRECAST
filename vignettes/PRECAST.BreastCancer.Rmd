@@ -35,7 +35,7 @@ knitr::knit_hooks$set(time_it = local({
 ```
 
 The package can be loaded with the command:
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 library("PRECAST")
 ```
 
@@ -67,7 +67,7 @@ save(human_breast_cancer2, file= paste0(dir.file, 1, "\\human_breast_cancer2_PRE
 ### load the  Human breast cancer data and Prepare the PRECASTObject.
 
 Human breast cancer data have been pre-processed and saved as the `PRECASTObj` format.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## Create 
 dir.file <- "E:\\Research paper\\IntegrateDRcluster\\iDR-SC\\Human_Breast_Cancer\\BlockA_Section1\\"
 load(paste0(dir.file, "human_breast_cancer2_PRECASTObj.rds"))
@@ -75,7 +75,7 @@ PRECASTObj <- human_breast_cancer2
 rm(human_breast_cancer2)
 ```
 ### Add the model setting
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## check the number of genes/features after filtering step
 PRECASTObj@seulist
 
@@ -90,7 +90,7 @@ PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, verbose=TRUE, int.mod
 
 ### Fit PRECAST 
 For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. First, we try using user-specified number of clusters. For convenience, we give the selected number of clusters by MBIC (K=14).
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ### Given K
 # PRECASTObj <- PRECAST(PRECASTObj, K=14)
 
@@ -100,7 +100,7 @@ load(paste0(dir.file,  "\\human_breast_resList_PRECASTObj.rds"))
 ```
 
 Select a best model 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
 PRECASTObj <- selectModel(PRECASTObj)
@@ -108,13 +108,13 @@ PRECASTObj <- selectModel(PRECASTObj)
 ```
 
 Integrate the two samples by the function `IntegrateSpaData`.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
 seuInt 
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
 Show the spatial scatter plot for clusters
-```{r  eval = TRUE, fig.height = 4, fig.width=7.5}
+```{r  eval = FALSE, fig.height = 4, fig.width=7.5}
 cols_cluster <-  c( "#FD7446" ,"#709AE1", "#31A354","#9EDAE5",
  "#DE9ED6" ,"#BCBD22", "#CE6DBD" ,"#DADAEB" ,
  "yellow", "#FF9896","#91D1C2", "#C7E9C0" ,"#6B6ECF", "#7B4173" )
@@ -125,7 +125,7 @@ p12
 
 Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.
 
-```{r  eval = TRUE, fig.height = 3, fig.width=5}
+```{r  eval = FALSE, fig.height = 3, fig.width=5}
 seuInt <- AddUMAP(seuInt) 
 p13 <- SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
 p13
@@ -135,7 +135,7 @@ p13
 
 
 Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 seuInt <- AddTSNE(seuInt, n_comp = 2) 
 library(patchwork)
 p1 <- dimPlot(seuInt, item='cluster', point_size = 0.5, font_family='serif', cols=cols_cluster) # Times New Roman
@@ -145,7 +145,7 @@ p1 + p2
 
 
 Combined differential expression analysis 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 library(Seurat)
 dat_deg <- FindAllMarkers(seuInt)
 library(dplyr)
@@ -161,7 +161,7 @@ seus <- subset(seuInt, downsample = 400)
 ```
 
 Plot DE genes' heatmap for each spatial domains identified by PRECAST.
-```{r  eval = TRUE, fig.height = 6, fig.width=9}
+```{r  eval = FALSE, fig.height = 6, fig.width=9}
 color_id <- as.numeric(levels(Idents(seus)))
 library(ggplot2)
 ## HeatMap
@@ -181,6 +181,6 @@ save(dat_deg, file= paste0(dir.file, 1, "\\human_breast_cancer2_DEGs.rds"))
 ```
 
 ## Session information
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 sessionInfo()
 ```
