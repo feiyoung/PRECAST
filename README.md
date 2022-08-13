@@ -1,6 +1,29 @@
 # PRECAST
 PRECAST: a probabilistic embedding and clustering with alignment for spatial transcriptomics data integration.
 
+PRECAST  is a package for integrating and analyzing multiple spatially resolved transcriptomics (SRT) datasets, developed by the Jin Liu's lab. It unifies spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially shared cell/domain clusters across datasets.
+
+Check out our [bioRxiv paper](https://doi.org/10.1101/2022.06.26.497672) for a more complete description of the methods and analyses. 
+
+PRECAST can be used to compare and contrast experimental datasets in a variety of contexts, for instance:
+
+* Across experimental batches
+* Across individuals
+* Across different conditions (i.e., case and control)
+* Across datasets with only partially shared cell/domain clusters
+
+Once multiple datasets are integrated, the package provides functionality for further data exploration, 
+analysis, and visualization. Users can:
+
+* Identify clusters using all data information
+* Extract aligned low-dimensional embeddings across datasets
+* Recover comparable gene expression matrices among datasets
+* Find significant shared (and dataset-specific) gene markers
+* Conditional spatially variational genes analysis
+* Compare clusters with previously identified domain/cell types
+* Visuzlize extracted embeddings using 3-dim tSNE and UMAP
+* Visualize clusters and gene expression using tSNE and UMAP
+
 # Installation
 "PRECAST" depends on the 'Rcpp' and 'RcppArmadillo' package, which requires appropriate setup of computer. For the users that have set up system properly for compiling C++ files, the following installation command will work.
 ```{Rmd}
@@ -20,6 +43,16 @@ if (!require("BiocManager", quietly = TRUE)) ## install BiocManager
 # install the package on Bioconducter
 BiocManager::install(c("scater"))
 ```
+
+
+
+## Usage
+For usage examples and guided walkthroughs, check the `vignettes` directory of the repo. 
+
+* [Single SRT data analysis](https://feiyoung.github.io/PRECAST/articles/PRECAST.DLPFC.html)
+* [Toy examples for integrating two bathes](https://feiyoung.github.io/PRECAST/articles/PRECAST.Simu.html)
+* [Integration across experimental batches](https://feiyoung.github.io/PRECAST/articles/PRECAST.BreastCancer.html)
+
 
 
 For the users that don't have set up system properly, the following setup on different systems can be referred.
