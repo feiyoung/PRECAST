@@ -1,0 +1,140 @@
+---
+title: 'PRECAST: DLPFC Single Sample Analysis'
+author: "Wei Liu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PRECAST: DLPFC Single Sample Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  tidy = TRUE,
+  fig.width = 11,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+```
+
+The package can be loaded with the command:
+  ```{r  eval = TRUE}
+library("PRECAST")
+```
+
+
+## Compare PRECAST with DR-SC in analyzing one sample
+
+Loading data and create a Seurat object.
+```{r  eval = TRUE}
+# Data website:
+# https://github.com/feiyoung/DR-SC.Analysis/tree/main/data/DLPFC_data
+## Require two directories for eahc dataset: spatial and filtered_feature_bc_matrix
+setwd("D:\\LearnFiles\\Research paper\\ProPCA\\DR-SC.Analysis\\data\\DLPFC_data\\")
+dat_tmp <- readRDS("151672.rds")
+suppressPackageStartupMessages(library(SingleCellExperiment))
+library(Seurat)
+meta_data <- as.data.frame(colData(dat_tmp))
+seu <- CreateSeuratObject(counts=dat_tmp@assays@data$counts, meta.data = meta_data)
+seu
+```
+
+### Prepare the PRECASTObject.
+
+Create a PRECASTObj object to prepare for PRECAST models.
+```{r  eval = TRUE}
+library(PRECAST)
+preobj <- CreatePRECASTObject(seuList = list(seu))
+```
+### Add the model setting
+```{r  eval = TRUE}
+## check the number of genes/features after filtering step
+preobj@seulist
+## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
+PRECASTObj <-  AddAdjList(preobj, platform = "Visium")
+## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the
+## information in the algorithm.
+PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = FALSE, coreNum = 1,
+                            maxIter=30, verbose = TRUE)
+
+```
+
+
+### Fit PRECAST 
+For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. Here, we use user-specified number of clusters. 
+```{r  eval = TRUE}
+### Given K
+PRECASTObj <- PRECAST(PRECASTObj, K= 7)
+```
+
+Select a best model 
+```{r  eval = TRUE}
+## backup the fitting results in resList
+resList <- PRECASTObj@resList
+PRECASTObj <- selectModel(PRECASTObj)
+ari_precast <- mclust::adjustedRandIndex(PRECASTObj@resList$cluster[[1]], PRECASTObj@seulist[[1]]$layer_guess_reordered)
+```
+
+Integrate the reults into a Seurat object seuInt by the function `IntegrateSpaData`.
+```{r  eval = TRUE}
+seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
+seuInt 
+## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
+```
+Save the spatial and tSNE scatter plots for clusters  from PRECAST
+```{r  eval = TRUE}
+p_sp1 <- SpaPlot(seuInt, item='cluster', point_size = 3, combine = F)[[1]] + cowplot::theme_cowplot() + 
+  ggplot2::ggtitle(paste0("PRECAST: ARI=", round(ari_precast, 2)) ) +
+  ggplot2::xlab("row") + ggplot2::ylab("col")
+seuInt <- AddTSNE(seuInt,n_comp = 2)
+p_tsne <- dimPlot(seuInt, item='cluster')
+p_tsne <- p_tsne + cowplot::theme_cowplot() + ggplot2::ggtitle("PRECAST")
+```
+
+
+
+Fit DR-SC and Plot the spatial and tSNE scatter plots for clusters 
+```{r  eval = TRUE}
+seu_drsc <- DR.SC::DR.SC(PRECASTObj@seulist[[1]], K=7, verbose=T)
+ari_drsc <- mclust::adjustedRandIndex(seu_drsc$spatial.drsc.cluster, PRECASTObj@seulist[[1]]$layer_guess_reordered)
+p_tsne_drsc <- DR.SC::drscPlot(seu_drsc)
+p_tsne_drsc <- p_tsne_drsc + ggplot2::ggtitle("DR-SC")
+p_sp2 <- DR.SC::spatialPlotClusters(seu_drsc)+ cowplot::theme_cowplot()  + 
+  ggplot2::ggtitle(paste0("DR-SC ARI=", round(ari_drsc, 2)) ) 
+```
+
+Compare the clustering performance of PRECAST and DR-SC.
+
+```{r  eval = TRUE}
+library(patchwork)
+p_sp1 + p_sp2
+
+```
+
+
+Compare the tSNE visualiztion performance of PRECAST and DR-SC.
+```{r  eval = TRUE}
+p_tsne + p_tsne_drsc
+```
+
+## Session information
+```{r  eval = TRUE}
+sessionInfo()
+```

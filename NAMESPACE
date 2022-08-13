@@ -5,6 +5,7 @@ useDynLib(PRECAST, .registration=TRUE)
 
 S3method(selectModel, PRECASTObj)
 S3method(selectModel, SeqK_PRECAST_Object)
+# S3method(print, PRECASTObj)
 
 
 

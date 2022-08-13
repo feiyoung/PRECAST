@@ -9,7 +9,7 @@
 }
 \arguments{
   \item{PRECASTObj}{a PRECASTObj object after finishing the PRECAST model fitting and model selection.}
-  \item{species}{an optional string, specify the species of the SRT data to help choose the housekeeping genes.}
+  \item{species}{an optional string, one of 'Human', 'Mouse' and 'Unknown', specify the species of the SRT data to help choose the housekeeping genes. 'Unknown' means only using the PRECAST results reconstruct the alligned gene expression.}
   \item{custom_housekeep}{user-specified housekeeping genes.}
 }
 \details{

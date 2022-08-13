@@ -38,6 +38,9 @@
       <a href="../articles/PRECAST.BreastCancer.html">PRECAST: Human Breast Cancer Data Analysis</a>
     </li>
     <li>
+      <a href="../articles/PRECAST.DLPFC.html">PRECAST: DLPFC Single Sample Analysis</a>
+    </li>
+    <li>
       <a href="../articles/PRECAST.Simu.html">PRECAST: simulation</a>
     </li>
   </ul></li>
@@ -76,9 +79,9 @@
     <dl><dt>seuInt</dt>
 <dd><p>an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".</p></dd>
 <dt>batch</dt>
-<dd><p>an optional positive integer, specify the number of features to be extracted.</p></dd>
+<dd><p>an optional positive integer or integer vector, specify the batches to be extracted. Users can check the batches' names by <code>unique(seuInt$batch)</code>.</p></dd>
 <dt>item</dt>
-<dd><p>an optional string, which column is plotted in the meta data of seuInt.</p></dd>
+<dd><p>an optional string, which column is plotted in the meta data of seuInt. Users can check the meta data by <code>head(seuInt@meta.data)</code>.</p></dd>
 <dt>point_size</dt>
 <dd><p>the size of point in the scatter plot.</p></dd>
 <dt>text_size</dt>
@@ -86,7 +89,7 @@
 <dt>cols</dt>
 <dd><p>colors used in the plot</p></dd>
 <dt>font_family</dt>
-<dd><p>the font family used for the plot.</p></dd>
+<dd><p>the font family used for the plot, default as Times New Roman.</p></dd>
 <dt>border_col</dt>
 <dd><p>the border color in the plot.</p></dd>
 <dt>fill_col</dt>
@@ -125,9 +128,7 @@
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="selectModel.html">selectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species<span class="op">=</span><span class="st">'unknown'</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using only PRECAST results to obtain the batch corrected gene expressions</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  since species is unkown or the genelist in PRECASTObj has less than 5 overlapp </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  with the housekeeping genes of given species.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Users can specify the custom_housekeep by themselves to use the housekeeping genes based methods.</span>
 <span class="r-in">  <span class="fu">SpaPlot</span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="SpaPlot-1.png" alt="" width="700" height="433"></span>

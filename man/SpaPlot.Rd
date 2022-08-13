@@ -11,12 +11,12 @@
 }
 \arguments{
   \item{seuInt}{an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".}
-  \item{batch}{an optional positive integer, specify the number of features to be extracted.}
-  \item{item}{an optional string, which column is plotted in the meta data of seuInt.}
+  \item{batch}{an optional positive integer or integer vector, specify the batches to be extracted. Users can check the batches' names by \code{unique(seuInt$batch)}.}
+  \item{item}{an optional string, which column is plotted in the meta data of seuInt. Users can check the meta data by \code{head(seuInt@meta.data)}.}
   \item{point_size}{the size of point in the scatter plot.}
   \item{text_size}{the text size in the plot.}
   \item{cols}{colors used in the plot}
-  \item{font_family}{the font family used for the plot.}
+  \item{font_family}{the font family used for the plot, default as Times New Roman.}
   \item{border_col}{the border color in the plot.}
   \item{fill_col}{the  color used in backgroup.}
   \item{ncol}{the number of columns in the layout of plots.}

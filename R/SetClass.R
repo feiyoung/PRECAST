@@ -62,6 +62,7 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
   
   
   
+  
   ###############Model parameters setting
   if(q <2) stop("error:gendata_sp::q must be greater than 1!")
   if(length(beta) <2) beta <- rep(beta, 2)
@@ -240,6 +241,16 @@ filter_gene <- function(seu, min_spots=20, assay="RNA"){
 ## select the features for multiple samples based on a rank rule.
 selectIntFeatures <- function(seulist, spaFeatureList, IntFeatures=2000){
   ## This function is used for selecting common informative features
+  if(length(seulist) != length(spaFeatureList)) stop("The length of suelist and spaFeatureList must be equal!")
+  if(length(seulist) ==1){
+    if(length(spaFeatureList[[1]]) >= IntFeatures){
+      genelist <- spaFeatureList[[1]][1:IntFeatures]
+    }else{
+      genelist <- spaFeatureList[[1]]
+      warning("The IntFeature is larger than the  number of elements in FeatureList!")
+    }
+    return(genelist)
+  } 
   if(any(sapply(spaFeatureList, length)< IntFeatures))
     stop("Feature list exists number of features less than IntFeatures!")
   geneUnion <- unique(unlist(lapply(spaFeatureList, function(x) x[1:IntFeatures])))
@@ -313,8 +324,15 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1
   # premin.spots = 20;  premin.features=20; postmin.spots=15; postmin.features=15;verbose=TRUE
   #suppressMessages(require(Seurat))
   
-
+  #Check the arguments
   
+  if(!inherits(seuList, "list")) stop("CreatePRECASTObject: check the argument: seuList! it must be a list.")
+  flag <- sapply(seuList, function(x) !inherits(x, "Seurat"))
+  if(any(flag)) stop("CreatePRECASTObject: check the argument: seuList! Each component of seuList must be a Seurat object.")
+  if(numCores_sparkx<0) 
+    stop("CreatePRECASTObject: check the argument: numCores_sparkx! It must be a positive integer.")
+  if(!is.null(customGenelist) && (!is.character(customGenelist))) 
+    stop("CreatePRECASTObject: check the argument: customGenelist! It must be NULL or a character vector.")
   
   ## inheriting
   object <- new(
@@ -345,9 +363,15 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1
     }
     if(verbose)
       message("Select common SVGs  for multiple samples...")
+    
     genelist <- selectIntFeatures(seuList, spaFeatureList=spaFeatureList, IntFeatures=gene.number)
+    
+    
   }else{
     genelist <- customGenelist
+    geneNames <- Reduce(intersect,(lapply(seuList, row.names))) # intersection of  genes from each sample
+    if(any(!(customGenelist %in% geneNames)))
+      stop("CreatePRECASTObject: check the argument: customGenelist! It contains the gene not in seuList.")
   }
   
   seulist <- lapply(seuList, function(x) x[genelist, ])
@@ -366,7 +390,12 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1
 
 
 AddAdjList <- function(PRECASTObj, type="fixed_distance", platform="Visium", ...){
-  if(is.null(PRECASTObj@seulist)) stop("The slot seulist in PRECASTObj is NULL!")
+  
+  if(!inherits(PRECASTObj, "PRECASTObj")) 
+    stop("AddAdjList: Check the argument: PRECASTObj!  PRECASTObj must be a PRECASTObj object.")
+  if(is.null(PRECASTObj@seulist)) 
+    stop("AddAdjList: Check the argument: PRECASTObj! The slot seulist in PRECASTObj is NULL!")
+  
   
   posList <- lapply(PRECASTObj@seulist, function(x) cbind(x$row, x$col))
   if(tolower(type)=='fixed_distance'){
@@ -378,8 +407,9 @@ AddAdjList <- function(PRECASTObj, type="fixed_distance", platform="Visium", ...
   }else if (tolower(type) == "fixed_number") {
     AdjList <- pbapply::pblapply(posList, getAdj_fixedNumber, ...)
   } else {
-    stop("AddAdjList: Unsupported type \"", type, "\".")
+    stop("AddAdjList: Unsupported adjacency  type \"", type, "\".")
   }
+  
   
   # AdjList <- pbapply::pblapply(posList, function(x)getAdj_auto(x))
   PRECASTObj@AdjList <- AdjList
@@ -390,13 +420,23 @@ AddParSetting <- function(PRECASTObj, ...){
   PRECASTObj@parameterList <- model_set(...)
   return(PRECASTObj)
 }
-
+print <- function(PRECASTObj) UseMethod("print")
+print.PRECASTObj <- function(PRECASTObj){
+  PRECASTObj@AdjList <- "a list: adjacency marix"
+  PRECASTObj@resList <- "a list: PRECAST results"
+  PRECASTObj@parameterList <- list("a list: model parameter settings")
+  PRECASTObj
+}
 
 
 PRECAST <- function(PRECASTObj, K=NULL, q= 15){
   # suppressMessages(require(Matrix))
   # suppressMessages(require(Seurat))
+  if(!inherits(PRECASTObj, "PRECASTObj")) 
+    stop("PRECAST: Check the argument: PRECASTObj!  PRECASTObj must be a PRECASTObj object.")
+  
   if(is.null(K)) K <- 4:12
+  if(q < 0) stop("PRECAST: Check the argument: q!  PRECASTObj must be a positive integer.")
   
   if(is.null(PRECASTObj@seulist)) stop("The slot seulist in PRECASTObj is NULL!")
   
@@ -410,6 +450,9 @@ PRECAST <- function(PRECASTObj, K=NULL, q= 15){
 
 ## select model
 selectModel.PRECASTObj <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
+  
+  if(!inherits(obj, "PRECASTObj")) 
+    stop("selectModel.PRECASTObj: Check the argument: obj!  obj must be a PRECASTObj object.")
   reslist <- selectModel.SeqK_PRECAST_Object(obj@resList, pen_const = pen_const, criteria = criteria, return_para_est)
   obj@resList <- reslist
   return(obj)
@@ -468,7 +511,14 @@ get_correct_mean_exp <- function(XList,  hVList, hW){
 IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL){
   # suppressMessages(require(Matrix))
   # suppressMessages(require(Seurat))
-  if(is.null(PRECASTObj@seulist)) stop("The slot seulist in PRECASTObj is NULL!")
+  
+  if(!inherits(PRECASTObj, "PRECASTObj")) 
+    stop("IntegrateSpaData: Check the argument: PRECASTObj!  PRECASTObj must be a PRECASTObj object.")
+  if(is.null(PRECASTObj@seulist)) 
+    stop("IntegrateSpaData: Check the argument: PRECASTObj! The slot seulist in PRECASTObj is NULL!")
+  
+  if(!tolower(species) %in% c("human", "mouse", "unknown")) 
+    stop("IntegrateSpaData: Check the argument: species! it must be one of 'Human', 'Mouse' and 'Unknown'!")
   
   XList <- lapply(PRECASTObj@seulist, function(x) Matrix::t(x[["RNA"]]@data))
   n_r <- length(XList)
@@ -493,15 +543,13 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL)
       #data(Mouse_HK_genes)
       intersect((genelist), Mouse_HK_genes$Gene)
     },
-    unkown={
+    unknown={
       character()
     }
   )
   houseKeep <- c(houseKeep, custom_housekeep)
   if(length(houseKeep) < 5){
-    message("Using only PRECAST results to obtain the batch corrected gene expressions
- since species is unkown or the genelist in PRECASTObj has less than 5 overlapp 
- with the housekeeping genes of given species.")
+    message("Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.")
     message("Users can specify the custom_housekeep by themselves to use the housekeeping genes based methods.")
     hX <- get_correct_mean_exp(XList,PRECASTObj@resList$hV, PRECASTObj@resList$hW)
   }else{
@@ -536,19 +584,45 @@ gg_color_hue <- function(n) {
 SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12, 
                     cols=NULL,font_family='', border_col="gray10",
                     fill_col='white', ncol=2, combine = TRUE, title_name="Sample"){
+  
+  ## Check arguments input
+  
+  if(!inherits(seuInt, "Seurat")) stop("SpaPlot: check argument: seuInt! it must be a Seurat Object.")
+  if(!all(batch %in% unique(seuInt$batch))) stop("SpaPlot: check argument: batch! Some batch is not included in batch of meta.data of seuInt.")
+  seuInt@meta.data$ident <- Idents(seuInt)
+  if(is.null(item)) item <- "ident"
+      
+  if(item %in% colnames(seuInt@meta.data)){
+    if(!is.factor(seuInt@meta.data[, item])) seuInt@meta.data[, item] <- factor(seuInt@meta.data[, item])
+    
+    seuInt@meta.data$tmp_item_id <- as.numeric(seuInt@meta.data[, item])
+  }else if(!(item %in% c("RGB_UMAP", "RBG_tSNE"))){
+    stop("SpaPlot: check the value of argument: item! It is not the colname of meta.data of seuInt!")
+  }
+  if(is.null(cols)&& item != "RGB_UMAP" && item!="RBG_tSNE"){
+    # to determine the number of colors
+    
+    nn <- length(unique(seuInt@meta.data[,item]))
+    cols <- gg_color_hue(nn)
+  }
+  
+  
+  if(!is.vector(cols) && item != "RGB_UMAP" && item!="RBG_tSNE")
+    stop("Check argument: cols! it must be a vector object.")
+  
+  
+  ###Finish  Check  of arguments 
+  
+  
   if(is.null(batch)){
     batch_vec <- unique(seuInt$batch)
   }else{
     batch_vec <- batch
   }
-  if(is.null(item)) item <- "ident"
-  if(is.null(cols)&& item != "RGB_UMAP" && item!="RBG_tSNE"){
-    # to determine the number of colors
-    meta_data <- seuInt@meta.data
-    meta_data$ident <- Idents(seuInt)
-    nn <- max(length(unique( meta_data$ident)), length(unique(meta_data[,item])))
-    cols <- gg_color_hue(nn)
-  }
+  
+  
+  if(length(batch_vec)<2) ncol <- 1
+  
   
   
   
@@ -563,15 +637,14 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12,
      
     embed_use <- seu@reductions$position@cell.embeddings
     if(item %in% colnames(meta_data)){
-      sort_id <- sort(as.numeric(as.character((unique(meta_data[, item])))))
+      
+      sort_id <- sort(unique(meta_data[, 'tmp_item_id']))
       p1 <- plot_scatter(embed_use, meta_data, label_name=item, 
                          point_size=point_size, cols =cols[sort_id])
     }else if(item=="RGB_UMAP"){
       p1 <- plot_RGB(embed_use, seu@reductions$UMAP3@cell.embeddings, pointsize = point_size)
     }else if(item=="RGB_TSNE"){
       p1 <- plot_RGB(embed_use, seu@reductions$tSNE3@cell.embeddings, pointsize = point_size)
-    }else{
-      stop("SpaPlot: check the value of argument:item")
     }
     p1 <- p1 + mytheme_graybox(base_size = text_size, base_family = font_family, bg_fill = fill_col,
                           border_color = border_col) 
@@ -596,6 +669,7 @@ dimPlot <- function(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16
                     fill_col="white"){
   
   
+  if(!inherits(seuInt, "Seurat")) stop("dimPlot: Check argument: seuInt! it must be a Seurat Object.")
   
   
   meta_data <- seuInt@meta.data
@@ -604,23 +678,34 @@ dimPlot <- function(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16
     item <- "ident"
     
   }
-  if(is.null(cols)){
-    # to determine the number of colors
-    nn <- length(unique( meta_data[,item]))
-    cols <- gg_color_hue(nn)
-  }
+  if(!(item %in% colnames(meta_data)))
+    stop("dimPlot: check the value of argument: item! It is not the colname of meta.data of seuInt!")
+  
+  
+  
   if(is.null(reduction)){
     n_re <- length(seuInt@reductions)
     reduction <- names(seuInt@reductions)[n_re]
   }
   
+  if(!(reduction %in% names(seuInt@reductions)))  
+    stop("dimPlot: check the value of argument: reduction! It is not the name belonging to seuInt@reductions!")
+  
+  if(is.null(cols)){
+    # to determine the number of colors
+    nn <- length(unique( meta_data[,item]))
+    cols <- gg_color_hue(nn)
+  }
+  if(!is.vector(cols)) stop("dimPlot: check argument: cols! it must be a vector object.")
   
   
+  if(!is.factor(meta_data[, item])) meta_data[, item] <- factor(meta_data[, item])
+  sort_id <- sort(unique(as.numeric(meta_data[, item])))
   
   
   embed_use <- seuInt[[reduction]]@cell.embeddings[,c(1,2)]
   p1 <- plot_scatter(embed_use, meta_data, label_name=item, 
-                     point_size=point_size,cols =cols)
+                     point_size=point_size,cols =cols[sort_id])
  
   p1 <- p1 + mytheme_graybox(base_size = text_size, base_family = font_family, bg_fill  = fill_col,
                           border_color = border_col)
