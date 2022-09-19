@@ -87,7 +87,7 @@
       <h1 data-toc-skip>PRECAST: Human Breast Cancer Data Analysis</h1>
                         <h4 data-toc-skip class="author">Wei Liu</h4>
             
-            <h4 data-toc-skip class="date">2022-08-12</h4>
+            <h4 data-toc-skip class="date">2022-09-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/feiyoung/PRECAST/blob/HEAD/vignettes/PRECAST.BreastCancer.Rmd" class="external-link"><code>vignettes/PRECAST.BreastCancer.Rmd</code></a></small>
       <div class="hidden name"><code>PRECAST.BreastCancer.Rmd</code></div>
@@ -96,59 +96,90 @@
 
     
     
+<p>This vignette introduces the PRECAST workflow for the analysis of integrating multiple spatial transcriptomics datasets. The workflow consists of three steps</p>
+<ul>
+<li>Independent preprocessing and model setting</li>
+<li>Probabilistic embedding, clustering and alignment using PRECAST model</li>
+<li>Downstream analysis (i.e. visualization of clusters and embeddings, combined differential expression analysis)</li>
+</ul>
+<p>We demonstrate the use of PRECAST to two sliced human breast cancer Visium data that are in the data R package <code>DataPRECAST</code>, which can be installed by the following command:</p>
+<pre class="rmd"><code><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"feiyoung/DataPRECAST"</span><span class="op">)</span></code></pre>
+<p>This data is also available at 10X genomics data website:</p>
+<ul>
+<li>Section1: <a href="https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1" class="external-link uri">https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1</a>
+</li>
+<li>Section2: <a href="https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_2" class="external-link uri">https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_2</a> Users require two directories for each dataset: spatial and filtered_feature_bc_matrix</li>
+</ul>
 <p>The package can be loaded with the command:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/feiyoung/PRECAST" class="external-link">"PRECAST"</a></span><span class="op">)</span></code></pre></div>
-<div class="section level2">
-<h2 id="fit-precast-using-real-data-2-sliced-human-breast-cancer">Fit PRECAST using real data: 2 sliced Human breast cancer<a class="anchor" aria-label="anchor" href="#fit-precast-using-real-data-2-sliced-human-breast-cancer"></a>
-</h2>
-<p>Loading data</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Data website: Section1:</span>
-<span class="co"># https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1</span>
-<span class="co"># Section2:</span>
-<span class="co"># https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_2</span>
-<span class="co"># Require two directories for eahc dataset: spatial and filtered_feature_bc_matrix</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">DR.SC</span><span class="op">)</span>
-<span class="va">dir.file</span> <span class="op">&lt;-</span> <span class="st">"E:\\Research paper\\IntegrateDRcluster\\iDR-SC\\Human_Breast_Cancer\\BlockA_Section"</span>
-<span class="va">seuList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"r = "</span>, <span class="va">r</span><span class="op">)</span>
-    <span class="va">seuList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/read10XVisium.html" class="external-link">read10XVisium</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="va">r</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span>
-<span class="va">seuList</span>
-<span class="co">## Create</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span>
-<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CreateiDRSCObject.html">CreatePRECASTObject</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">)</span>
-<span class="va">human_breast_cancer2</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span>
-<span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">human_breast_cancer2</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="fl">1</span>, <span class="st">"\\human_breast_cancer2_PRECASTObj.rds"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">DataPRECAST</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="fit-precast-using-this-data">Fit PRECAST using this data<a class="anchor" aria-label="anchor" href="#fit-precast-using-this-data"></a>
+</h2>
+<p>Loading human breast cancer Visium data from <code>DataPRECAST</code></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"bc2"</span><span class="op">)</span>
+<span class="va">bc2</span>  <span class="co">## a list including two Seurat object</span>
+<span class="co">#&gt; [[1]]</span>
+<span class="co">#&gt; An object of class Seurat </span>
+<span class="co">#&gt; 36601 features across 3798 samples within 1 assay </span>
+<span class="co">#&gt; Active assay: RNA (36601 features, 0 variable features)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; [[2]]</span>
+<span class="co">#&gt; An object of class Seurat </span>
+<span class="co">#&gt; 36601 features across 3987 samples within 1 assay </span>
+<span class="co">#&gt; Active assay: RNA (36601 features, 0 variable features)</span></code></pre></div>
+<p>Check the content in <code>bc2</code></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bc2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt;                       orig.ident nCount_RNA nFeature_RNA               spot</span>
+<span class="co">#&gt; CACGATTGGTCGTTAA-1 SeuratProject       6853         3026 CACGATTGGTCGTTAA-1</span>
+<span class="co">#&gt; GGTTGTATCGTGAAAT-1 SeuratProject       8679         3646 GGTTGTATCGTGAAAT-1</span>
+<span class="co">#&gt; TCTTATGGGTAGTACC-1 SeuratProject       5093         2449 TCTTATGGGTAGTACC-1</span>
+<span class="co">#&gt; TACAAGCTGTTCACTG-1 SeuratProject       9432         3708 TACAAGCTGTTCACTG-1</span>
+<span class="co">#&gt; GTATCTTGTTGCTCAC-1 SeuratProject       8610         3512 GTATCTTGTTGCTCAC-1</span>
+<span class="co">#&gt; ATACCAGGTGAGCGAT-1 SeuratProject       9974         3901 ATACCAGGTGAGCGAT-1</span>
+<span class="co">#&gt; CCTAAACAGGGTCCGT-1 SeuratProject       7232         3173 CCTAAACAGGGTCCGT-1</span>
+<span class="co">#&gt; ATGGTGCTCAAAGCCA-1 SeuratProject       6025         2867 ATGGTGCTCAAAGCCA-1</span>
+<span class="co">#&gt; CAAATGCGGAGTGTTC-1 SeuratProject       8822         3678 CAAATGCGGAGTGTTC-1</span>
+<span class="co">#&gt; CGTGCCCGACATTTGT-1 SeuratProject       6364         2932 CGTGCCCGACATTTGT-1</span>
+<span class="co">#&gt;                    in_tissue row col imagerow imagecol</span>
+<span class="co">#&gt; CACGATTGGTCGTTAA-1         1   0  50     4046    10350</span>
+<span class="co">#&gt; GGTTGTATCGTGAAAT-1         1   1  51     4284    10486</span>
+<span class="co">#&gt; TCTTATGGGTAGTACC-1         1   0  52     4047    10623</span>
+<span class="co">#&gt; TACAAGCTGTTCACTG-1         1   1  53     4285    10759</span>
+<span class="co">#&gt; GTATCTTGTTGCTCAC-1         1   0  54     4047    10896</span>
+<span class="co">#&gt; ATACCAGGTGAGCGAT-1         1   1  55     4285    11032</span>
+<span class="co">#&gt; CCTAAACAGGGTCCGT-1         1   0  56     4048    11169</span>
+<span class="co">#&gt; ATGGTGCTCAAAGCCA-1         1   1  57     4286    11305</span>
+<span class="co">#&gt; CAAATGCGGAGTGTTC-1         1   0  58     4048    11442</span>
+<span class="co">#&gt; CGTGCCCGACATTTGT-1         1   1  59     4286    11578</span></code></pre></div>
 <div class="section level3">
-<h3 id="load-the-human-breast-cancer-data-and-prepare-the-precastobject-">load the Human breast cancer data and Prepare the PRECASTObject.<a class="anchor" aria-label="anchor" href="#load-the-human-breast-cancer-data-and-prepare-the-precastobject-"></a>
+<h3 id="prepare-the-precastobject-">Prepare the PRECASTObject.<a class="anchor" aria-label="anchor" href="#prepare-the-precastobject-"></a>
 </h3>
 <p>Human breast cancer data have been pre-processed and saved as the <code>PRECASTObj</code> format.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Create</span>
-<span class="va">dir.file</span> <span class="op">&lt;-</span> <span class="st">"E:\\Research paper\\IntegrateDRcluster\\iDR-SC\\Human_Breast_Cancer\\BlockA_Section1\\"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="st">"human_breast_cancer2_PRECASTObj.rds"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="va">human_breast_cancer2</span>
-<span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">human_breast_cancer2</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## Create PRECASTObject.</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span>
+<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CreateiDRSCObject.html">CreatePRECASTObject</a></span><span class="op">(</span><span class="va">bc2</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="add-the-model-setting">Add the model setting<a class="anchor" aria-label="anchor" href="#add-the-model-setting"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## check the number of genes/features after filtering step</span>
 <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 2000 features across 3798 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (2000 features, 1687 variable features)</span>
+<span class="co">#&gt; Active assay: RNA (2000 features, 1699 variable features)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 2000 features across 3987 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (2000 features, 1580 variable features)</span>
+<span class="co">#&gt; Active assay: RNA (2000 features, 1572 variable features)</span>
 
 <span class="co">## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.</span>
 <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddAdjList.html">AddAdjList</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, platform <span class="op">=</span> <span class="st">"Visium"</span><span class="op">)</span>
@@ -161,19 +192,132 @@
 <h3 id="fit-precast">Fit PRECAST<a class="anchor" aria-label="anchor" href="#fit-precast"></a>
 </h3>
 <p>For function <code>PRECAST</code>, users can specify the number of clusters <span class="math inline">\(K\)</span> or set <code>K</code> to be an integer vector by using modified BIC(MBIC) to determine <span class="math inline">\(K\)</span>. First, we try using user-specified number of clusters. For convenience, we give the selected number of clusters by MBIC (K=14).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">### Given K PRECASTObj &lt;- PRECAST(PRECASTObj, K=14)</span>
-
-<span class="co"># To save compilation time ,we use the cached data.  save(PRECASTObj, file= paste0(dir.file,</span>
-<span class="co"># '\\human_breast_resList_PRECASTObj.rds'))</span>
-<span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="st">"\\human_breast_resList_PRECASTObj.rds"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co">### Given K</span></a>
+<a class="sourceLine" id="cb7-2" title="2">PRECASTObj &lt;-<span class="st"> </span><span class="kw">PRECAST</span>(PRECASTObj, <span class="dt">K =</span> <span class="dv">14</span>)</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; fitting ...</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb7-5" title="5">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</a>
+<a class="sourceLine" id="cb7-7" title="7">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="st">  </span><span class="er">|=====</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">7</span>%</a>
+<a class="sourceLine" id="cb7-9" title="9">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="st">  </span><span class="er">|=========</span><span class="st">                                                             </span><span class="er">|</span><span class="st">  </span><span class="dv">13</span>%</a>
+<a class="sourceLine" id="cb7-11" title="11">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-12" title="12"><span class="st">  </span><span class="er">|==============</span><span class="st">                                                        </span><span class="er">|</span><span class="st">  </span><span class="dv">20</span>%</a>
+<a class="sourceLine" id="cb7-13" title="13">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-14" title="14"><span class="st">  </span><span class="er">|===================</span><span class="st">                                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">27</span>%</a>
+<a class="sourceLine" id="cb7-15" title="15">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-16" title="16"><span class="st">  </span><span class="er">|=======================</span><span class="st">                                               </span><span class="er">|</span><span class="st">  </span><span class="dv">33</span>%</a>
+<a class="sourceLine" id="cb7-17" title="17">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-18" title="18"><span class="st">  </span><span class="er">|============================</span><span class="st">                                          </span><span class="er">|</span><span class="st">  </span><span class="dv">40</span>%</a>
+<a class="sourceLine" id="cb7-19" title="19">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-20" title="20"><span class="st">  </span><span class="er">|=================================</span><span class="st">                                     </span><span class="er">|</span><span class="st">  </span><span class="dv">47</span>%</a>
+<a class="sourceLine" id="cb7-21" title="21">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-22" title="22"><span class="st">  </span><span class="er">|=====================================</span><span class="st">                                 </span><span class="er">|</span><span class="st">  </span><span class="dv">53</span>%</a>
+<a class="sourceLine" id="cb7-23" title="23">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-24" title="24"><span class="st">  </span><span class="er">|==========================================</span><span class="st">                            </span><span class="er">|</span><span class="st">  </span><span class="dv">60</span>%</a>
+<a class="sourceLine" id="cb7-25" title="25">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-26" title="26"><span class="st">  </span><span class="er">|===============================================</span><span class="st">                       </span><span class="er">|</span><span class="st">  </span><span class="dv">67</span>%</a>
+<a class="sourceLine" id="cb7-27" title="27">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-28" title="28"><span class="st">  </span><span class="er">|===================================================</span><span class="st">                   </span><span class="er">|</span><span class="st">  </span><span class="dv">73</span>%</a>
+<a class="sourceLine" id="cb7-29" title="29">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-30" title="30"><span class="st">  </span><span class="er">|========================================================</span><span class="st">              </span><span class="er">|</span><span class="st">  </span><span class="dv">80</span>%</a>
+<a class="sourceLine" id="cb7-31" title="31">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-32" title="32"><span class="st">  </span><span class="er">|=============================================================</span><span class="st">         </span><span class="er">|</span><span class="st">  </span><span class="dv">87</span>%</a>
+<a class="sourceLine" id="cb7-33" title="33">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-34" title="34"><span class="st">  </span><span class="er">|=================================================================</span><span class="st">     </span><span class="er">|</span><span class="st">  </span><span class="dv">93</span>%</a>
+<a class="sourceLine" id="cb7-35" title="35">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-36" title="36"><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</a>
+<a class="sourceLine" id="cb7-37" title="37"><span class="co">#&gt; variable initialize finish! </span></a>
+<a class="sourceLine" id="cb7-38" title="38"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-39" title="39"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-40" title="40"><span class="co">#&gt; iter = 2, loglik= -538710.062500, dloglik=0.999749 </span></a>
+<a class="sourceLine" id="cb7-41" title="41"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-42" title="42"><span class="co">#&gt; diff Energy = 1.204197 </span></a>
+<a class="sourceLine" id="cb7-43" title="43"><span class="co">#&gt; diff Energy = 0.877895 </span></a>
+<a class="sourceLine" id="cb7-44" title="44"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-45" title="45"><span class="co">#&gt; iter = 3, loglik= -495364.531250, dloglik=0.080462 </span></a>
+<a class="sourceLine" id="cb7-46" title="46"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-47" title="47"><span class="co">#&gt; diff Energy = 2.324026 </span></a>
+<a class="sourceLine" id="cb7-48" title="48"><span class="co">#&gt; diff Energy = 7.982584 </span></a>
+<a class="sourceLine" id="cb7-49" title="49"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-50" title="50"><span class="co">#&gt; iter = 4, loglik= -475213.562500, dloglik=0.040679 </span></a>
+<a class="sourceLine" id="cb7-51" title="51"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-52" title="52"><span class="co">#&gt; diff Energy = 0.648297 </span></a>
+<a class="sourceLine" id="cb7-53" title="53"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-54" title="54"><span class="co">#&gt; iter = 5, loglik= -464792.156250, dloglik=0.021930 </span></a>
+<a class="sourceLine" id="cb7-55" title="55"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-56" title="56"><span class="co">#&gt; diff Energy = 3.508402 </span></a>
+<a class="sourceLine" id="cb7-57" title="57"><span class="co">#&gt; diff Energy = 0.904503 </span></a>
+<a class="sourceLine" id="cb7-58" title="58"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-59" title="59"><span class="co">#&gt; iter = 6, loglik= -458507.812500, dloglik=0.013521 </span></a>
+<a class="sourceLine" id="cb7-60" title="60"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-61" title="61"><span class="co">#&gt; diff Energy = 0.684931 </span></a>
+<a class="sourceLine" id="cb7-62" title="62"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-63" title="63"><span class="co">#&gt; iter = 7, loglik= -454906.812500, dloglik=0.007854 </span></a>
+<a class="sourceLine" id="cb7-64" title="64"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-65" title="65"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-66" title="66"><span class="co">#&gt; iter = 8, loglik= -452424.218750, dloglik=0.005457 </span></a>
+<a class="sourceLine" id="cb7-67" title="67"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-68" title="68"><span class="co">#&gt; diff Energy = 3.822610 </span></a>
+<a class="sourceLine" id="cb7-69" title="69"><span class="co">#&gt; diff Energy = 0.299825 </span></a>
+<a class="sourceLine" id="cb7-70" title="70"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-71" title="71"><span class="co">#&gt; iter = 9, loglik= -450869.906250, dloglik=0.003436 </span></a>
+<a class="sourceLine" id="cb7-72" title="72"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-73" title="73"><span class="co">#&gt; diff Energy = 0.751252 </span></a>
+<a class="sourceLine" id="cb7-74" title="74"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-75" title="75"><span class="co">#&gt; iter = 10, loglik= -449685.062500, dloglik=0.002628 </span></a>
+<a class="sourceLine" id="cb7-76" title="76"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-77" title="77"><span class="co">#&gt; diff Energy = 0.487209 </span></a>
+<a class="sourceLine" id="cb7-78" title="78"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-79" title="79"><span class="co">#&gt; iter = 11, loglik= -448862.968750, dloglik=0.001828 </span></a>
+<a class="sourceLine" id="cb7-80" title="80"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-81" title="81"><span class="co">#&gt; diff Energy = 8.570347 </span></a>
+<a class="sourceLine" id="cb7-82" title="82"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-83" title="83"><span class="co">#&gt; iter = 12, loglik= -448206.750000, dloglik=0.001462 </span></a>
+<a class="sourceLine" id="cb7-84" title="84"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-85" title="85"><span class="co">#&gt; diff Energy = 1.446884 </span></a>
+<a class="sourceLine" id="cb7-86" title="86"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-87" title="87"><span class="co">#&gt; iter = 13, loglik= -447728.593750, dloglik=0.001067 </span></a>
+<a class="sourceLine" id="cb7-88" title="88"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-89" title="89"><span class="co">#&gt; diff Energy = 9.361322 </span></a>
+<a class="sourceLine" id="cb7-90" title="90"><span class="co">#&gt; diff Energy = 0.618086 </span></a>
+<a class="sourceLine" id="cb7-91" title="91"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-92" title="92"><span class="co">#&gt; iter = 14, loglik= -447314.156250, dloglik=0.000926 </span></a>
+<a class="sourceLine" id="cb7-93" title="93"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-94" title="94"><span class="co">#&gt; diff Energy = 4.770555 </span></a>
+<a class="sourceLine" id="cb7-95" title="95"><span class="co">#&gt; diff Energy = 0.958841 </span></a>
+<a class="sourceLine" id="cb7-96" title="96"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-97" title="97"><span class="co">#&gt; iter = 15, loglik= -446979.437500, dloglik=0.000748 </span></a>
+<a class="sourceLine" id="cb7-98" title="98"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-99" title="99"><span class="co">#&gt; diff Energy = 8.616039 </span></a>
+<a class="sourceLine" id="cb7-100" title="100"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-101" title="101"><span class="co">#&gt; iter = 16, loglik= -446690.750000, dloglik=0.000646 </span></a>
+<a class="sourceLine" id="cb7-102" title="102"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-103" title="103"><span class="co">#&gt; diff Energy = 4.927937 </span></a>
+<a class="sourceLine" id="cb7-104" title="104"><span class="co">#&gt; diff Energy = 2.274673 </span></a>
+<a class="sourceLine" id="cb7-105" title="105"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-106" title="106"><span class="co">#&gt; iter = 17, loglik= -446446.562500, dloglik=0.000547 </span></a>
+<a class="sourceLine" id="cb7-107" title="107"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-108" title="108"><span class="co">#&gt; diff Energy = 6.601925 </span></a>
+<a class="sourceLine" id="cb7-109" title="109"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-110" title="110"><span class="co">#&gt; iter = 18, loglik= -446228.156250, dloglik=0.000489 </span></a>
+<a class="sourceLine" id="cb7-111" title="111"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-112" title="112"><span class="co">#&gt; diff Energy = 5.054816 </span></a>
+<a class="sourceLine" id="cb7-113" title="113"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-114" title="114"><span class="co">#&gt; iter = 19, loglik= -446018.343750, dloglik=0.000470 </span></a>
+<a class="sourceLine" id="cb7-115" title="115"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-116" title="116"><span class="co">#&gt; diff Energy = 0.942972 </span></a>
+<a class="sourceLine" id="cb7-117" title="117"><span class="co">#&gt; diff Energy = 0.532784 </span></a>
+<a class="sourceLine" id="cb7-118" title="118"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-119" title="119"><span class="co">#&gt; iter = 20, loglik= -445887.406250, dloglik=0.000294</span></a></code></pre></div>
 <p>Select a best model</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## backup the fitting results in resList</span>
 <span class="va">resList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span>
 <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">selectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></code></pre></div>
 <p>Integrate the two samples by the function <code>IntegrateSpaData</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
 <span class="va">seuInt</span>
 <span class="co">#&gt; An object of class Seurat </span>
@@ -182,33 +326,33 @@
 <span class="co">#&gt;  2 dimensional reductions calculated: PRECAST, position</span>
 <span class="co">## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.</span></code></pre></div>
 <p>Show the spatial scatter plot for clusters</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cols_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#FD7446"</span>, <span class="st">"#709AE1"</span>, <span class="st">"#31A354"</span>, <span class="st">"#9EDAE5"</span>, <span class="st">"#DE9ED6"</span>, <span class="st">"#BCBD22"</span>, <span class="st">"#CE6DBD"</span>, <span class="st">"#DADAEB"</span>,
     <span class="st">"yellow"</span>, <span class="st">"#FF9896"</span>, <span class="st">"#91D1C2"</span>, <span class="st">"#C7E9C0"</span>, <span class="st">"#6B6ECF"</span>, <span class="st">"#7B4173"</span><span class="op">)</span>
 <span class="va">p12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, point_size <span class="op">=</span> <span class="fl">1</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span>, combine <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">p12</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-9-1.png" width="720"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-11-1.png" width="720"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># users can plot each sample by setting combine=FALSE</span></code></pre></div>
 <p>Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddUMAP.html">AddUMAP</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="va">p13</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, item <span class="op">=</span> <span class="st">"RGB_UMAP"</span>, point_size <span class="op">=</span> <span class="fl">2</span>, combine <span class="op">=</span> <span class="cn">TRUE</span>, text_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>
 <span class="va">p13</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-12-1.png" width="480"></p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># seuInt &lt;- AddTSNE(seuInt) SpaPlot(seuInt, batch=NULL,item='RGB_TSNE',point_size=2,</span>
 <span class="co"># combine=T, text_size=15)</span></code></pre></div>
 <p>Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTSNE.html">AddTSNE</a></span><span class="op">(</span><span class="va">seuInt</span>, n_comp <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span>
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, point_size <span class="op">=</span> <span class="fl">0.5</span>, font_family <span class="op">=</span> <span class="st">"serif"</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span><span class="op">)</span>  <span class="co"># Times New Roman</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"batch"</span>, point_size <span class="op">=</span> <span class="fl">0.5</span>, font_family <span class="op">=</span> <span class="st">"serif"</span><span class="op">)</span>
 <span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-11-1.png" width="1056"></p>
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-13-1.png" width="1056"></p>
 <p>Combined differential expression analysis</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span>
 <span class="va">dat_deg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
@@ -220,7 +364,7 @@
 <span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="va">seus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">seuInt</span>, downsample <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></code></pre></div>
 <p>Plot DE genes’ heatmap for each spatial domains identified by PRECAST.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">color_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seus</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
 <span class="co">## HeatMap</span>
@@ -228,17 +372,13 @@
     pt_size <span class="op">=</span> <span class="fl">6</span>, slot <span class="op">=</span> <span class="st">"scale.data"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">13</span>,
     face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>, axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span>, face <span class="op">=</span> <span class="st">"italic"</span>, family <span class="op">=</span> <span class="st">"serif"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p1</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-13-1.png" width="864"></p>
-<p>Save some data</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">seuInt</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="fl">1</span>, <span class="st">"\\human_breast_cancer2_seuInt.rds"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">dat_deg</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="fl">1</span>, <span class="st">"\\human_breast_cancer2_DEGs.rds"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-15-1.png" width="864"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
 <span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
@@ -257,8 +397,9 @@
 <span class="co">#&gt; [8] base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] ggplot2_3.3.6      dplyr_1.0.9        sp_1.5-0           SeuratObject_4.1.0</span>
-<span class="co">#&gt; [5] Seurat_4.1.1       patchwork_1.1.1    PRECAST_1.2        gtools_3.9.2.2    </span>
+<span class="co">#&gt; [1] ggplot2_3.3.6      dplyr_1.0.9        patchwork_1.1.1    sp_1.5-0          </span>
+<span class="co">#&gt; [5] SeuratObject_4.1.0 Seurat_4.1.1       DataPRECAST_0.1.0  PRECAST_1.2       </span>
+<span class="co">#&gt; [9] gtools_3.9.2.2    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] utf8_1.2.2                  reticulate_1.25            </span>
@@ -319,7 +460,7 @@
 <span class="co">#&gt; [111] tidyr_1.2.0                 DBI_1.1.2                  </span>
 <span class="co">#&gt; [113] formatR_1.11                MASS_7.3-55                </span>
 <span class="co">#&gt; [115] Matrix_1.4-0                cli_3.2.0                  </span>
-<span class="co">#&gt; [117] igraph_1.3.2                DR.SC_2.9                  </span>
+<span class="co">#&gt; [117] igraph_1.3.2                DR.SC_3.0                  </span>
 <span class="co">#&gt; [119] GenomicRanges_1.46.1        pkgconfig_2.0.3            </span>
 <span class="co">#&gt; [121] pkgdown_2.0.2               plotly_4.10.0              </span>
 <span class="co">#&gt; [123] scuttle_1.4.0               spatstat.sparse_2.1-1      </span>

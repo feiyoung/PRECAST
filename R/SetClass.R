@@ -229,13 +229,15 @@ filter_spot <- function(seu, min_feature=0, assay="RNA"){ # each spots at least 
 filter_gene <- function(seu, min_spots=20, assay="RNA"){
   if(sum(dim(seu[[assay]]@counts))!=0){
     gene_flag <- Matrix::rowSums(seu[[assay]]@counts>0)>min_spots
+    return(seu[names(gene_flag), ])
   }else if(sum(dim(seu[[assay]]@data))!=0){
     gene_flag <- Matrix::rowSums(seu[[assay]]@data>0)>min_spots
+    return(seu[names(gene_flag), ])
   }else{
     stop("filter_gene: Seuat object must provide slots count or data in assay!")
   }
   
-  seu[gene_flag, ]
+  
 }
 
 ## select the features for multiple samples based on a rank rule.
@@ -317,7 +319,7 @@ setClass("PRECASTObj", slots=list(
 
 
 CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1, 
-                                   gene.number=2000,customGenelist=NULL, premin.spots = 20,  
+                                   gene.number=2000, selectGenesMethod='SPARK-X', customGenelist=NULL, premin.spots = 20,  
                                    premin.features=20, postmin.spots=15, postmin.features=15,
                               rawData.preserve=FALSE,verbose=TRUE){
   
@@ -352,17 +354,30 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1
   message(" \n ")
   
   if(is.null(customGenelist)){
-    seuList <- pbapply::pblapply(seuList ,DR.SC::FindSVGs, nfeatures=gene.number, 
-                                 num_core=numCores_sparkx, verbose=verbose)
-    spaFeatureList <- lapply(seuList, DR.SC::topSVGs, ntop = gene.number)
+    if(tolower(selectGenesMethod)=='spark-x'){
+      seuList <- pbapply::pblapply(seuList ,DR.SC::FindSVGs, nfeatures=gene.number, 
+                                   num_core=numCores_sparkx, verbose=verbose)
+      spaFeatureList <- lapply(seuList, DR.SC::topSVGs, ntop = gene.number)
+    }else if(tolower(selectGenesMethod)=='hvgs'){
+      seuList <- pbapply::pblapply(seuList ,FindVariableFeatures, nfeatures=gene.number, 
+                                    verbose=verbose)
+      getHVGs <- function(seu){
+        assay <- DefaultAssay(seu)
+        seu[[assay]]@var.features
+      }
+      spaFeatureList <- lapply(seuList, getHVGs)
+    }else{
+      stop("CreatePRECASTObject: check the argument: selectGenesMethod! It only support 'SPARK-X' and 'HVGs' to select genes now. You can provide self-selected genes using customGenelist argument.")
+    }
+    
     spaFeatureList <- lapply(spaFeatureList, function(x) x[!is.na(x)])
     if(any(sapply(spaFeatureList, length)< gene.number)){
       gene.number_old <- gene.number
       gene.number <- min(sapply(spaFeatureList, length))
-      warning(paste0("Number of SVGs in one of sample is less than ", gene.number_old, ", so set minimum number of SVGs as gene.number=", gene.number) )
+      warning(paste0("Number of genes in one of sample is less than ", gene.number_old, ", so set minimum number of SVGs as gene.number=", gene.number) )
     }
     if(verbose)
-      message("Select common SVGs  for multiple samples...")
+      message("Select common top variable genes  for multiple samples...")
     
     genelist <- selectIntFeatures(seuList, spaFeatureList=spaFeatureList, IntFeatures=gene.number)
     
@@ -376,7 +391,7 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1
   
   seulist <- lapply(seuList, function(x) x[genelist, ])
   if(verbose)
-     message("Filter spots and features from SVGs count data...")
+     message("Filter spots and features from SVGs(HVGs) count data...")
   seulist <- lapply(seulist, filter_spot, postmin.features)
   seulist <- pbapply::pblapply(seulist, filter_gene, postmin.spots)
   seulist <- lapply(seulist, NormalizeData, verbose=verbose)

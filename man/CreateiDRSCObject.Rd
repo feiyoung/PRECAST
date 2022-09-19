@@ -6,15 +6,16 @@ Create the PRECAST object with preprocessing step.
 }
 \usage{
 CreatePRECASTObject(seuList,  project = "PRECAST", numCores_sparkx=1, 
-                gene.number=2000,customGenelist=NULL, premin.spots = 20,  
-                premin.features=20, postmin.spots=15, postmin.features=15,
-                rawData.preserve=FALSE,verbose=TRUE)
+                gene.number=2000,selectGenesMethod='SPARK-X', customGenelist=NULL, 
+                premin.spots = 20,premin.features=20, postmin.spots=15, 
+                postmin.features=15, rawData.preserve=FALSE,verbose=TRUE)
 }
 \arguments{
 \item{seuList}{a list consisting of Seurat objects, where each object is a SRT data batch.}
 \item{project}{An optional string, name of the project, default as "PRECAST".}
 \item{numCores_sparkx}{an optional integer, specify the number of CPU cores in SPARK package to use when selecting spatial genes.}
-\item{gene.number}{an optional integer, the number of top spatially variable genes (SVGs) to be chosen.}
+\item{gene.number}{an optional integer, the number of top spatially variable genes (SVGs) or highly variable  genes (HVGs) to be chosen.}
+\item{selectGenesMethod}{an optional integer, the method to select genes for each sample. It supports 'SPARK-X' and 'HVGs' to select genes now. Users can provide self-selected genes using customGenelist argument.}
 \item{customGenelist}{an optional string vector, the list of user specified genes to be used for PRECAST model fitting. If this argument is given, SVGs will not be selected.}
 \item{premin.spots}{An optional integer, the features (genes) are retained in raw data filtering step with at least premin.spots number of spots, default is 20.}
 \item{premin.features}{An optional integer, the locations are retained in raw data filtering step with at least premin.features number of  nonzero-count features (genes), default is 20.}

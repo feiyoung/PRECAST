@@ -70,9 +70,9 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">CreatePRECASTObject</span><span class="op">(</span><span class="va">seuList</span>,  project <span class="op">=</span> <span class="st">"PRECAST"</span>, numCores_sparkx<span class="op">=</span><span class="fl">1</span>, 
-                gene.number<span class="op">=</span><span class="fl">2000</span>,customGenelist<span class="op">=</span><span class="cn">NULL</span>, premin.spots <span class="op">=</span> <span class="fl">20</span>,  
-                premin.features<span class="op">=</span><span class="fl">20</span>, postmin.spots<span class="op">=</span><span class="fl">15</span>, postmin.features<span class="op">=</span><span class="fl">15</span>,
-                rawData.preserve<span class="op">=</span><span class="cn">FALSE</span>,verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+                gene.number<span class="op">=</span><span class="fl">2000</span>,selectGenesMethod<span class="op">=</span><span class="st">'SPARK-X'</span>, customGenelist<span class="op">=</span><span class="cn">NULL</span>, 
+                premin.spots <span class="op">=</span> <span class="fl">20</span>,premin.features<span class="op">=</span><span class="fl">20</span>, postmin.spots<span class="op">=</span><span class="fl">15</span>, 
+                postmin.features<span class="op">=</span><span class="fl">15</span>, rawData.preserve<span class="op">=</span><span class="cn">FALSE</span>,verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,7 +84,9 @@
 <dt>numCores_sparkx</dt>
 <dd><p>an optional integer, specify the number of CPU cores in SPARK package to use when selecting spatial genes.</p></dd>
 <dt>gene.number</dt>
-<dd><p>an optional integer, the number of top spatially variable genes (SVGs) to be chosen.</p></dd>
+<dd><p>an optional integer, the number of top spatially variable genes (SVGs) or highly variable  genes (HVGs) to be chosen.</p></dd>
+<dt>selectGenesMethod</dt>
+<dd><p>an optional integer, the method to select genes for each sample. It supports 'SPARK-X' and 'HVGs' to select genes now. Users can provide self-selected genes using customGenelist argument.</p></dd>
 <dt>customGenelist</dt>
 <dd><p>an optional string vector, the list of user specified genes to be used for PRECAST model fitting. If this argument is given, SVGs will not be selected.</p></dd>
 <dt>premin.spots</dt>

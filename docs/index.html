@@ -88,6 +88,26 @@
 <div class="page-header"><h1 id="precast">PRECAST<a class="anchor" aria-label="anchor" href="#precast"></a>
 </h1></div>
 <p>PRECAST: a probabilistic embedding and clustering with alignment for spatial transcriptomics data integration.</p>
+<p>PRECAST is a package for integrating and analyzing multiple spatially resolved transcriptomics (SRT) datasets, developed by the Jin Liu’s lab. It unifies spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially shared cell/domain clusters across datasets.</p>
+<p>Check out our <a href="https://doi.org/10.1101/2022.06.26.497672" class="external-link">bioRxiv paper</a> for a more complete description of the methods and analyses.</p>
+<p>PRECAST can be used to compare and contrast experimental datasets in a variety of contexts, for instance:</p>
+<ul>
+<li>Across experimental batches</li>
+<li>Across individuals</li>
+<li>Across different conditions (i.e., case and control)</li>
+<li>Across datasets with only partially shared cell/domain clusters</li>
+</ul>
+<p>Once multiple datasets are integrated, the package provides functionality for further data exploration, analysis, and visualization. Users can:</p>
+<ul>
+<li>Identify clusters using all data information</li>
+<li>Extract aligned low-dimensional embeddings across datasets</li>
+<li>Recover comparable gene expression matrices among datasets</li>
+<li>Find significant shared (and dataset-specific) gene markers</li>
+<li>Conditional spatially variational genes analysis</li>
+<li>Compare clusters with previously identified domain/cell types</li>
+<li>Visuzlize extracted embeddings using 3-dim tSNE and UMAP</li>
+<li>Visualize clusters and gene expression using tSNE and UMAP</li>
+</ul>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -108,7 +128,17 @@
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
 <span class="co"># install the package on Bioconducter</span>
 <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scater"</span><span class="op">)</span><span class="op">)</span></code></pre>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<p>For usage examples and guided walkthroughs, check the <code>vignettes</code> directory of the repo.</p>
+<ul>
+<li><a href="https://feiyoung.github.io/PRECAST/articles/PRECAST.DLPFC.html" class="external-link">Single SRT data analysis</a></li>
+<li><a href="https://feiyoung.github.io/PRECAST/articles/PRECAST.Simu.html" class="external-link">Toy examples for integrating two bathes</a></li>
+<li><a href="https://feiyoung.github.io/PRECAST/articles/PRECAST.BreastCancer.html" class="external-link">Integration across experimental batches</a></li>
+</ul>
 <p>For the users that don’t have set up system properly, the following setup on different systems can be referred. ## Setup on Windows system First, download <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a>; second, add the Rtools directory to the environment variable. Users can follow <a href="https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/#:~:text=Go%20ahead%20and%20click%20on%20the%20Environment%20Variables,you%20have%20to%20decide%20which%20one%20to%20edit" class="external-link">here</a> to add Windows PATH Environment Variable.</p>
+</div>
 <div class="section level2">
 <h2 id="setup-on-macos-system">Setup on MacOS system<a class="anchor" aria-label="anchor" href="#setup-on-macos-system"></a>
 </h2>
