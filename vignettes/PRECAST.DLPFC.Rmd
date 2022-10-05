@@ -39,29 +39,29 @@ This vignette introduces the PRECAST workflow for the analysis of single spatial
 * Probabilistic embedding and clustering  using PRECAST model
 * Downstream analysis (i.e. visualization of clusters and embeddings)
 
-We demonstrate the use of PRECAST to one human dorsolateral prefrontal cortex Visium data that are in the data R package `DataPRECAST`, which can be installed by the following command:
-```{r  eval =FALSE}
-remotes::install_github("feiyoung/DataPRECAST")
+We demonstrate the use of PRECAST to one human dorsolateral prefrontal cortex Visium data that are [here](https://github.com/feiyoung/PRECAST/tree/main/vignettes_data), which can be downloaded to the current working path by the following command:
+```{r eval=FALSE}
+githubURL <- "https://github.com/feiyoung/PRECAST/blob/main/vignettes_data/dlpfc_151672.rda?raw=true"
+download.file(githubURL,"dlpfc_151672.rda",mode='wb')
+
 ```
 
-This data is also available at Github website:
-
-* https://github.com/feiyoung/DR-SC.Analysis/tree/main/data/DLPFC_data/
+Then load to R 
+```{r  eval = FALSE}
+load("dlpfc_151672.rda")
+```
 
 
 The package can be loaded with the command:
 ```{r  eval = FALSE}
 library(PRECAST)
-library(DataPRECAST)
 library(Seurat)
 ```
 
 
 ## Compare PRECAST with DR-SC in analyzing one sample
-
-Loading data  from `DataPRECAST` package
+First, we view the the spatial transcriptomics data with Visium platform.
 ```{r  eval = FALSE}
-data("dlpfc_151672")
 dlpfc_151672 ## a list including two Seurat object
 ```
 

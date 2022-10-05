@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
       <h1 data-toc-skip>PRECAST: DLPFC Single Sample Analysis</h1>
                         <h4 data-toc-skip class="author">Wei Liu</h4>
             
-            <h4 data-toc-skip class="date">2022-09-19</h4>
+            <h4 data-toc-skip class="date">2022-10-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/feiyoung/PRECAST/blob/HEAD/vignettes/PRECAST.DLPFC.Rmd" class="external-link"><code>vignettes/PRECAST.DLPFC.Rmd</code></a></small>
       <div class="hidden name"><code>PRECAST.DLPFC.Rmd</code></div>
@@ -102,25 +102,23 @@
 <li>Probabilistic embedding and clustering using PRECAST model</li>
 <li>Downstream analysis (i.e. visualization of clusters and embeddings)</li>
 </ul>
-<p>We demonstrate the use of PRECAST to one human dorsolateral prefrontal cortex Visium data that are in the data R package <code>DataPRECAST</code>, which can be installed by the following command:</p>
+<p>We demonstrate the use of PRECAST to one human dorsolateral prefrontal cortex Visium data that are <a href="https://github.com/feiyoung/PRECAST/tree/main/vignettes_data" class="external-link">here</a>, which can be downloaded to the current working path by the following command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"feiyoung/DataPRECAST"</span><span class="op">)</span></code></pre></div>
-<p>This data is also available at Github website:</p>
-<ul>
-<li><a href="https://github.com/feiyoung/DR-SC.Analysis/tree/main/data/DLPFC_data/" class="external-link uri">https://github.com/feiyoung/DR-SC.Analysis/tree/main/data/DLPFC_data/</a></li>
-</ul>
-<p>The package can be loaded with the command:</p>
+<code class="sourceCode R"><span class="va">githubURL</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/feiyoung/PRECAST/blob/main/vignettes_data/dlpfc_151672.rda?raw=true"</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">githubURL</span>, <span class="st">"dlpfc_151672.rda"</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></code></pre></div>
+<p>Then load to R</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"dlpfc_151672.rda"</span><span class="op">)</span></code></pre></div>
+<p>The package can be loaded with the command:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">DataPRECAST</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></code></pre></div>
 <div class="section level2">
 <h2 id="compare-precast-with-dr-sc-in-analyzing-one-sample">Compare PRECAST with DR-SC in analyzing one sample<a class="anchor" aria-label="anchor" href="#compare-precast-with-dr-sc-in-analyzing-one-sample"></a>
 </h2>
-<p>Loading data from <code>DataPRECAST</code> package</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"dlpfc_151672"</span><span class="op">)</span>
-<span class="va">dlpfc_151672</span>  <span class="co">## a list including two Seurat object</span>
+<p>First, we view the the spatial transcriptomics data with Visium platform.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dlpfc_151672</span>  <span class="co">## a list including two Seurat object</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 33538 features across 4015 samples within 1 assay </span>
 <span class="co">#&gt; Active assay: RNA (33538 features, 0 variable features)</span></code></pre></div>
@@ -128,14 +126,14 @@
 <h3 id="prepare-the-precastobject-">Prepare the PRECASTObject.<a class="anchor" aria-label="anchor" href="#prepare-the-precastobject-"></a>
 </h3>
 <p>Create a PRECASTObj object to prepare for PRECAST models.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span>
 <span class="va">preobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CreateiDRSCObject.html">CreatePRECASTObject</a></span><span class="op">(</span>seuList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">dlpfc_151672</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="add-the-model-setting">Add the model setting<a class="anchor" aria-label="anchor" href="#add-the-model-setting"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## check the number of genes/features after filtering step</span>
 <span class="va">preobj</span><span class="op">@</span><span class="va">seulist</span>
 <span class="co">#&gt; [[1]]</span>
@@ -152,141 +150,141 @@
 <h3 id="fit-precast">Fit PRECAST<a class="anchor" aria-label="anchor" href="#fit-precast"></a>
 </h3>
 <p>For function <code>PRECAST</code>, users can specify the number of clusters <span class="math inline">\(K\)</span> or set <code>K</code> to be an integer vector by using modified BIC(MBIC) to determine <span class="math inline">\(K\)</span>. Here, we use user-specified number of clusters.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="co">### Given K</span></a>
-<a class="sourceLine" id="cb6-2" title="2">PRECASTObj &lt;-<span class="st"> </span><span class="kw">PRECAST</span>(PRECASTObj, <span class="dt">K =</span> <span class="dv">7</span>)</a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt; fitting ...</span></a>
-<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-5" title="5">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb6-6" title="6"><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</a>
-<a class="sourceLine" id="cb6-7" title="7">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb6-8" title="8"><span class="st">  </span><span class="er">|===================================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%</a>
-<a class="sourceLine" id="cb6-9" title="9">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb6-10" title="10"><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt; variable initialize finish! </span></a>
-<a class="sourceLine" id="cb6-12" title="12"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-13" title="13"><span class="co">#&gt; diff Energy = 11.310713 </span></a>
-<a class="sourceLine" id="cb6-14" title="14"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-15" title="15"><span class="co">#&gt; iter = 2, loglik= -2014176.625000, dloglik=0.999062 </span></a>
-<a class="sourceLine" id="cb6-16" title="16"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-17" title="17"><span class="co">#&gt; diff Energy = 25.666907 </span></a>
-<a class="sourceLine" id="cb6-18" title="18"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-19" title="19"><span class="co">#&gt; iter = 3, loglik= -1999002.625000, dloglik=0.007534 </span></a>
-<a class="sourceLine" id="cb6-20" title="20"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-21" title="21"><span class="co">#&gt; diff Energy = 67.481871 </span></a>
-<a class="sourceLine" id="cb6-22" title="22"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-23" title="23"><span class="co">#&gt; iter = 4, loglik= -1992999.625000, dloglik=0.003003 </span></a>
-<a class="sourceLine" id="cb6-24" title="24"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-25" title="25"><span class="co">#&gt; diff Energy = 45.377369 </span></a>
-<a class="sourceLine" id="cb6-26" title="26"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-27" title="27"><span class="co">#&gt; iter = 5, loglik= -1989765.875000, dloglik=0.001623 </span></a>
-<a class="sourceLine" id="cb6-28" title="28"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-29" title="29"><span class="co">#&gt; diff Energy = 47.314060 </span></a>
-<a class="sourceLine" id="cb6-30" title="30"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-31" title="31"><span class="co">#&gt; iter = 6, loglik= -1987846.250000, dloglik=0.000965 </span></a>
-<a class="sourceLine" id="cb6-32" title="32"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-33" title="33"><span class="co">#&gt; diff Energy = 30.991801 </span></a>
-<a class="sourceLine" id="cb6-34" title="34"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-35" title="35"><span class="co">#&gt; iter = 7, loglik= -1986627.750000, dloglik=0.000613 </span></a>
-<a class="sourceLine" id="cb6-36" title="36"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-37" title="37"><span class="co">#&gt; diff Energy = 27.798633 </span></a>
-<a class="sourceLine" id="cb6-38" title="38"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-39" title="39"><span class="co">#&gt; iter = 8, loglik= -1985805.125000, dloglik=0.000414 </span></a>
-<a class="sourceLine" id="cb6-40" title="40"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-41" title="41"><span class="co">#&gt; diff Energy = 21.695250 </span></a>
-<a class="sourceLine" id="cb6-42" title="42"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-43" title="43"><span class="co">#&gt; iter = 9, loglik= -1985221.625000, dloglik=0.000294 </span></a>
-<a class="sourceLine" id="cb6-44" title="44"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-45" title="45"><span class="co">#&gt; diff Energy = 26.017850 </span></a>
-<a class="sourceLine" id="cb6-46" title="46"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-47" title="47"><span class="co">#&gt; iter = 10, loglik= -1984794.000000, dloglik=0.000215 </span></a>
-<a class="sourceLine" id="cb6-48" title="48"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-49" title="49"><span class="co">#&gt; diff Energy = 17.907212 </span></a>
-<a class="sourceLine" id="cb6-50" title="50"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-51" title="51"><span class="co">#&gt; iter = 11, loglik= -1984456.375000, dloglik=0.000170 </span></a>
-<a class="sourceLine" id="cb6-52" title="52"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-53" title="53"><span class="co">#&gt; diff Energy = 19.639638 </span></a>
-<a class="sourceLine" id="cb6-54" title="54"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-55" title="55"><span class="co">#&gt; iter = 12, loglik= -1984194.875000, dloglik=0.000132 </span></a>
-<a class="sourceLine" id="cb6-56" title="56"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-57" title="57"><span class="co">#&gt; diff Energy = 27.240274 </span></a>
-<a class="sourceLine" id="cb6-58" title="58"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-59" title="59"><span class="co">#&gt; iter = 13, loglik= -1983991.875000, dloglik=0.000102 </span></a>
-<a class="sourceLine" id="cb6-60" title="60"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-61" title="61"><span class="co">#&gt; diff Energy = 20.994092 </span></a>
-<a class="sourceLine" id="cb6-62" title="62"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-63" title="63"><span class="co">#&gt; iter = 14, loglik= -1983821.375000, dloglik=0.000086 </span></a>
-<a class="sourceLine" id="cb6-64" title="64"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-65" title="65"><span class="co">#&gt; diff Energy = 22.842709 </span></a>
-<a class="sourceLine" id="cb6-66" title="66"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-67" title="67"><span class="co">#&gt; iter = 15, loglik= -1983682.000000, dloglik=0.000070 </span></a>
-<a class="sourceLine" id="cb6-68" title="68"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-69" title="69"><span class="co">#&gt; diff Energy = 18.989097 </span></a>
-<a class="sourceLine" id="cb6-70" title="70"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-71" title="71"><span class="co">#&gt; iter = 16, loglik= -1983562.875000, dloglik=0.000060 </span></a>
-<a class="sourceLine" id="cb6-72" title="72"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-73" title="73"><span class="co">#&gt; diff Energy = 18.534871 </span></a>
-<a class="sourceLine" id="cb6-74" title="74"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-75" title="75"><span class="co">#&gt; iter = 17, loglik= -1983462.625000, dloglik=0.000051 </span></a>
-<a class="sourceLine" id="cb6-76" title="76"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-77" title="77"><span class="co">#&gt; diff Energy = 22.260116 </span></a>
-<a class="sourceLine" id="cb6-78" title="78"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-79" title="79"><span class="co">#&gt; iter = 18, loglik= -1983381.875000, dloglik=0.000041 </span></a>
-<a class="sourceLine" id="cb6-80" title="80"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-81" title="81"><span class="co">#&gt; diff Energy = 19.758281 </span></a>
-<a class="sourceLine" id="cb6-82" title="82"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-83" title="83"><span class="co">#&gt; iter = 19, loglik= -1983310.500000, dloglik=0.000036 </span></a>
-<a class="sourceLine" id="cb6-84" title="84"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-85" title="85"><span class="co">#&gt; diff Energy = 18.436015 </span></a>
-<a class="sourceLine" id="cb6-86" title="86"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-87" title="87"><span class="co">#&gt; iter = 20, loglik= -1983248.625000, dloglik=0.000031 </span></a>
-<a class="sourceLine" id="cb6-88" title="88"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-89" title="89"><span class="co">#&gt; diff Energy = 18.088786 </span></a>
-<a class="sourceLine" id="cb6-90" title="90"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-91" title="91"><span class="co">#&gt; iter = 21, loglik= -1983193.750000, dloglik=0.000028 </span></a>
-<a class="sourceLine" id="cb6-92" title="92"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-93" title="93"><span class="co">#&gt; diff Energy = 21.813398 </span></a>
-<a class="sourceLine" id="cb6-94" title="94"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-95" title="95"><span class="co">#&gt; iter = 22, loglik= -1983148.875000, dloglik=0.000023 </span></a>
-<a class="sourceLine" id="cb6-96" title="96"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-97" title="97"><span class="co">#&gt; diff Energy = 18.449335 </span></a>
-<a class="sourceLine" id="cb6-98" title="98"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-99" title="99"><span class="co">#&gt; iter = 23, loglik= -1983109.375000, dloglik=0.000020 </span></a>
-<a class="sourceLine" id="cb6-100" title="100"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-101" title="101"><span class="co">#&gt; diff Energy = 20.552492 </span></a>
-<a class="sourceLine" id="cb6-102" title="102"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-103" title="103"><span class="co">#&gt; iter = 24, loglik= -1983073.625000, dloglik=0.000018 </span></a>
-<a class="sourceLine" id="cb6-104" title="104"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-105" title="105"><span class="co">#&gt; diff Energy = 18.782818 </span></a>
-<a class="sourceLine" id="cb6-106" title="106"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-107" title="107"><span class="co">#&gt; iter = 25, loglik= -1983042.625000, dloglik=0.000016 </span></a>
-<a class="sourceLine" id="cb6-108" title="108"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-109" title="109"><span class="co">#&gt; diff Energy = 17.899873 </span></a>
-<a class="sourceLine" id="cb6-110" title="110"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-111" title="111"><span class="co">#&gt; iter = 26, loglik= -1983013.250000, dloglik=0.000015 </span></a>
-<a class="sourceLine" id="cb6-112" title="112"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-113" title="113"><span class="co">#&gt; diff Energy = 18.506619 </span></a>
-<a class="sourceLine" id="cb6-114" title="114"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-115" title="115"><span class="co">#&gt; iter = 27, loglik= -1982988.000000, dloglik=0.000013 </span></a>
-<a class="sourceLine" id="cb6-116" title="116"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-117" title="117"><span class="co">#&gt; diff Energy = 14.492426 </span></a>
-<a class="sourceLine" id="cb6-118" title="118"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-119" title="119"><span class="co">#&gt; iter = 28, loglik= -1982961.000000, dloglik=0.000014 </span></a>
-<a class="sourceLine" id="cb6-120" title="120"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-121" title="121"><span class="co">#&gt; diff Energy = 15.545098 </span></a>
-<a class="sourceLine" id="cb6-122" title="122"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-123" title="123"><span class="co">#&gt; iter = 29, loglik= -1982940.750000, dloglik=0.000010 </span></a>
-<a class="sourceLine" id="cb6-124" title="124"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb6-125" title="125"><span class="co">#&gt; diff Energy = 14.707213 </span></a>
-<a class="sourceLine" id="cb6-126" title="126"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb6-127" title="127"><span class="co">#&gt; iter = 30, loglik= -1982921.750000, dloglik=0.000010</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co">### Given K</span></a>
+<a class="sourceLine" id="cb7-2" title="2">PRECASTObj &lt;-<span class="st"> </span><span class="kw">PRECAST</span>(PRECASTObj, <span class="dt">K =</span> <span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; fitting ...</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb7-5" title="5">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</a>
+<a class="sourceLine" id="cb7-7" title="7">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="st">  </span><span class="er">|===================================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%</a>
+<a class="sourceLine" id="cb7-9" title="9">  <span class="op">|</span><span class="st">                                                                            </span></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</a>
+<a class="sourceLine" id="cb7-11" title="11"><span class="co">#&gt; variable initialize finish! </span></a>
+<a class="sourceLine" id="cb7-12" title="12"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="co">#&gt; diff Energy = 11.310713 </span></a>
+<a class="sourceLine" id="cb7-14" title="14"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-15" title="15"><span class="co">#&gt; iter = 2, loglik= -2014176.625000, dloglik=0.999062 </span></a>
+<a class="sourceLine" id="cb7-16" title="16"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-17" title="17"><span class="co">#&gt; diff Energy = 25.666907 </span></a>
+<a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; iter = 3, loglik= -1999002.625000, dloglik=0.007534 </span></a>
+<a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; diff Energy = 67.481871 </span></a>
+<a class="sourceLine" id="cb7-22" title="22"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-23" title="23"><span class="co">#&gt; iter = 4, loglik= -1992999.625000, dloglik=0.003003 </span></a>
+<a class="sourceLine" id="cb7-24" title="24"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-25" title="25"><span class="co">#&gt; diff Energy = 45.377369 </span></a>
+<a class="sourceLine" id="cb7-26" title="26"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-27" title="27"><span class="co">#&gt; iter = 5, loglik= -1989765.875000, dloglik=0.001623 </span></a>
+<a class="sourceLine" id="cb7-28" title="28"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-29" title="29"><span class="co">#&gt; diff Energy = 47.314060 </span></a>
+<a class="sourceLine" id="cb7-30" title="30"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-31" title="31"><span class="co">#&gt; iter = 6, loglik= -1987846.250000, dloglik=0.000965 </span></a>
+<a class="sourceLine" id="cb7-32" title="32"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-33" title="33"><span class="co">#&gt; diff Energy = 30.991801 </span></a>
+<a class="sourceLine" id="cb7-34" title="34"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-35" title="35"><span class="co">#&gt; iter = 7, loglik= -1986627.750000, dloglik=0.000613 </span></a>
+<a class="sourceLine" id="cb7-36" title="36"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-37" title="37"><span class="co">#&gt; diff Energy = 27.798633 </span></a>
+<a class="sourceLine" id="cb7-38" title="38"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-39" title="39"><span class="co">#&gt; iter = 8, loglik= -1985805.125000, dloglik=0.000414 </span></a>
+<a class="sourceLine" id="cb7-40" title="40"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-41" title="41"><span class="co">#&gt; diff Energy = 21.695250 </span></a>
+<a class="sourceLine" id="cb7-42" title="42"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-43" title="43"><span class="co">#&gt; iter = 9, loglik= -1985221.625000, dloglik=0.000294 </span></a>
+<a class="sourceLine" id="cb7-44" title="44"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-45" title="45"><span class="co">#&gt; diff Energy = 26.017850 </span></a>
+<a class="sourceLine" id="cb7-46" title="46"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-47" title="47"><span class="co">#&gt; iter = 10, loglik= -1984794.000000, dloglik=0.000215 </span></a>
+<a class="sourceLine" id="cb7-48" title="48"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-49" title="49"><span class="co">#&gt; diff Energy = 17.907212 </span></a>
+<a class="sourceLine" id="cb7-50" title="50"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-51" title="51"><span class="co">#&gt; iter = 11, loglik= -1984456.375000, dloglik=0.000170 </span></a>
+<a class="sourceLine" id="cb7-52" title="52"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-53" title="53"><span class="co">#&gt; diff Energy = 19.639638 </span></a>
+<a class="sourceLine" id="cb7-54" title="54"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-55" title="55"><span class="co">#&gt; iter = 12, loglik= -1984194.875000, dloglik=0.000132 </span></a>
+<a class="sourceLine" id="cb7-56" title="56"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-57" title="57"><span class="co">#&gt; diff Energy = 27.240274 </span></a>
+<a class="sourceLine" id="cb7-58" title="58"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-59" title="59"><span class="co">#&gt; iter = 13, loglik= -1983991.875000, dloglik=0.000102 </span></a>
+<a class="sourceLine" id="cb7-60" title="60"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-61" title="61"><span class="co">#&gt; diff Energy = 20.994092 </span></a>
+<a class="sourceLine" id="cb7-62" title="62"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-63" title="63"><span class="co">#&gt; iter = 14, loglik= -1983821.375000, dloglik=0.000086 </span></a>
+<a class="sourceLine" id="cb7-64" title="64"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-65" title="65"><span class="co">#&gt; diff Energy = 22.842709 </span></a>
+<a class="sourceLine" id="cb7-66" title="66"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-67" title="67"><span class="co">#&gt; iter = 15, loglik= -1983682.000000, dloglik=0.000070 </span></a>
+<a class="sourceLine" id="cb7-68" title="68"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-69" title="69"><span class="co">#&gt; diff Energy = 18.989097 </span></a>
+<a class="sourceLine" id="cb7-70" title="70"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-71" title="71"><span class="co">#&gt; iter = 16, loglik= -1983562.875000, dloglik=0.000060 </span></a>
+<a class="sourceLine" id="cb7-72" title="72"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-73" title="73"><span class="co">#&gt; diff Energy = 18.534871 </span></a>
+<a class="sourceLine" id="cb7-74" title="74"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-75" title="75"><span class="co">#&gt; iter = 17, loglik= -1983462.625000, dloglik=0.000051 </span></a>
+<a class="sourceLine" id="cb7-76" title="76"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-77" title="77"><span class="co">#&gt; diff Energy = 22.260116 </span></a>
+<a class="sourceLine" id="cb7-78" title="78"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-79" title="79"><span class="co">#&gt; iter = 18, loglik= -1983381.875000, dloglik=0.000041 </span></a>
+<a class="sourceLine" id="cb7-80" title="80"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-81" title="81"><span class="co">#&gt; diff Energy = 19.758281 </span></a>
+<a class="sourceLine" id="cb7-82" title="82"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-83" title="83"><span class="co">#&gt; iter = 19, loglik= -1983310.500000, dloglik=0.000036 </span></a>
+<a class="sourceLine" id="cb7-84" title="84"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-85" title="85"><span class="co">#&gt; diff Energy = 18.436015 </span></a>
+<a class="sourceLine" id="cb7-86" title="86"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-87" title="87"><span class="co">#&gt; iter = 20, loglik= -1983248.625000, dloglik=0.000031 </span></a>
+<a class="sourceLine" id="cb7-88" title="88"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-89" title="89"><span class="co">#&gt; diff Energy = 18.088786 </span></a>
+<a class="sourceLine" id="cb7-90" title="90"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-91" title="91"><span class="co">#&gt; iter = 21, loglik= -1983193.750000, dloglik=0.000028 </span></a>
+<a class="sourceLine" id="cb7-92" title="92"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-93" title="93"><span class="co">#&gt; diff Energy = 21.813398 </span></a>
+<a class="sourceLine" id="cb7-94" title="94"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-95" title="95"><span class="co">#&gt; iter = 22, loglik= -1983148.875000, dloglik=0.000023 </span></a>
+<a class="sourceLine" id="cb7-96" title="96"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-97" title="97"><span class="co">#&gt; diff Energy = 18.449335 </span></a>
+<a class="sourceLine" id="cb7-98" title="98"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-99" title="99"><span class="co">#&gt; iter = 23, loglik= -1983109.375000, dloglik=0.000020 </span></a>
+<a class="sourceLine" id="cb7-100" title="100"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-101" title="101"><span class="co">#&gt; diff Energy = 20.552492 </span></a>
+<a class="sourceLine" id="cb7-102" title="102"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-103" title="103"><span class="co">#&gt; iter = 24, loglik= -1983073.625000, dloglik=0.000018 </span></a>
+<a class="sourceLine" id="cb7-104" title="104"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-105" title="105"><span class="co">#&gt; diff Energy = 18.782818 </span></a>
+<a class="sourceLine" id="cb7-106" title="106"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-107" title="107"><span class="co">#&gt; iter = 25, loglik= -1983042.625000, dloglik=0.000016 </span></a>
+<a class="sourceLine" id="cb7-108" title="108"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-109" title="109"><span class="co">#&gt; diff Energy = 17.899873 </span></a>
+<a class="sourceLine" id="cb7-110" title="110"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-111" title="111"><span class="co">#&gt; iter = 26, loglik= -1983013.250000, dloglik=0.000015 </span></a>
+<a class="sourceLine" id="cb7-112" title="112"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-113" title="113"><span class="co">#&gt; diff Energy = 18.506619 </span></a>
+<a class="sourceLine" id="cb7-114" title="114"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-115" title="115"><span class="co">#&gt; iter = 27, loglik= -1982988.000000, dloglik=0.000013 </span></a>
+<a class="sourceLine" id="cb7-116" title="116"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-117" title="117"><span class="co">#&gt; diff Energy = 14.492426 </span></a>
+<a class="sourceLine" id="cb7-118" title="118"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-119" title="119"><span class="co">#&gt; iter = 28, loglik= -1982961.000000, dloglik=0.000014 </span></a>
+<a class="sourceLine" id="cb7-120" title="120"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-121" title="121"><span class="co">#&gt; diff Energy = 15.545098 </span></a>
+<a class="sourceLine" id="cb7-122" title="122"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-123" title="123"><span class="co">#&gt; iter = 29, loglik= -1982940.750000, dloglik=0.000010 </span></a>
+<a class="sourceLine" id="cb7-124" title="124"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb7-125" title="125"><span class="co">#&gt; diff Energy = 14.707213 </span></a>
+<a class="sourceLine" id="cb7-126" title="126"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb7-127" title="127"><span class="co">#&gt; iter = 30, loglik= -1982921.750000, dloglik=0.000010</span></a></code></pre></div>
 <p>Select a best model</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## backup the fitting results in resList</span>
 <span class="va">resList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span>
 <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">selectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span>
 <span class="va">ari_precast</span> <span class="op">&lt;-</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span></code></pre></div>
 <p>Integrate the reults into a Seurat object seuInt by the function <code>IntegrateSpaData</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
 <span class="va">seuInt</span>
 <span class="co">#&gt; An object of class Seurat </span>
@@ -295,58 +293,59 @@
 <span class="co">#&gt;  2 dimensional reductions calculated: PRECAST, position</span>
 <span class="co">## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.</span></code></pre></div>
 <p>Save the spatial and tSNE scatter plots for clusters from PRECAST</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p_sp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, point_size <span class="op">=</span> <span class="fl">3</span>, combine <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"PRECAST: ARI="</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ari_precast</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"row"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"col"</span><span class="op">)</span>
 <span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTSNE.html">AddTSNE</a></span><span class="op">(</span><span class="va">seuInt</span>, n_comp <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">p_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span>
 <span class="va">p_tsne</span> <span class="op">&lt;-</span> <span class="va">p_tsne</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PRECAST"</span><span class="op">)</span></code></pre></div>
 <p>Fit DR-SC and Plot the spatial and tSNE scatter plots for clusters</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seu_drsc</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/DR.SC.html" class="external-link">DR.SC</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, K <span class="op">=</span> <span class="fl">7</span>, verbose <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co">#&gt; iter = 2, loglik= -2002811.501388, dloglik=0.999067 </span>
-<span class="co">#&gt; iter = 3, loglik= -1996002.112440, dloglik=0.003400 </span>
-<span class="co">#&gt; iter = 4, loglik= -1993759.354677, dloglik=0.001124 </span>
-<span class="co">#&gt; iter = 5, loglik= -1992591.052512, dloglik=0.000586 </span>
-<span class="co">#&gt; iter = 6, loglik= -1991869.249384, dloglik=0.000362 </span>
-<span class="co">#&gt; iter = 7, loglik= -1991383.409982, dloglik=0.000244 </span>
-<span class="co">#&gt; iter = 8, loglik= -1991021.340644, dloglik=0.000182 </span>
-<span class="co">#&gt; iter = 9, loglik= -1990757.183228, dloglik=0.000133 </span>
-<span class="co">#&gt; iter = 10, loglik= -1990554.640307, dloglik=0.000102 </span>
-<span class="co">#&gt; iter = 11, loglik= -1990372.657808, dloglik=0.000091 </span>
-<span class="co">#&gt; iter = 12, loglik= -1990228.443572, dloglik=0.000072 </span>
-<span class="co">#&gt; iter = 13, loglik= -1990109.115071, dloglik=0.000060 </span>
-<span class="co">#&gt; iter = 14, loglik= -1989997.327049, dloglik=0.000056 </span>
-<span class="co">#&gt; iter = 15, loglik= -1989907.571165, dloglik=0.000045 </span>
-<span class="co">#&gt; iter = 16, loglik= -1989833.838557, dloglik=0.000037 </span>
-<span class="co">#&gt; iter = 17, loglik= -1989768.786905, dloglik=0.000033 </span>
-<span class="co">#&gt; iter = 18, loglik= -1989716.199085, dloglik=0.000026 </span>
-<span class="co">#&gt; iter = 19, loglik= -1989671.035874, dloglik=0.000023 </span>
-<span class="co">#&gt; iter = 20, loglik= -1989635.422941, dloglik=0.000018 </span>
-<span class="co">#&gt; iter = 21, loglik= -1989602.535829, dloglik=0.000017 </span>
-<span class="co">#&gt; iter = 22, loglik= -1989568.771500, dloglik=0.000017 </span>
-<span class="co">#&gt; iter = 23, loglik= -1989541.157454, dloglik=0.000014 </span>
-<span class="co">#&gt; iter = 24, loglik= -1989523.194178, dloglik=0.000009</span>
+<span class="co">#&gt; iter = 2, loglik= -2002904.672391, dloglik=0.999067 </span>
+<span class="co">#&gt; iter = 3, loglik= -1996051.387359, dloglik=0.003422 </span>
+<span class="co">#&gt; iter = 4, loglik= -1993768.714361, dloglik=0.001144 </span>
+<span class="co">#&gt; iter = 5, loglik= -1992506.770449, dloglik=0.000633 </span>
+<span class="co">#&gt; iter = 6, loglik= -1991720.506549, dloglik=0.000395 </span>
+<span class="co">#&gt; iter = 7, loglik= -1991192.142171, dloglik=0.000265 </span>
+<span class="co">#&gt; iter = 8, loglik= -1990821.840384, dloglik=0.000186 </span>
+<span class="co">#&gt; iter = 9, loglik= -1990552.529733, dloglik=0.000135 </span>
+<span class="co">#&gt; iter = 10, loglik= -1990338.927656, dloglik=0.000107 </span>
+<span class="co">#&gt; iter = 11, loglik= -1990159.206697, dloglik=0.000090 </span>
+<span class="co">#&gt; iter = 12, loglik= -1990008.264316, dloglik=0.000076 </span>
+<span class="co">#&gt; iter = 13, loglik= -1989895.302562, dloglik=0.000057 </span>
+<span class="co">#&gt; iter = 14, loglik= -1989797.797850, dloglik=0.000049 </span>
+<span class="co">#&gt; iter = 15, loglik= -1989716.045461, dloglik=0.000041 </span>
+<span class="co">#&gt; iter = 16, loglik= -1989646.588573, dloglik=0.000035 </span>
+<span class="co">#&gt; iter = 17, loglik= -1989586.688566, dloglik=0.000030 </span>
+<span class="co">#&gt; iter = 18, loglik= -1989535.301395, dloglik=0.000026 </span>
+<span class="co">#&gt; iter = 19, loglik= -1989491.672188, dloglik=0.000022 </span>
+<span class="co">#&gt; iter = 20, loglik= -1989447.173565, dloglik=0.000022 </span>
+<span class="co">#&gt; iter = 21, loglik= -1989403.488959, dloglik=0.000022 </span>
+<span class="co">#&gt; iter = 22, loglik= -1989360.376997, dloglik=0.000022 </span>
+<span class="co">#&gt; iter = 23, loglik= -1989326.518070, dloglik=0.000017 </span>
+<span class="co">#&gt; iter = 24, loglik= -1989300.499244, dloglik=0.000013 </span>
+<span class="co">#&gt; iter = 25, loglik= -1989279.631135, dloglik=0.000010</span>
 <span class="va">ari_drsc</span> <span class="op">&lt;-</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">$</span><span class="va">spatial.drsc.cluster</span>, <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span>
 <span class="va">p_tsne_drsc</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/drscPlot.html" class="external-link">drscPlot</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">)</span>
 <span class="va">p_tsne_drsc</span> <span class="op">&lt;-</span> <span class="va">p_tsne_drsc</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"DR-SC"</span><span class="op">)</span>
 <span class="va">p_sp2</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/spatialPlotClusters.html" class="external-link">spatialPlotClusters</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">)</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"DR-SC ARI="</span>,
     <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ari_drsc</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Compare the clustering performance of PRECAST and DR-SC.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span>
 <span class="va">p_sp1</span> <span class="op">+</span> <span class="va">p_sp2</span></code></pre></div>
-<p><img src="PRECAST.DLPFC_files/figure-html/unnamed-chunk-12-1.png" width="1056"></p>
-<p>Compare the tSNE visualiztion performance of PRECAST and DR-SC.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p_tsne</span> <span class="op">+</span> <span class="va">p_tsne_drsc</span></code></pre></div>
 <p><img src="PRECAST.DLPFC_files/figure-html/unnamed-chunk-13-1.png" width="1056"></p>
+<p>Compare the tSNE visualiztion performance of PRECAST and DR-SC.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p_tsne</span> <span class="op">+</span> <span class="va">p_tsne_drsc</span></code></pre></div>
+<p><img src="PRECAST.DLPFC_files/figure-html/unnamed-chunk-14-1.png" width="1056"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
 <span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
@@ -366,7 +365,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt; [1] patchwork_1.1.1    sp_1.5-0           SeuratObject_4.1.0 Seurat_4.1.1      </span>
-<span class="co">#&gt; [5] DataPRECAST_0.1.0  PRECAST_1.2        gtools_3.9.2.2    </span>
+<span class="co">#&gt; [5] PRECAST_1.3        gtools_3.9.2.2    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] utf8_1.2.2                  reticulate_1.25            </span>

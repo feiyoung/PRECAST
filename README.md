@@ -105,5 +105,7 @@ PRECAST version 1.3 (2022-10-05)
 * Provide more detailed help file for `CreatePRECASTObject` function. Users can use `?CreatePRECASTObject` in Rstudio to access the help file.
 In detail, seuList is a list  with Seurat object as component, and each Seurat object at least includes the raw expression count matrix, and spatial coordinates in metadata for each data batch, where the spatial coordinates information must be saved in the metadata of Seurat, named "row" and "col" for each data batch. See the help file for more details.
 
+* Add the data used in [Package Website](https://feiyoung.github.io/PRECAST/index.html) [here](https://github.com/feiyoung/PRECAST/tree/main/vignettes_data).
+
 * Add the wrapper functions for different common-used objects in scRNA sequencing or spatial transcriptomics, such as spatialExperiment. 
 
