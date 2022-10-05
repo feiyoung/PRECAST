@@ -100,7 +100,7 @@ For an example of typical PRECAST usage, please see our [Package Website](https:
 # NEWs
 PRECAST version 1.3 (2022-10-05)
 
-* Fix the [issue]((https://github.com/feiyoung/PRECAST_Analysis/issues/1)) reported by [Boyi Guo](https://github.com/boyiguo1). Specifically, the assay name "RNA" used in functions `CreatePRECASTObject` and  `PRECAST` is replaced  by  the default assay using `DefaultAssay` function in Seurat.
+* Fix the [issue](https://github.com/feiyoung/PRECAST_Analysis/issues/1) reported by [Boyi Guo](https://github.com/boyiguo1). Specifically, the assay name "RNA" used in functions `CreatePRECASTObject` and  `PRECAST` is replaced  by  the default assay using `DefaultAssay` function in Seurat.
 
 * Provide more detailed help file for `CreatePRECASTObject` function. Users can use `?CreatePRECASTObject` in Rstudio to access the help file.
 In detail, seuList is a list  with Seurat object as component, and each Seruat object at least includes the raw expression count matrix, and spatial coordinates in metadata for each data batch, where the spatial coordinates information must be saved in the metadata of Seurat, named "row" and "col" for each data batch. See the help file for more details.
