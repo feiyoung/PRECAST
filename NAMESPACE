@@ -13,7 +13,7 @@ importFrom(Rcpp, evalCpp)
 
 #exportPattern("^[[:alpha:]]+")
 export(AddAdjList, AddParSetting, AddTSNE, AddUMAP, Add_embed, model_set)
-export(CreatePRECASTObject, gendata_seulist)
+export(CreatePRECASTObject) # gendata_seulist
 export(PRECAST, selectModel, selectModel.PRECASTObj,  IntegrateSpaData)
 
 export(ICM.EM,ICM.EM_structure, selectModel.SeqK_PRECAST_Object,

@@ -27,7 +27,7 @@ remotes::install_github("feiyoung/DataPRECAST")
 ```
 
 The package can be loaded with the command:
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 library(PRECAST)
 library(DataPRECAST)
 library(Seurat)
@@ -35,7 +35,7 @@ library(Seurat)
 
 ## Load the simulated data
 First, we load the the simulate three spatial transcriptomics data with Visium platform from `DataPRECAST` package.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 
 data("data_simu")
 data_simu ## a list including three Seurat object
@@ -50,7 +50,7 @@ head(data_simu[[1]])
 
 ### Prepare the PRECASTObject with preprocessing step.
 In this simulate dataset, we don't require to select genes, thus, we set `customGenelist=row.names(data_simu[[1]])`
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 
 ## Create 
 set.seed(2022)
@@ -59,7 +59,7 @@ PRECASTObj <-  CreatePRECASTObject(data_simu, customGenelist=row.names(data_simu
 
 ```
 ### Add the model setting
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## check the number of genes/features after filtering step
 PRECASTObj@seulist
 
@@ -72,7 +72,7 @@ PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, maxIter=30, verbose=T
 
 ### Fit PRECAST 
 For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$.  For convenience, we give a single K here.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ### Given K
 set.seed(2022)
 PRECASTObj <- PRECAST(PRECASTObj, K=7)
@@ -80,7 +80,7 @@ PRECASTObj <- PRECAST(PRECASTObj, K=7)
 ```
 
 Select a best model and use ARI to check the performance of clustering
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
 # PRECASTObj@resList <- resList
@@ -91,7 +91,7 @@ mclust::adjustedRandIndex(unlist(PRECASTObj@resList$cluster), unlist(true_cluste
 ```
 
 Integrate the two samples by the function `IntegrateSpaData`.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 
 seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
 seuInt 
@@ -100,7 +100,7 @@ seuInt
 
 ## Visualization
 Show the spatial scatter plot for clusters
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 p12 <- SpaPlot(seuInt, batch=NULL,point_size=2, combine=TRUE)
 p12
 # users can plot each sample by setting combine=FALSE
@@ -108,7 +108,7 @@ p12
 
 Show the spatial UMAP/tNSE RGB plot
 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 seuInt <- AddUMAP(seuInt) 
 SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
 
@@ -117,7 +117,7 @@ SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size
 ```
 
 Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 seuInt <- AddTSNE(seuInt, n_comp = 2) 
 library(patchwork)
 cols_cluster <- c("#E04D50", "#4374A5", "#F08A21","#2AB673", "#FCDDDE",  "#70B5B0", "#DFE0EE" ,"#D0B14C")
@@ -127,12 +127,12 @@ p1 + p2
 # It is noted that only sample batch 1 has cluster 4, and only sample batch 2 has cluster 7. 
 ```
 Show the UMAP plot based on the extracted features from PRECAST.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 dimPlot(seuInt, reduction = 'UMAP3', item='cluster', cols=cols_cluster, font_family='serif')
 ```
 
 Users can also use the visualization functions in Seurat package:
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 DimPlot(seuInt, reduction = 'position')
 DimPlot(seuInt, reduction = 'tSNE')
 ```
@@ -141,7 +141,7 @@ DimPlot(seuInt, reduction = 'tSNE')
 
 
 Combined differential expression analysis 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 dat_deg <- FindAllMarkers(seuInt)
 library(dplyr)
 n <- 2
@@ -160,6 +160,6 @@ head(top10)
 
 
 ## Session information
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 sessionInfo()
 ```

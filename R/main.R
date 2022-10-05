@@ -61,12 +61,12 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
           ", Sigma_diag=", Sigma_diag, ', mix_prop_heter=', mix_prop_heter)
   
   if(is.null(AdjList) && !is.null(posList))
-    AdjList <- lapply(posList, getAdj, platform=platform)
+    AdjList <- getAdjList(posList, platform=platform)
   if(any(sapply(AdjList, nrow)!=sapply(XList, nrow)))  
     stop('The dimension of Adj matrix does not match that of X!\n')
   
   if(is.null(Adjlist_car)) Adjlist_car <- AdjList
-  #XList <- lapply(XList, scale, scale=scale_flag)
+  
   Xmat <- NULL
   for(r in 1:r_max){
     Xmat <- rbind(Xmat, XList[[r]])
@@ -178,12 +178,12 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
           ", Sigma_diag=", Sigma_diag, ', mix_prop_heter=', mix_prop_heter)
   
   if(is.null(AdjList) && !is.null(posList))
-    AdjList <- lapply(posList, getAdj, platform=platform)
+    AdjList <- getAdjList(posList,  platform=platform)
   if(any(sapply(AdjList, nrow)!=sapply(XList, nrow)))  
     stop('The dimension of Adj matrix does not match that of X!\n')
   
   if(is.null(Adjlist_car)) Adjlist_car <- AdjList
-  #XList <- lapply(XList, scale, scale=scale_flag)
+ 
   Xmat <- NULL
   for(r in 1:r_max){
     Xmat <- rbind(Xmat, XList[[r]])
@@ -624,7 +624,16 @@ wpca <- function(X, q, weighted=T){
   return(out)
 }
 
-
+getAdjList <- function(posList, platform='Visium', ...){
+  
+  if(!inherits(posList, "list")) stop("posList must be a list consisting of matrix.")
+  if(tolower(platform) %in% c("st", "visium")){
+      AdjList <- pbapply::pblapply(posList, getAdj_reg, platform=platform)
+  }else{
+      AdjList <- pbapply::pblapply(posList, function(x, ...)getAdj_auto(x, ...))
+  }
+  return(AdjList)
+}
 
 
 

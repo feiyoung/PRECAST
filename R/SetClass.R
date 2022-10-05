@@ -219,14 +219,18 @@ gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1
 
 
 
-filter_spot <- function(seu, min_feature=0, assay="RNA"){ # each spots at least include 1 non-zero features
+filter_spot <- function(seu, min_feature=0, assay=NULL){ # each spots at least include 1 non-zero features
+  
+  if(is.null(assay)) assay <- DefaultAssay(seu)
   col_name <- paste0("nFeature_",assay)
   idx <- seu@meta.data[,col_name] > min_feature
   seu[, idx]
   # subset(seu, subset = nFeature_RNA > min_feature)
 }
 # filter_spot(seu, assay='PRE_CAST')
-filter_gene <- function(seu, min_spots=20, assay="RNA"){
+filter_gene <- function(seu, min_spots=20, assay= NULL){
+  
+  if(is.null(assay)) assay <- DefaultAssay(seu)
   if(sum(dim(seu[[assay]]@counts))!=0){
     gene_flag <- Matrix::rowSums(seu[[assay]]@counts>0)>min_spots
     return(seu[names(gene_flag), ])
@@ -318,8 +322,9 @@ setClass("PRECASTObj", slots=list(
 
 
 
-CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1, 
-                                   gene.number=2000, selectGenesMethod='SPARK-X', customGenelist=NULL, premin.spots = 20,  
+CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000, 
+                                selectGenesMethod='SPARK-X',numCores_sparkx=1,  
+                                customGenelist=NULL, premin.spots = 20,  
                                    premin.features=20, postmin.spots=15, postmin.features=15,
                               rawData.preserve=FALSE,verbose=TRUE){
   
@@ -327,14 +332,32 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST", numCores_sparkx=1
   #suppressMessages(require(Seurat))
   
   #Check the arguments
-  
+  # Check list object
   if(!inherits(seuList, "list")) stop("CreatePRECASTObject: check the argument: seuList! it must be a list.")
+  
+  # Check Seurat object
   flag <- sapply(seuList, function(x) !inherits(x, "Seurat"))
   if(any(flag)) stop("CreatePRECASTObject: check the argument: seuList! Each component of seuList must be a Seurat object.")
+  
+  # Check spatial coordinates for each object.
+  exist_spatial_coods <- function(seu){
+    flag_spatial <- all(c("row", "col") %in% colnames(seu@meta.data))
+    return(flag_spatial)
+  }
+  flag_spa <- sapply(seuList,  exist_spatial_coods)
+  if(any(!flag_spa)) stop("CreatePRECASTObject: check the argument: seuList! Each Seurat object in seuList must include  the spatial coordinates saved in the meta.data, named 'row' and 'col'!")
+  
+  
+  
+  # Check cores 
   if(numCores_sparkx<0) 
     stop("CreatePRECASTObject: check the argument: numCores_sparkx! It must be a positive integer.")
+ 
+  # Check customGenelist
   if(!is.null(customGenelist) && (!is.character(customGenelist))) 
     stop("CreatePRECASTObject: check the argument: customGenelist! It must be NULL or a character vector.")
+  
+  
   
   ## inheriting
   object <- new(
@@ -455,7 +478,17 @@ PRECAST <- function(PRECASTObj, K=NULL, q= 15){
   
   if(is.null(PRECASTObj@seulist)) stop("The slot seulist in PRECASTObj is NULL!")
   
-  XList <- lapply(PRECASTObj@seulist, function(x) Matrix::t(x[["RNA"]]@data))
+  ## Get normalized data 
+  get_norm_data <- function(seu, assay = NULL){
+    
+    if(is.null(assay)) assay <- DefaultAssay(seu)
+    
+    dat <- Matrix::t(seu[[assay]]@data)
+    return(dat)
+  }
+  XList <- lapply(PRECASTObj@seulist,  get_norm_data)
+  
+  ## Centering
   XList <- lapply(XList, scale, scale=FALSE)
   PRECASTObj@resList <- ICM.EM_structure(XList, K=K, q=q, AdjList = PRECASTObj@AdjList, 
                              parameterList = PRECASTObj@parameterList)

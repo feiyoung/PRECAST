@@ -9,7 +9,7 @@ are listed below.
 \section{Slots}{
 
 \describe{
-\item{\code{seuList}}{A list with Seurat object as component, representing the raw expression count matrix, spatial coordinates and meta data for eahc data batch, where the spatial coordinates information is saved in the metadata of Seurat, named "row" and "col" for eahc data batch.}
+\item{\code{seuList}}{A list with Seurat object as component, representing the raw expression count matrix, spatial coordinates and meta data for each data batch, where the spatial coordinates information is saved in the metadata of Seurat, named "row" and "col" for eahc data batch.}
 
 \item{\code{seulist}}{A Seurat list after the preprocessing step in preparation for PRECAST model.}
 
