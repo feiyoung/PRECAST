@@ -26,7 +26,7 @@ CreatePRECASTObject(seuList,  project = "PRECAST",  gene.number=2000,
 \item{verbose}{whether display the message in the creating process.}
 }
 \details{
-  seuList is a \link{list}  with Seurat object as component, and each Seruat object includes the raw expression count matrix, spatial coordinates and meta data for each data batch, where the spatial coordinates information must be saved in the metadata of Seurat, named "row" and "col" for each data batch.
+  seuList is a \link{list}  with Seurat object as component, and each Seurat object includes the raw expression count matrix, spatial coordinates and meta data for each data batch, where the spatial coordinates information must be saved in the metadata of Seurat, named "row" and "col" for each data batch.
 }
 \value{
    Returns PRECAST object prepared for PRECAST model fitting. See \link{PRECASTObj-class} for more details.
