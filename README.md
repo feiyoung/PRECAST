@@ -107,5 +107,5 @@ In detail, seuList is a list  with Seurat object as component, and each Seurat o
 
 * Add the [data](https://github.com/feiyoung/PRECAST/tree/main/vignettes_data) used in [Package Website](https://feiyoung.github.io/PRECAST/index.html).
 
-* Add the wrapper functions for different common-used R objects in the spatial transcriptomics, such as spatialExperiment, etc; see the functions `spe2seurat`, `spe2seuratList`,`seu2seuList` and their help file in our developed [SRTtools R package](https://github.com/feiyoung/SRTtools). This R package is designed to provide auxiliary functions for the serirs of our developed methods, such as [SC-MEB](https://github.com/feiyoung/SC.MEB), [DR-SC](https://github.com/feiyoung//DR.SC) and [PRECAST](https://github.com/feiyoung/PRECAST).
+* Add the wrapper functions for different common-used R objects in the spatial transcriptomics, such as spatialExperiment, etc; see the functions `spe2seurat`, `spe2seuratList`,`seu2seuList` and their help file in our developed [SRTtools R package](https://github.com/feiyoung/SRTtools). This R package is designed to provide auxiliary functions for the serirs of our developed methods, such as [SC-MEB](https://github.com/Shufeyangyi2015310117/SC.MEB), [DR-SC](https://github.com/feiyoung//DR.SC) and [PRECAST](https://github.com/feiyoung/PRECAST).
 
