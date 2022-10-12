@@ -319,6 +319,27 @@ setClass("PRECASTObj", slots=list(
   resList = "ANY",
   project = "character"
 ) )
+## To show which content when output liger object
+setMethod(
+  f = "show",
+  signature = "PRECASTObj",
+  definition = function(object) {
+    cat(
+      "An object of class",
+      class(object),
+      "\n with",
+      length(object@seulist),
+      "datasets and ",
+      sum(sapply(object@seulist, ncol)),
+      "spots in total, with spots for each dataset: ",
+      sapply(object@seulist, ncol),
+      "\n",
+      nrow(object@seulist[[1]]),
+      "common variable genes selected\n"
+    )
+    invisible(x = NULL)
+  }
+)
 
 
 
