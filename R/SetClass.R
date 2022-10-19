@@ -21,7 +21,7 @@ AddUMAP <- function(seuInt, n_comp=3, reduction='PRECAST', assay='PRE_CAST', see
   if(is.null(seuInt@reductions[[reduction]])) 
     stop(paste0("The  reduction  ", reduction, " does not exist, please change reduction or run IntegrateSpaData first!") )
   set.seed(seed)
-  hZ_umap <- scater::calculateTSNE(t(seuInt@reductions[[reduction]]@cell.embeddings), ncomponents=n_comp)
+  hZ_umap <- scater::calculateUMAP(t(seuInt@reductions[[reduction]]@cell.embeddings), ncomponents=n_comp)
   if(n_comp==3){
     seuInt <- Add_embed(hZ_umap, seuInt, embed_name = "UMAP3", assay = assay)
   }else if(n_comp==2){

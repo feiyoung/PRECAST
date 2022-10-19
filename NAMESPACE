@@ -45,7 +45,7 @@ importFrom(Matrix, t, sparseMatrix)
 importFrom(mclust, Mclust, mclustBIC)
 #export(Mclust, mclustBIC)
 
-importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, 
+importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, FindVariableFeatures,  
            "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData)
 # export(ScaleData)
 

@@ -1,4 +1,13 @@
 # PRECAST
+
+=========================================================================
+<!-- badges: start -->
+
+[![](https://www.r-pkg.org/badges/version-ago/PRECAST)](https://cran.r-project.org/package=PRECAST)
+[![](https://cranlogs.r-pkg.org/badges/PRECAST?color=orange)](https://cran.r-project.org/package=PRECAST)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/PRECAST?color=orange)](https://cran.r-project.org/package=PRECAST)
+<!-- badges: end -->
+
 PRECAST: a probabilistic embedding and clustering with alignment for spatial transcriptomics data integration.
 
 PRECAST  is a package for integrating and analyzing multiple spatially resolved transcriptomics (SRT) datasets, developed by the Jin Liu's lab. It unifies spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially shared cell/domain clusters across datasets.
