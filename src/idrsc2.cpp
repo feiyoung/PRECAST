@@ -400,7 +400,7 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
     MATTYPE Uy1, U1;
     VECTYPE U1min;
     uvec y1_u;
-    ivec y = conv_to< ivec >::from(yf(r));
+    // ivec y = conv_to< ivec >::from(yf(r));
     n = Xf(r).n_rows; // tmp object
     
     // ivec y1;
@@ -416,12 +416,25 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
       if(Sp2){
         Muv(r) = get_Vmean(Vf(r),  Adjf_car(r));
         // cout<<"iter="<< iter <<endl;
-        for(i=0; i<n; i++){  // O(nq^2*maxIter_ICM)
-          
-          Vf(r).row(i)= (XSW(r).slice(y(i)-1).row(i) - (Mu0.row(y(i)-1))* WtSW(r).slice(y(i)-1) +  Muv(r).row(i)* (Psi0.slice(r)).i())*
-            inv_sympd(WtSW(r).slice(y(i)-1) + (Psi0.slice(r)).i());
-          
+        // for(i=0; i<n; i++){  // O(nq^2*maxIter_ICM)
+        // 
+        //   Vf(r).row(i)= (XSW(r).slice(y1_u(i)).row(i) - (Mu0.row(y1_u(i)))* WtSW(r).slice(y1_u(i)) +  Muv(r).row(i)* (Psi0.slice(r)).i())*
+        //     inv_sympd(WtSW(r).slice(y1_u(i)) + (Psi0.slice(r)).i());
+        // 
+        // }
+        
+        for(k = 0; k<K; ++k){
+          uvec index_k = find(y1_u == k);
+          int nk = index_k.n_elem;
+          // Rprintf("k= %d,  nk = %d ! \n", k, nk);
+          if(nk > 0){// if the number of spots whose cluster is k is greater than 0
+            Vf(r).rows(index_k) = (XSW(r).slice(k).rows(index_k)- repmat(Mu0.row(k), nk,1) * WtSW(r).slice(k) + Muv(r).rows(index_k)*Psi0.slice(r).i()) *
+              inv_sympd(WtSW(r).slice(k) + Psi0.slice(r).i());
+          }
+
         }
+        
+        
         // Since energy_V is computationally high, we do not caculate it.
         // Energy(iter) = energy_V(X, V, W0, Lam_vec0, Muv, Mu0, Sigma0,Psi0,y, Cki) + sum(Umin); // 
         

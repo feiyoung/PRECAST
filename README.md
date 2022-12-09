@@ -6,6 +6,7 @@
 [![](https://www.r-pkg.org/badges/version-ago/PRECAST)](https://cran.r-project.org/package=PRECAST)
 [![](https://cranlogs.r-pkg.org/badges/PRECAST?color=orange)](https://cran.r-project.org/package=PRECAST)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/PRECAST?color=orange)](https://cran.r-project.org/package=PRECAST)
+[![DOI](https://zenodo.org/badge/500674213.svg)](https://zenodo.org/badge/latestdoi/500674213)
 <!-- badges: end -->
 
 PRECAST: a probabilistic embedding and clustering with alignment for spatial transcriptomics data integration.
