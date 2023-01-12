@@ -266,8 +266,13 @@ selectIntFeatures <- function(seulist, spaFeatureList, IntFeatures=2000){
   
   
   # Remove zero-variance genes
-  genes_zeroVar <- unique(unlist(lapply(seulist, function(x) 
-    geneUnion[pbapply::pbapply(x@assays$RNA@counts[geneUnion,],1, sd)==0])))
+  genes_zeroVar <- unique(unlist(lapply(seulist, function(x){
+    assay <- DefaultAssay(x)
+    geneUnion[Matrix::rowSums(x[[assay]]@counts[geneUnion,])==0]
+    })))
+  
+    
+    #geneUnion[pbapply::pbapply(x@assays$RNA@counts[geneUnion,],1, sd)==0])))
   gene_Var <- setdiff(geneUnion, genes_zeroVar)
   
   # sort by number of datasets that identified this gene as SVG.
