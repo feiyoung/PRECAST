@@ -13,7 +13,7 @@ PRECAST: a probabilistic embedding and clustering with alignment for spatial tra
 
 PRECAST  is a package for integrating and analyzing multiple spatially resolved transcriptomics (SRT) datasets, developed by the Jin Liu's lab. It unifies spatial factor analysis simultaneously with spatial clustering and embedding alignment, requiring only partially shared cell/domain clusters across datasets.
 
-Check out our [bioRxiv paper](https://doi.org/10.1101/2022.06.26.497672) and  our [Package Website](https://feiyoung.github.io/PRECAST/index.html) for a more complete description of the methods and analyses. 
+Check out our [Nature Comunications paper](https://www.nature.com/articles/s41467-023-35947-w) and  our [Package Website](https://feiyoung.github.io/PRECAST/index.html) for a more complete description of the methods and analyses. 
 
 PRECAST can be used to compare and contrast experimental datasets in a variety of contexts, for instance:
 

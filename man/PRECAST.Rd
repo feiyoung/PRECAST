@@ -19,6 +19,10 @@
   Return a revised PRECASTObj object.
 }
 
+\references{
+\href{https://www.nature.com/articles/s41467-023-35947-w}{Wei Liu, Liao, X., Luo, Z. et al, Jin Liu* (2023). Probabilistic embedding, clustering, and alignment for integrating spatial transcriptomics data with PRECAST. Nature Communications, 14, 296}
+}
+
 \author{
   Wei Liu
 }

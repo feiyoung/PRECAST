@@ -798,45 +798,88 @@ Rcpp:: List idrsc2Cpp(const Rcpp::List& Xlist, const Rcpp::List& Adjlist, const 
     }
     
     
-    
-    //set parallel structure object
-    par_iDRSC2 parObj(Xf, Adjf, Adjf_car, yf,  Mu0, Sigma0, W_int,  Lam0, Psi0,
+    if(lengthK==1){
+      field<ivec> yf_int(r_max);
+      for (int r = 0; r < r_max; r++){
+        ivec tmp_yf = yf(r).col(0);
+        yf_int(r) = tmp_yf;
+      }
+      MATTYPE Mu_int = Mu0(0);
+      MATTYPE Lam_int = Lam0;
+      CUBETYPE Psi_int = Psi0;   
+      VECTYPE alpha_int = alpha0(0);
+      CUBETYPE Sigma_int = Sigma0(0);
+      Objidrsc2 output = idrsc2(Xf, Adjf, Adjf_car, yf_int,
+                         Mu_int, Sigma_int,  W_int,
+                         Lam_int, Psi_int,
+                         alpha_int,  beta0,  beta_grid,
+                         maxIter_ICM,  maxIter, epsLogLik, verbose,
+                         homo, homoClust, Sigma_diag, mix_prop_heter, Sp2); 
+      
+      List Objidrsc2Rcpp(lengthK);
+      
+        // output return value
+        Objidrsc2Rcpp[0] = List::create(
+          Rcpp::Named("cluster") = output.yf,
+          Rcpp::Named("hZ") = output.Ezz,
+          Rcpp::Named("hV") = output.Vf,
+          Rcpp::Named("Rf") = output.Rf,
+          Rcpp::Named("beta") = output.beta0,
+          Rcpp::Named("Mu") = output.Mu0,
+          Rcpp::Named("Sigma") = output.Sigma0,
+          Rcpp::Named("Psi") = output.Psi0,
+          Rcpp::Named("W") = output.W0,
+          Rcpp::Named("Lam") = output.Lam0,
+          Rcpp::Named("loglik") = output.loglik,
+          Rcpp::Named("loglik_seq") = output.loglik_seq);
+      
+      
+      return(Objidrsc2Rcpp);
+      
+      
+    }else{
+      //set parallel structure object
+      par_iDRSC2 parObj(Xf, Adjf, Adjf_car, yf,  Mu0, Sigma0, W_int,  Lam0, Psi0,
                         alpha0, beta0, beta_grid, maxIter_ICM, maxIter, epsLogLik, verbose,
                         homo, homoClust, Sigma_diag, mix_prop_heter, Sp2, maxK, minK);
-
-	const int n_thread = coreNum;
-	std::vector<std::thread> threads(n_thread);
-    
-	for (int i_thread = 0; i_thread < n_thread; i_thread++){
-		threads[i_thread] = std::thread(&par_iDRSC2::update_by_thread_idrsc2, &parObj, i_thread);
-	}
-	for (int i = 0; i < n_thread; i++){
-		threads[i].join();
-	}
-
-    
-    List Objidrsc2Rcpp(maxK-minK+1);
-    
-    
-    for (int k = 0; k < maxK - minK + 1; k++){
+      
+      const int n_thread = coreNum;
+      std::vector<std::thread> threads(n_thread);
+      
+      for (int i_thread = 0; i_thread < n_thread; i_thread++){
+        threads[i_thread] = std::thread(&par_iDRSC2::update_by_thread_idrsc2, &parObj, i_thread);
+      }
+      for (int i = 0; i < n_thread; i++){
+        threads[i].join();
+      }
+      
+      
+      List Objidrsc2Rcpp(maxK-minK+1);
+      
+      
+      for (int k = 0; k < maxK - minK + 1; k++){
         // output return value
         Objidrsc2Rcpp[k] = List::create(
-        Rcpp::Named("cluster") = parObj.output[k].yf,
-        Rcpp::Named("hZ") = parObj.output[k].Ezz,
-        Rcpp::Named("hV") = parObj.output[k].Vf,
-        Rcpp::Named("Rf") = parObj.output[k].Rf,
-        Rcpp::Named("beta") = parObj.output[k].beta0,
-        Rcpp::Named("Mu") = parObj.output[k].Mu0,
-        Rcpp::Named("Sigma") = parObj.output[k].Sigma0,
-        Rcpp::Named("Psi") = parObj.output[k].Psi0,
-        Rcpp::Named("W") = parObj.output[k].W0,
-        Rcpp::Named("Lam") = parObj.output[k].Lam0,
-        Rcpp::Named("loglik") = parObj.output[k].loglik,
-        Rcpp::Named("loglik_seq") = parObj.output[k].loglik_seq);
+          Rcpp::Named("cluster") = parObj.output[k].yf,
+          Rcpp::Named("hZ") = parObj.output[k].Ezz,
+          Rcpp::Named("hV") = parObj.output[k].Vf,
+          Rcpp::Named("Rf") = parObj.output[k].Rf,
+          Rcpp::Named("beta") = parObj.output[k].beta0,
+          Rcpp::Named("Mu") = parObj.output[k].Mu0,
+          Rcpp::Named("Sigma") = parObj.output[k].Sigma0,
+          Rcpp::Named("Psi") = parObj.output[k].Psi0,
+          Rcpp::Named("W") = parObj.output[k].W0,
+          Rcpp::Named("Lam") = parObj.output[k].Lam0,
+          Rcpp::Named("loglik") = parObj.output[k].loglik,
+          Rcpp::Named("loglik_seq") = parObj.output[k].loglik_seq);
+      }
+      
+      
+      return(Objidrsc2Rcpp);
     }
     
     
-  return(Objidrsc2Rcpp);
+    
 }
 
 
