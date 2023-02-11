@@ -10,7 +10,7 @@
                     fill_col='white', ncol=2, combine = TRUE, title_name="Sample")
 }
 \arguments{
-  \item{seuInt}{an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".}
+  \item{seuInt}{an object named "Seurat".}
   \item{batch}{an optional positive integer or integer vector, specify the batches to be extracted. Users can check the batches' names by \code{unique(seuInt$batch)}.}
   \item{item}{an optional string, which column is plotted in the meta data of seuInt. Users can check the meta data by \code{head(seuInt@meta.data)}.}
   \item{point_size}{the size of point in the scatter plot.}
