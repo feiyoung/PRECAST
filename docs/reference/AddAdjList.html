@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4</span>
       </span>
     </div>
 
@@ -76,12 +76,16 @@
     <h2>Arguments</h2>
     <dl><dt>PRECASTObj</dt>
 <dd><p>a PRECASTObj object created by <a href="CreateiDRSCObject.html">CreatePRECASTObject</a>.</p></dd>
-<dt>type</dt>
+
+  <dt>type</dt>
 <dd><p>an optional string, specify which type of neighbors' definition. Here we provide two definition: one is "fixed_distance", the other is "fixed_number".</p></dd>
-<dt>platform</dt>
-<dd><p>a string, specify the platform of the provided data, default as "Visium". There are many platforms to be supported, including ("Visuim", "ST", "SeqFISH", 'merFISH', 'slide-seqv2', 'seqscope', "HDST"), which means there are spatial coordinates information in the metadata of PRECASTObj. The platform helps to calculate the adjacency matrix by defining the neighborhoods when type="fixed_distance" is chosen.</p></dd>
-<dt>...</dt>
+
+  <dt>platform</dt>
+<dd><p>a string, specify the platform of the provided data, default as "Visium". There are more platforms to be chosen, including "Visuim", "ST" and "Other_SRT" ("Other_SRT" represents the other SRT platforms except for 'Visium' and 'ST'), which means there are spatial coordinates information in the metadata of PRECASTObj. The platform helps to calculate the adjacency matrix by defining the neighborhoods when type="fixed_distance" is chosen.</p></dd>
+
+  <dt>...</dt>
 <dd><p>other arguments to be passed to getAdj, getAdj_auto  and <a href="getAdj_fixedNumber.html">getAdj_fixedNumber</a> funciton.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -89,7 +93,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Return a revised PRECASTObj object by adding the adjacency matrix list.</p>
+    
+
+<p>Return a revised PRECASTObj object by adding the adjacency matrix list.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -116,7 +122,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

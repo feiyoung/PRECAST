@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4</span>
       </span>
     </div>
 
@@ -80,49 +80,71 @@
     <h2>Arguments</h2>
     <dl><dt>XList</dt>
 <dd><p>an M-length list consisting of multiple matrices with class <code>dgCMatrix</code> or <code>matrix</code> that specify the log-normalization gene expression matrix for each data sample used for iDR-SC model.</p></dd>
-<dt>q</dt>
+
+  <dt>q</dt>
 <dd><p>a positive integer, specify the number of latent features to be extracted, default as 15.</p></dd>
-<dt>K</dt>
+
+  <dt>K</dt>
 <dd><p>a positive  integer allowing scalar or vector, specify the number of clusters in model fitting.</p></dd>
-<dt>AdjList</dt>
+
+ <dt>AdjList</dt>
 <dd><p>an M-length list of sparse matrices with class <code>dgCMatrix</code>, specify the adjacency matrix used for Potts model in iDR-SC. We provide this interface for those users  who would like to define the adjacency matrix by their own.</p></dd>
-<dt>Adjlist_car</dt>
+
+ <dt>Adjlist_car</dt>
 <dd><p>an M-length list of sparse matrices with class <code>dgCMatrix</code>, specify the adjacency matrix used for CAR model in iDR-SC, default as AdjList in the Potts model. We provide this interface for those users  who would like to use the different adjacency matrix in CAR model.</p></dd>
-<dt>posList</dt>
+
+ <dt>posList</dt>
 <dd><p>an M-length list composed by spatial coordinate matrix for each data sample.</p></dd>
-<dt>platform</dt>
+
+ <dt>platform</dt>
 <dd><p>a string, specify the platform of the provided data, default as "Visium".
   There are many platforms to be supported, including ("Visuim", "ST", "SeqFISH", 'merFISH', 'slide-seqv2', 'seqscope', "HDST"). If AdjList is not given, the The platform helps to calculate the adjacency matrix by defining the neighbors.</p></dd>
-<dt>beta_grid</dt>
+ 
+  <dt>beta_grid</dt>
 <dd><p>an optional vector of positive value, the candidate set of the smoothing parameter to be searched by the grid-search optimization approach.</p></dd>
-<dt>maxIter_ICM</dt>
+
+  <dt>maxIter_ICM</dt>
 <dd><p>an optional positive value, represents the maximum iterations of ICM.</p></dd>
-<dt>maxIter</dt>
+
+  <dt>maxIter</dt>
 <dd><p>an optional positive value, represents the maximum iterations of EM.</p></dd>
-<dt>epsLogLik</dt>
+
+  <dt>epsLogLik</dt>
 <dd><p>an optional positive vlaue, tolerance vlaue of relative variation rate of the observed pseudo log-loglikelihood value, defualt as '1e-5'.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>an optional logical value, whether output the information of the ICM-EM algorithm.</p></dd>
-<dt>mix_prop_heter</dt>
+
+  <dt>mix_prop_heter</dt>
 <dd><p>an optional logical value, specify whether betar are distict, default as <code>TRUE</code>.</p></dd>
-<dt>Sigma_equal</dt>
+
+  <dt>Sigma_equal</dt>
 <dd><p>an optional logical value, specify whether Sigmaks are equal, default as FALSE.</p></dd>
-<dt>Sigma_diag</dt>
+
+  <dt>Sigma_diag</dt>
 <dd><p>an optional logical value, specify whether Sigmaks are diagonal matrices, default as <code>TRUE</code>.</p></dd>
-<dt>error_heter</dt>
+
+  <dt>error_heter</dt>
 <dd><p>an optional logical value, whether use the heterogenous error for DR-SC model, default as <code>TRUE</code>. If <code>error_heter=FALSE</code>, then the homogenuous error is used for probabilistic PCA model in iDR-SC.</p></dd>
-<dt>Sp2</dt>
+
+  <dt>Sp2</dt>
 <dd><p>an optional logical value, whether add the ICAR model component in the model, default as TRUE. We provide this interface for those users  who don't want to include the  ICAR model.</p></dd>
-<dt>wpca_int</dt>
+
+  <dt>wpca_int</dt>
 <dd><p>an optional logical value, means whether use the weighted PCA to obtain the initial values of loadings and other paramters, default as <code>FALSE</code> which means the ordinary PCA  is used.</p></dd>
-<dt>int.model</dt>
+
+  <dt>int.model</dt>
 <dd><p>an optional string, specify which Gaussian mixture model is used in evaluting the initial values for PRECAST, default as "EEE"; and see <code>Mclust</code> for more models' names.</p></dd>
-<dt>seed</dt>
+
+  <dt>seed</dt>
 <dd><p>an optional integer, the random seed in fitting PRECAST model.</p></dd>
-<dt>coreNum</dt>
+
+  <dt>coreNum</dt>
 <dd><p>an optional positive integer, means the number of thread used in parallel computating.</p></dd>
-<dt>coreNum_int</dt>
+
+  <dt>coreNum_int</dt>
 <dd><p>an optional positive integer, means the number of cores used in parallel computation for initial values when <code>K</code> is a vector, default as same as <code>coreNum</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -130,31 +152,43 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>ICM.EM returns a <a href="https://rdrr.io/r/base/list.html" class="external-link">list</a> with class "SeqKiDRSC_Object" with the number of components equal to the length of <code>K</code>, where each component includes the model fitting results for one number of cluster and is a list consisting of following components:</p>
+    
+
+<p>ICM.EM returns a <a href="https://rdrr.io/r/base/list.html" class="external-link">list</a> with class "SeqKiDRSC_Object" with the number of components equal to the length of <code>K</code>, where each component includes the model fitting results for one number of cluster and is a list consisting of following components:</p>
 <dl><dt>cluster</dt>
 <dd><p>an M-length list that includes the inferred class labels for each data sample.</p></dd>
+
 <dt>hZ</dt>
 <dd><p>an M-length list that includes the batch corrected low-dimensional embeddings for each data sample.</p></dd>
+
 <dt>hV</dt>
 <dd><p>an M-length list that includes the estimate the ICAR component for each sample.</p></dd>
+
 <dt>Rf</dt>
 <dd><p>an M-length list that includes the posterior probability of domain clusters for each sample.</p></dd>
+
 <dt>beta</dt>
 <dd><p>an M-length vector that includes the estimated smoothing parameters for each sample.</p></dd>
+
 <dt>Mu</dt>
 <dd><p>mean vectors of mixtures components.</p></dd>
+
 <dt>Sigma</dt>
 <dd><p>covariance matrix of mixtures components.</p></dd>
+
 <dt>W</dt>
 <dd><p>estimated loading matrix</p></dd>
+
 <dt>Lam</dt>
 <dd><p>estimated variance of errors in probabilistic PCA model</p></dd>
+
 <dt>loglik</dt>
 <dd><p>pseudo observed log-likelihood.</p></dd>
+
 </dl></div>
     <div id="references">
     <h2>References</h2>
-    <p><a href="https://www.biorxiv.org/content/10.1101/2021.12.25.474153v4" class="external-link">Wei Liu, Xu Liao, Yi Yang, Huazhen Lin, Joe Yeong, Xiang Zhou, Xingjie Shi and Jin Liu. (2022) Joint dimension reduction and clustering analysis for single-cell RNA-seq and spatial transcriptomics data</a></p>
+    <p><a href="https://www.nature.com/articles/s41467-023-35947-w" class="external-link">Wei Liu, Liao, X., Luo, Z. et al, Jin Liu* (2023). Probabilistic embedding, clustering, and alignment for integrating spatial transcriptomics data with PRECAST. Nature Communications, 14, 296</a></p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -197,15 +231,15 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> Finish ICM step! </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iter = 2, loglik= -59510.035156, dloglik=0.999972 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> predict Y and V! </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 34.843510 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 4.917973 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 12.547775 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 3.939711 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Finish ICM step! </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter = 3, loglik= -52992.929688, dloglik=0.109513 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter = 3, loglik= -53027.710938, dloglik=0.108928 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> predict Y and V! </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 55.378534 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 3.051830 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 7.640621 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> diff Energy = 1.688112 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Finish ICM step! </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iter = 4, loglik= -50844.128906, dloglik=0.040549 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iter = 4, loglik= -50711.550781, dloglik=0.043678 </span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>
@@ -221,7 +255,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

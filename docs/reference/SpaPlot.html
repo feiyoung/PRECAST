@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4</span>
       </span>
     </div>
 
@@ -77,29 +77,41 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>seuInt</dt>
-<dd><p>an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".</p></dd>
-<dt>batch</dt>
+<dd><p>an object named "Seurat".</p></dd>
+
+  <dt>batch</dt>
 <dd><p>an optional positive integer or integer vector, specify the batches to be extracted. Users can check the batches' names by <code>unique(seuInt$batch)</code>.</p></dd>
-<dt>item</dt>
+
+  <dt>item</dt>
 <dd><p>an optional string, which column is plotted in the meta data of seuInt. Users can check the meta data by <code>head(seuInt@meta.data)</code>.</p></dd>
-<dt>point_size</dt>
+
+  <dt>point_size</dt>
 <dd><p>the size of point in the scatter plot.</p></dd>
-<dt>text_size</dt>
+
+  <dt>text_size</dt>
 <dd><p>the text size in the plot.</p></dd>
-<dt>cols</dt>
+
+  <dt>cols</dt>
 <dd><p>colors used in the plot</p></dd>
-<dt>font_family</dt>
+
+  <dt>font_family</dt>
 <dd><p>the font family used for the plot, default as Times New Roman.</p></dd>
-<dt>border_col</dt>
+
+  <dt>border_col</dt>
 <dd><p>the border color in the plot.</p></dd>
-<dt>fill_col</dt>
+
+  <dt>fill_col</dt>
 <dd><p>the  color used in backgroup.</p></dd>
-<dt>ncol</dt>
+
+  <dt>ncol</dt>
 <dd><p>the number of columns in the layout of plots.</p></dd>
-<dt>combine</dt>
+
+  <dt>combine</dt>
 <dd><p>an optional logical value, whether plot all on a figure. If TRUE, all figures are plotted; otherwise, return a list with each plot as component.</p></dd>
-<dt>title_name</dt>
+
+  <dt>title_name</dt>
 <dd><p>an optional string, title name in the plot.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -107,7 +119,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Return a ggplot2 object or list of ggplots objects.</p>
+    
+
+<p>Return a ggplot2 object or list of ggplots objects.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -147,7 +161,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

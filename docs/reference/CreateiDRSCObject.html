@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4</span>
       </span>
     </div>
 
@@ -69,52 +69,98 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">CreatePRECASTObject</span><span class="op">(</span><span class="va">seuList</span>,  project <span class="op">=</span> <span class="st">"PRECAST"</span>, numCores_sparkx<span class="op">=</span><span class="fl">1</span>, 
-                gene.number<span class="op">=</span><span class="fl">2000</span>,selectGenesMethod<span class="op">=</span><span class="st">'SPARK-X'</span>, customGenelist<span class="op">=</span><span class="cn">NULL</span>, 
-                premin.spots <span class="op">=</span> <span class="fl">20</span>,premin.features<span class="op">=</span><span class="fl">20</span>, postmin.spots<span class="op">=</span><span class="fl">15</span>, 
-                postmin.features<span class="op">=</span><span class="fl">15</span>, rawData.preserve<span class="op">=</span><span class="cn">FALSE</span>,verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">CreatePRECASTObject</span><span class="op">(</span><span class="va">seuList</span>,  project <span class="op">=</span> <span class="st">"PRECAST"</span>,  gene.number<span class="op">=</span><span class="fl">2000</span>, 
+                    selectGenesMethod<span class="op">=</span><span class="st">'SPARK-X'</span>,numCores_sparkx<span class="op">=</span><span class="fl">1</span>,  
+                    customGenelist<span class="op">=</span><span class="cn">NULL</span>, premin.spots <span class="op">=</span> <span class="fl">20</span>,  
+                    premin.features<span class="op">=</span><span class="fl">20</span>, postmin.spots<span class="op">=</span><span class="fl">15</span>, postmin.features<span class="op">=</span><span class="fl">15</span>,
+                              rawData.preserve<span class="op">=</span><span class="cn">FALSE</span>,verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>seuList</dt>
-<dd><p>a list consisting of Seurat objects, where each object is a SRT data batch.</p></dd>
+<dd><p>a list consisting of Seurat objects, where each object is a SRT data batch. The default assay of each Seurat object will be used for data preprocessing and followed model fitting. The specified format about seuList argument can be referred to the details and example.</p></dd>
+
 <dt>project</dt>
 <dd><p>An optional string, name of the project, default as "PRECAST".</p></dd>
-<dt>numCores_sparkx</dt>
-<dd><p>an optional integer, specify the number of CPU cores in SPARK package to use when selecting spatial genes.</p></dd>
+
 <dt>gene.number</dt>
 <dd><p>an optional integer, the number of top spatially variable genes (SVGs) or highly variable  genes (HVGs) to be chosen.</p></dd>
+
 <dt>selectGenesMethod</dt>
 <dd><p>an optional integer, the method to select genes for each sample. It supports 'SPARK-X' and 'HVGs' to select genes now. Users can provide self-selected genes using customGenelist argument.</p></dd>
+
+<dt>numCores_sparkx</dt>
+<dd><p>an optional integer, specify the number of CPU cores in SPARK package to use when selecting spatial genes.</p></dd>
+
 <dt>customGenelist</dt>
-<dd><p>an optional string vector, the list of user specified genes to be used for PRECAST model fitting. If this argument is given, SVGs will not be selected.</p></dd>
+<dd><p>an optional string vector, the list of user specified genes to be used for PRECAST model fitting. If this argument is given, SVGs/HVGs will not be selected.</p></dd>
+
 <dt>premin.spots</dt>
 <dd><p>An optional integer, the features (genes) are retained in raw data filtering step with at least premin.spots number of spots, default is 20.</p></dd>
+
 <dt>premin.features</dt>
 <dd><p>An optional integer, the locations are retained in raw data filtering step with at least premin.features number of  nonzero-count features (genes), default is 20.</p></dd>
+
 <dt>postmin.spots</dt>
 <dd><p>An optional integer, the features (genes) are retained in filtering step after common genes selected among all data batches with at least premin.spots number of spots, default is 15.</p></dd>
+
 <dt>postmin.features</dt>
 <dd><p>An optional integer, the locations are retained in filtering step after common genes selected among all data batches  with at least premin.features number of  nonzero-count features (genes), default is 15.</p></dd>
+
 <dt>rawData.preserve</dt>
 <dd><p>An optional logical value, whether preserve the raw seuList data.</p></dd>
+
 <dt>verbose</dt>
 <dd><p>whether display the message in the creating process.</p></dd>
+
 </dl></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>seuList is a <a href="https://rdrr.io/r/base/list.html" class="external-link">list</a>  with Seurat object as component, and each Seurat object includes the raw expression count matrix, spatial coordinates and meta data for each data batch, where the spatial coordinates information must be saved in the metadata of Seurat, named "row" and "col" for each data batch.</p>
+    </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns PRECAST object prepared for PRECAST model fitting.</p>
+    
+
+<p>Returns PRECAST object prepared for PRECAST model fitting. See <a href="PRECASTObj.html">PRECASTObj-class</a> for more details.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></span>
+<span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>package ‘Seurat’ was built under R version 4.1.3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching SeuratObject</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching sp</span>
 <span class="r-in">  <span class="va">seuList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span></span>
+<span class="r-in">  <span class="co">## Check the input of seuList for create PRECAST object.</span></span>
+<span class="r-in">  <span class="co">## Check the default assay for each data batch</span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">seuList</span>, <span class="va">DefaultAssay</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "RNA"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "RNA"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in">  <span class="co">## Check the spatial coordinates in the meta data named "row" and "col".</span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">meta.data</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         orig.ident nCount_RNA nFeature_RNA row col true_cluster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cell1_1      cell1      10004           55   1   1            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cell1_2      cell1      12614           54   2   1            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cell1_3      cell1      18233           57   3   1            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cell1_4      cell1       1726           50   4   1            7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cell1_5      cell1       3451           53   5   1            7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cell1_6      cell1     134457           60   6   1            6</span>
+<span class="r-in">  <span class="co">## Then create PRECAST object using this seuList.</span></span>
+<span class="r-in">  <span class="co">## For convenience, we show the  user-specified genes' list for creating PRECAST object.</span></span>
+<span class="r-in">  <span class="co">## Users can use SVGs from SPARK-X or HVGs.</span></span>
 <span class="r-in">  <span class="va">PRECASTObj2</span> <span class="op">&lt;-</span> <span class="fu">CreatePRECASTObject</span><span class="op">(</span><span class="va">seuList</span>, </span>
 <span class="r-in">   customGenelist<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                  | 0 % ~calculating    |+++++++++++++++++++++++++                         | 50% ~00s            |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                  | 0 % ~calculating    |+++++++++++++++++++++++++                         | 50% ~00s            |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  </span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 </code></pre></div>
@@ -131,7 +177,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
