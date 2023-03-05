@@ -20,8 +20,8 @@ CreatePRECASTObject(seuList,  project = "PRECAST",  gene.number=2000,
 \item{customGenelist}{an optional string vector, the list of user specified genes to be used for PRECAST model fitting. If this argument is given, SVGs/HVGs will not be selected.}
 \item{premin.spots}{An optional integer, the features (genes) are retained in raw data filtering step with at least premin.spots number of spots, default is 20.}
 \item{premin.features}{An optional integer, the locations are retained in raw data filtering step with at least premin.features number of  nonzero-count features (genes), default is 20.}
-\item{postmin.spots}{An optional integer, the features (genes) are retained in filtering step after common genes selected among all data batches with at least premin.spots number of spots, default is 15.}
-\item{postmin.features}{An optional integer, the locations are retained in filtering step after common genes selected among all data batches  with at least premin.features number of  nonzero-count features (genes), default is 15.}
+\item{postmin.spots}{An optional integer, the features (genes) are retained in filtering step after common genes selected among all data batches with at least postmin.spots number of spots, default is 15.}
+\item{postmin.features}{An optional integer, the locations are retained in filtering step after common genes selected among all data batches  with at least postmin.features number of  nonzero-count features (genes), default is 15.}
 \item{rawData.preserve}{An optional logical value, whether preserve the raw seuList data.}
 \item{verbose}{whether display the message in the creating process.}
 }

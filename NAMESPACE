@@ -20,7 +20,8 @@ export(ICM.EM,ICM.EM_structure, selectModel.SeqK_PRECAST_Object,
        getAdj_reg, getAdj_fixedNumber)
 
 export(coordinate_rotate, firstup, SpaPlot,dimPlot,
-       plot_RGB, plot_scatter, volinPlot, boxPlot, doHeatmap, featurePlot)
+       plot_RGB, plot_scatter, volinPlot, boxPlot, doHeatmap, featurePlot,
+       drawFigs, chooseColors)
 
 importFrom(DR.SC,getAdj_auto, getAdj_manual, getAdj, RunWPCA, read10XVisium)
 # export(getAdj, getAdj_manual, getAdj_auto, RunWPCA, read10XVisium)
@@ -43,12 +44,15 @@ importFrom(GiRaF, sampler.mrf)
 importFrom(MASS, mvrnorm)
 importFrom(Matrix, t, sparseMatrix)
 importFrom(mclust, Mclust, mclustBIC)
+importFrom(ggpubr, ggarrange)
+importFrom(colorspace, adjust_transparency)
+
 #export(Mclust, mclustBIC)
 
 importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, FindVariableFeatures,  
            "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData)
 # export(ScaleData)
-
+importFrom("graphics", "barplot")
 importFrom(grDevices, hcl, rgb, col2rgb)
 importFrom(stats,quantile,coef, dist, rnorm, median, 
            cov, rpois, lm, sd, hclust)

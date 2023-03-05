@@ -46,7 +46,7 @@ download.file(githubURL,"bc2.rda",mode='wb')
 ```
 
 Then load to R 
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 load("bc2.rda")
 ```
 
@@ -57,48 +57,92 @@ This data is also available at 10X genomics data website:
 * Section2: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_2
 
 Users require the two folders for each dataset: spatial and filtered_feature_bc_matrix. Then the data can be read by the following commond.
-```{r  eval=FALSE}
-# library(DR.SC)
-# dir.file <- "Section" ## the folders Section1 and Section2, and each includes two folders spatial and filtered_feature_bc_matrix
-# seuList <- list()
-# for (r in 1:2) {
-#   message("r = ", r)
-#   seuList[[r]] <- read10XVisium(paste0(dir.file, r))
-# }
-# bc2 <- seuList
+```{r  eval=  FALSE}
+library(DR.SC)
+dir.file <- "Section" ## the folders Section1 and Section2, and each includes two folders spatial and filtered_feature_bc_matrix
+seuList <- list()
+for (r in 1:2) {
+  message("r = ", r)
+  seuList[[r]] <- read10XVisium(paste0(dir.file, r))
+}
+bc2 <- seuList
 ```
 
 The package can be loaded with the command:
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 library(PRECAST)
 library(Seurat)
 ```
 
 
-## Fit PRECAST using this data
-
 View human breast cancer Visium data from `DataPRECAST`
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 bc2 ## a list including two Seurat object
 ```
 
 Check the content in `bc2`
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 head(bc2[[1]])
 ```
 
-###  Prepare the PRECASTObject.
 
-Human breast cancer data have been pre-processed and saved as the `PRECASTObj` format.
-```{r  eval = FALSE}
+## Create a PRECASTObject object
+We show how to create a PRECASTObject object step by step. First, we create a Seurat list object using the count matrix and meta data of each data batch. Although `bc2` is a prepared Seurat list object, we re-create it to show the details of the Seurat list object. 
+
+```{r  eval= FALSE}
+## Get the gene-by-spot read count matrices
+countList <- lapply(bc2, function(x) x[["RNA"]]@counts)
+
+## Get the meta data of each spot for each data batch
+metadataList <- lapply(bc2, function(x) x@meta.data)
+
+## ensure the row.names of metadata in metaList are the same as that of colnames count matrix in countList
+M <- length(countList)
+for(r in 1:M){
+  row.names(metadataList[[r]]) <- colnames(countList[[r]])
+}
+
+
+## Create the Seurat list  object
+
+seuList <- list()
+for(r in 1:M){
+  seuList[[r]] <- CreateSeuratObject(counts = countList[[r]], meta.data=metadataList[[r]], project = "BreastCancerPRECAST")
+}
+
+bc2 <- seuList
+rm(seuList)
+```
+### Prepare the PRECASTObject with preprocessing step.
+Next, we use `CreatePRECASTObject()` to create a PRECASTObject based on the Seurat list object `bc2`. This function will do three things: 
+
+- (1) Filter low-quality spots and genes, controlled by the arguments `premin.features` and `premin.spots`, respectively;  the spots are retained in raw data (bc2) with at least premin.features number of nonzero-count features (genes), and the  genes are retained in raw data (bc2) with at least `premin.spots` number of spots. To ease presentation, we denote the filtered Seurat list object as bc2_filter1.
+
+- (2)  Select the top 2,000 variable genes (by setting `gene.number=2000`) for each data batch using  `FindSVGs()` function in `DR.SC` package for spatially variable genes or `FindVariableFeatures()` function in `Seurat` package for highly variable genes. Next, we prioritized genes based on the number of times they were selected as variable genes in all samples and chose the top 2,000 genes. Then denote the Seurat list object as bc2_filter2, where only 2,000 genes are retained.
+
+- (3) Conduct strict quality control for bc2_filter2 by filtering spots and genes,  controlled by the arguments `postmin.features` and `postmin.spots`, respectively; the spots are retained  with at least `post.features` nonzero counts across genes; the features (genes) are retained  with at least `postmin.spots` number of nonzero-count spots. Usually, no genes are filltered because these genes are variable genes. 
+
+If the argument `customGenelist` is not `NULL`, then this function only does (3) not (1) and (2).  User can retain the raw seurat list object by setting `rawData.preserve = TRUE`.
+
+```{r  eval =  FALSE}
 ## Create PRECASTObject.
 set.seed(2022)
-PRECASTObj <- CreatePRECASTObject(bc2)
+PRECASTObj <- CreatePRECASTObject(bc2, project = 'BC2', gene.number = 2000, selectGenesMethod = 'SPARK-X', 
+                                  premin.spots = 20,  premin.features=20, postmin.spots = 1, postmin.features = 10)
+
+## User can retain the raw seuList by the following commond.
+##  PRECASTObj <-  CreatePRECASTObject(seuList, customGenelist=row.names(seuList[[1]]), rawData.preserve = TRUE)
 ```
 ### Add the model setting
-```{r  eval = FALSE}
+
+Add adjacency matrix list and parameter setting of PRECAST. More model setting parameters can be found in \code{`model_set()`}.
+
+```{r  eval =  FALSE}
 ## check the number of genes/features after filtering step
 PRECASTObj@seulist
+
+## seuList is null since the default value `rawData.preserve` is FALSE.
+PRECASTObj@seuList
 
 ## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
 PRECASTObj <-  AddAdjList(PRECASTObj, platform = "Visium")
@@ -108,17 +152,18 @@ PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, verbose=TRUE, int.mod
 
 ```
 
+## Fit PRECAST using this data
 
 ### Fit PRECAST 
 For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. First, we try using user-specified number of clusters. For convenience, we give the selected number of clusters by MBIC (K=14).
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 ### Given K
 PRECASTObj <- PRECAST(PRECASTObj, K=14)
 
 ```
 
-Select a best model 
-```{r  eval = FALSE}
+Select a best model if $K$ is an integer vector. Even if $K$ is a scalar, this step is also neccessary. 
+```{r  eval =  FALSE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
 PRECASTObj <- selectModel(PRECASTObj)
@@ -126,24 +171,37 @@ PRECASTObj <- selectModel(PRECASTObj)
 ```
 
 Integrate the two samples by the function `IntegrateSpaData`.
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
 seuInt 
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
+
+First, user can choose a beautiful color schema using `chooseColors()`.
+```{r  eval =  FALSE}
+cols_cluster <- chooseColors(palettes_name = 'Classic 20', n_colors=14, plot_colors = TRUE)
+```
+
+
 Show the spatial scatter plot for clusters
-```{r  eval = FALSE, fig.height = 4, fig.width=7.5}
-cols_cluster <-  c( "#FD7446" ,"#709AE1", "#31A354","#9EDAE5",
- "#DE9ED6" ,"#BCBD22", "#CE6DBD" ,"#DADAEB" ,
- "yellow", "#FF9896","#91D1C2", "#C7E9C0" ,"#6B6ECF", "#7B4173" )
-p12 <- SpaPlot(seuInt, batch=NULL,point_size=1, cols=cols_cluster, combine=TRUE)
+```{r  eval =  FALSE, fig.height = 4, fig.width=9}
+
+p12 <- SpaPlot(seuInt, item='cluster', batch=NULL,point_size=1, cols=cols_cluster, combine=TRUE, nrow.legend=7)
 p12
 # users can plot each sample by setting combine=FALSE
 ```
 
+Users can re-plot the above figures for specific need by returning a ggplot list object. For example, we  plot the spatial heatmap using a common legend.
+
+```{r  eval =  FALSE, fig.height = 4, fig.width=8.5}
+pList <- SpaPlot(seuInt, item='cluster', batch=NULL,point_size=1, cols=cols_cluster, combine=FALSE, nrow.legend=7)
+drawFigs(pList, layout.dim = c(1,2), common.legend = TRUE, legend.position = 'right', align='hv')
+
+```
+
 Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.
 
-```{r  eval = FALSE, fig.height = 3, fig.width=5}
+```{r  eval =  FALSE, fig.height = 4, fig.width=5.5}
 seuInt <- AddUMAP(seuInt) 
 p13 <- SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
 p13
@@ -152,18 +210,20 @@ p13
 ```
 
 
+
 Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.
-```{r  eval = FALSE}
+```{r  eval =  FALSE, fig.height = 4.5, fig.width=12}
 seuInt <- AddTSNE(seuInt, n_comp = 2) 
-library(patchwork)
-p1 <- dimPlot(seuInt, item='cluster', point_size = 0.5, font_family='serif', cols=cols_cluster) # Times New Roman
-p2 <- dimPlot(seuInt, item='batch', point_size = 0.5,  font_family='serif')
-p1 + p2 
+p1 <- dimPlot(seuInt, item='cluster', point_size = 0.5, font_family='serif', cols=cols_cluster,border_col="gray10", nrow.legend=14, legend_pos='right') # Times New Roman
+p2 <- dimPlot(seuInt, item='batch', point_size = 0.5,  font_family='serif', legend_pos='right')
+
+drawFigs(list(p1, p2), layout.dim = c(1,2), legend.position = 'right', align='hv')
+
 ```
 
 
 Combined differential expression analysis 
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 library(Seurat)
 dat_deg <- FindAllMarkers(seuInt)
 library(dplyr)
@@ -178,8 +238,8 @@ seus <- subset(seuInt, downsample = 400)
 
 ```
 
-Plot DE genes' heatmap for each spatial domains identified by PRECAST.
-```{r  eval = FALSE, fig.height = 6, fig.width=9}
+Plot DE genes' heatmap for each spatial domain identified by PRECAST.
+```{r  eval =  FALSE, fig.height = 8, fig.width=9}
 color_id <- as.numeric(levels(Idents(seus)))
 library(ggplot2)
 ## HeatMap
@@ -195,6 +255,6 @@ p1
 
 
 ## Session information
-```{r  eval = FALSE}
+```{r  eval =  FALSE}
 sessionInfo()
 ```

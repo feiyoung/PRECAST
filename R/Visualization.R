@@ -120,7 +120,7 @@ plot_scatter <- function (
     cols = NULL, 
      point_size = 0.5, point_alpha=1, 
     base_size = 12, do_points = TRUE, do_density = FALSE, border_col='gray',
-    legend_pos='right', legend_dir='vertical') {
+    legend_pos='right', legend_dir='vertical', nrow.legend=NULL) {
   # require(dplyr)
   # require(ggthemes)
   # require(ggrepel)
@@ -157,11 +157,20 @@ plot_scatter <- function (
           legend.text=element_text(size=base_size+1),
           legend.title=element_text(size=base_size+2),
           panel.background= element_rect(fill = 'white', color=border_col))+
-    guides(color = guide_legend(override.aes = list(stroke = 1, 
-                                                    alpha = 1, shape = 16, size = 4)), alpha = "none") + 
     scale_color_manual(values = cols) + scale_fill_manual(values = cols) + 
     theme(plot.title = element_text(hjust = 0.5)) + labs(x = xy_names[1], 
                                                          y = xy_names[2])
+  
+  if (!is.null(nrow.legend)){
+    plt <- plt + guides(color = guide_legend(nrow = nrow.legend,override.aes = list(stroke = 1,
+                                                                                    alpha = 1, shape = 16, size = 4)))
+  }else{
+    plt <- plt + guides(color = guide_legend(override.aes = list(stroke = 1,
+                                                                 alpha = 1, shape = 16, size = 4)),
+                        alpha = "none")
+  }
+  
+  
   if (do_points) 
     plt <- plt + geom_point( size = point_size, alpha=point_alpha)
   if (do_density) 
@@ -410,5 +419,64 @@ mytheme <- function(legend.direction = "horizontal",
                 panel.background= element_rect(fill = 'white', color='gray'))
   }
   return(th)
+}
+
+
+
+# Other plots -------------------------------------------------------------
+
+
+drawFigs <- function(pList, layout.dim = NULL, common.legend=FALSE,legend.position='right',  ...){
+  if(!is.list(pList)) stop('drawFigs: pList must be a list!')
+  
+  if(is.null(layout.dim) && length(pList)>1){
+    layout.dim <- c(2, round(length(pList)/2) )
+  }
+  if(is.null(layout.dim) && length(pList) == 1){
+    layout.dim <- c(1,1)
+  }
+  ggpubr::ggarrange(plotlist = pList, ncol = layout.dim[2],
+                    nrow = layout.dim[1], common.legend = common.legend,
+                    legend = legend.position, ...)
+  
+}
+
+chooseColors <- function(palettes_name= c("Nature 10", "Light 13", "Classic 20", "Blink 23", "Hue n"), n_colors = 7,
+                         alpha=1, plot_colors=FALSE){
+  
+  # require(colorspace)
+  palettes_name <- match.arg(palettes_name)
+  colors <- if(palettes_name == "Classic 20"){
+    # require(ggthemes)
+    # palettes <- ggthemes_data[["tableau"]][["color-palettes"]][["regular"]]
+    pal1 <- tableau_color_pal(palettes_name)
+    pal1(n_colors)
+  }else if(palettes_name == "Nature 10"){
+    cols <- c("#E04D50", "#4374A5", "#F08A21","#2AB673", "#FCDDDE",
+              "#70B5B0", "#DFE0EE" ,"#DFCDE4", "#FACB12", "#f9decf")
+    cols[1:n_colors]
+  }else if(palettes_name == "Blink 23"){
+    cols <- c("#c10023", "#008e17", "#fb8500", "#f60000", "#FE0092", "#bc9000","#4ffc00", "#00bcac", "#0099cc",
+              "#D35400", "#00eefd", "#cf6bd6", "#99cc00", "#aa00ff", "#ff00ff", "#0053c8",
+              "#f2a287","#ffb3ff", "#800000", "#77a7b7", "#00896e", "#00cc99", "#007CC8")
+    cols[1:n_colors]
+  }else if(palettes_name == "Light 13"){
+    cols <-c( "#FD7446" ,"#709AE1", "#31A354","#9EDAE5",
+              "#DE9ED6" ,"#BCBD22", "#CE6DBD" ,"#DADAEB" ,
+              "#FF9896","#91D1C2", "#C7E9C0" ,
+              "#6B6ECF", "#7B4173" )
+    cols[1:n_colors]
+  }else if(palettes_name == "Hue n"){
+    gg_color_hue(n_colors)
+  }else{
+    stop(paste0("chooseColors: check palettes_name! Unsupported palettes_name: ", palettes_name))
+  }
+  #require(colorspace)
+  colors_new = adjust_transparency(colors,   alpha = alpha)
+  if(plot_colors){
+    barplot(rep(1, length(colors_new)), axes = FALSE, space = 0, col = colors_new)
+  }
+  
+  return(colors_new)
 }
 

@@ -7,7 +7,7 @@
 \usage{
   dimPlot(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16, 
                     cols=NULL,font_family='', border_col="gray10",
-                    fill_col="white")
+                    fill_col="white", ...)
 }
 \arguments{
   \item{seuInt}{an object named "Seurat". }
@@ -19,6 +19,7 @@
   \item{font_family}{the font family used for the plot.}
   \item{border_col}{the border color in the plot.}
   \item{fill_col}{the  color used in backgroup.}
+  \item{...}{other arguments passed to \code{\link{plot_scatter}}}.
 }
 \details{
   Nothing

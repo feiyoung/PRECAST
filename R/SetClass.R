@@ -541,32 +541,45 @@ selectModel.PRECASTObj <- function(obj, criteria = 'MBIC',pen_const=1, return_pa
 # colnames(Human_HK_genes)[1:2]<- colnames(Mouse_HK_genes)[2:1] <- c('Ensembl', 'Gene')
 # usethis::use_data(Mouse_HK_genes, Human_HK_genes, overwrite = T)
 
-
-get_correct_exp <- function(XList, RfList, housekeep, q_unwanted=10){
+## reference: Removing Unwanted Variation from High Dimensional Data with Negative Controls
+get_correct_exp <- function(XList, RfList,  houseKeep, covariateList=NULL, q_unwanted=10){
   
   
   if(!all(sapply(XList, is.matrix))){
     XList <- lapply(XList, as.matrix)
   }
-  MList <- pbapply::pblapply(XList, function(x) wpca(x[,housekeep], q=q_unwanted, F)$PCs)
-  M0 <- matlist2mat(MList)
-  rm(MList)
+  XList_sub <- pbapply::pblapply(XList, function(x) x[,houseKeep])
+  M0 <- wpca(matlist2mat(XList_sub), q=q_unwanted, FALSE)$PCs 
+  
+  
   Rf <- matlist2mat(RfList)
   rm(RfList)
-  XList <-  lapply(XList, scale, scale=FALSE)
+  if(!is.null(covariateList)){
+    covariates <- matlist2mat(covariateList)
+    covariates <- as.matrix(covariates)
+    rm(covariateList)
+    Rf <- cbind(Rf, covariates)
+    rm(covariates)
+  }
+  ### XList <-  lapply(XList, scale, scale=FALSE)
   X0 <- matlist2mat(XList)
   rm(XList)
-  lm1 <- lm(X0~ 0+ cbind(Rf, M0))
-  hK <- ncol(Rf)
-  coefmat <- coef(lm1)[-c(1:hK),]
+  nc_M0 <- ncol(M0)
+  lm1 <- lm(X0~ 0+ cbind(M0, Rf))
+  coefmat <- coef(lm1)[c(1:nc_M0),]
   rm(lm1)
   hX <- X0 - M0 %*% coefmat
   return(hX)
 }
 
-get_correct_mean_exp <- function(XList,  hVList, hW){
+get_correct_mean_exp <- function(XList,  hVList, covariateList=NULL){
   
-  XList <- lapply(XList, scale, scale=FALSE)
+  ## XList <- lapply(XList, scale, scale=FALSE)
+  
+  if(!all(sapply(XList, is.matrix))){
+    XList <- lapply(XList, as.matrix)
+  }
+  
   r_max <- length(XList)
   X0 <- XList[[1]]
   hV0 <- hVList[[1]]
@@ -578,11 +591,26 @@ get_correct_mean_exp <- function(XList,  hVList, hW){
     }
   }
   
-  X0 - hV0%*% base::t(hW)
+  rm(XList)
+  if(!is.null(covariateList)){
+    covariates <- matlist2mat(covariateList)
+    covariates <- as.matrix(covariates)
+    covariates <- cbind(1, covariates)
+    rm(covariateList)
+  }else{
+    covariates <- matrix(1, nrow=nrow(hV0), ncol=1)
+  }
+  
+  nc_M0 <- ncol(hV0)
+  lm1 <- lm(X0~  0+ cbind(hV0, covariates))
+  coefmat <- coef(lm1)[c(1:nc_M0),]
+  rm(lm1)
+  X0 - hV0 %*% coefmat
+  
   
 }
 
-IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL){
+IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL, covariates_use=NULL){
   # suppressMessages(require(Matrix))
   # suppressMessages(require(Seurat))
   
@@ -591,14 +619,33 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL)
   if(is.null(PRECASTObj@seulist)) 
     stop("IntegrateSpaData: Check the argument: PRECASTObj! The slot seulist in PRECASTObj is NULL!")
   
+  
   if(!tolower(species) %in% c("human", "mouse", "unknown")) 
     stop("IntegrateSpaData: Check the argument: species! it must be one of 'Human', 'Mouse' and 'Unknown'!")
   
-  XList <- lapply(PRECASTObj@seulist, function(x) Matrix::t(x[["RNA"]]@data))
-  n_r <- length(XList)
-  for(r in 1:n_r){
-    colnames(XList[[r]]) <- firstup(colnames(XList[[r]]))
+  defAssay_vec <- sapply(PRECASTObj@seulist, DefaultAssay)
+  if(any(defAssay_vec!=defAssay_vec[1])) warning("IntegrateSpaData: there are different default assays in PRECASTObj@seulist that will be used to integrating!")
+  n_r <- length(defAssay_vec)
+  
+  XList <- lapply(1:n_r,  function(r) Matrix::t(PRECASTObj@seulist[[r]][[defAssay_vec[r]]]@data))
+  
+  if(!is.null(covariates_use)){
+    covariateList <- lapply(PRECASTObj@seulist, function(x) x@meta.data[, covariates_use])
+  }else{
+    covariateList <- NULL
   }
+  
+  if(tolower(species) =='mouse'){
+    for(r in 1:n_r){
+      colnames(XList[[r]]) <- firstup(colnames(XList[[r]]))
+    }
+  }
+  if(tolower(species) =='human'){
+    for(r in 1:n_r){
+      colnames(XList[[r]]) <- toupper(colnames(XList[[r]]))
+    }
+  }
+  
   barcodes_all <- lapply(XList, row.names)
   if(any(duplicated(unlist(barcodes_all)))){
     
@@ -611,11 +658,11 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL)
   houseKeep <- switch (lower_species,
     human = {
       # data(Human_HK_genes)
-       intersect((genelist), Mouse_HK_genes$Gene)
+       intersect(toupper(genelist), PRECAST::Human_HK_genes$Gene)
       },
     mouse={
       #data(Mouse_HK_genes)
-      intersect((genelist), Mouse_HK_genes$Gene)
+      intersect(firstup(genelist), PRECAST::Mouse_HK_genes$Gene)
     },
     unknown={
       character()
@@ -625,10 +672,10 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL)
   if(length(houseKeep) < 5){
     message("Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.")
     message("Users can specify the custom_housekeep by themselves to use the housekeeping genes based methods.")
-    hX <- get_correct_mean_exp(XList,PRECASTObj@resList$hV, PRECASTObj@resList$hW)
+    hX <- get_correct_mean_exp(XList,PRECASTObj@resList$hV,  covariateList=covariateList)
   }else{
     message("Using bouth housekeeping gene and PRECAST results to obtain the batch corrected gene expressions.")
-    hX <- get_correct_exp(XList, PRECASTObj@resList$Rf, houseKeep, q_unwanted=min(10, length(houseKeep)))
+    hX <- get_correct_exp(XList, PRECASTObj@resList$Rf, houseKeep=houseKeep, q_unwanted=min(10, length(houseKeep)), covariateList=covariateList)
   }
   meta_data <- data.frame(batch=factor(get_sampleID(XList)), cluster= factor(unlist(PRECASTObj@resList$cluster)))
   row.names(meta_data) <- row.names(hX)
@@ -657,7 +704,7 @@ gg_color_hue <- function(n) {
 
 SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12, 
                     cols=NULL,font_family='', border_col="gray10",
-                    fill_col='white', ncol=2, combine = TRUE, title_name="Sample"){
+                    fill_col='white', ncol=2, combine = TRUE, title_name="Sample", ...){
   
   ## Check arguments input
   
@@ -714,7 +761,7 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12,
       
       sort_id <- sort(unique(meta_data[, 'tmp_item_id']))
       p1 <- plot_scatter(embed_use, meta_data, label_name=item, 
-                         point_size=point_size, cols =cols[sort_id])
+                         point_size=point_size, cols =cols[sort_id], ...)
     }else if(item=="RGB_UMAP"){
       p1 <- plot_RGB(embed_use, seu@reductions$UMAP3@cell.embeddings, pointsize = point_size)
     }else if(item=="RGB_TSNE"){
@@ -740,7 +787,7 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12,
 }
 dimPlot <- function(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16, 
                     cols=NULL,font_family='', border_col="gray10",
-                    fill_col="white"){
+                    fill_col="white", ...){
   
   
   if(!inherits(seuInt, "Seurat")) stop("dimPlot: Check argument: seuInt! it must be a Seurat Object.")
@@ -779,15 +826,13 @@ dimPlot <- function(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16
   
   embed_use <- seuInt[[reduction]]@cell.embeddings[,c(1,2)]
   p1 <- plot_scatter(embed_use, meta_data, label_name=item, 
-                     point_size=point_size,cols =cols[sort_id])
+                     point_size=point_size,cols =cols[sort_id], ...)
  
   p1 <- p1 + mytheme_graybox(base_size = text_size, base_family = font_family, bg_fill  = fill_col,
                           border_color = border_col)
  
   return(p1)
 }
-
-
 
 
 # seuList <- gendata_seulist()

@@ -10,7 +10,7 @@
     cols = NULL, 
     point_size = 0.5, point_alpha=1, 
     base_size = 12, do_points = TRUE, do_density = FALSE, border_col='gray',
-    legend_pos='right', legend_dir='vertical')
+    legend_pos='right', legend_dir='vertical', nrow.legend=NULL)
 }
 \arguments{
   \item{embed_use}{an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".}
@@ -27,6 +27,7 @@
   \item{border_col}{the border color in the plot.}
   \item{legend_pos}{the position of legend.}
   \item{legend_dir}{the direction of legend.}
+  \item{nrow.legend}{the number of rows of legend.}
 }
 \details{
   Nothing

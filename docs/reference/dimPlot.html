@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
       </span>
     </div>
 
@@ -71,37 +71,51 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">dimPlot</span><span class="op">(</span><span class="va">seuInt</span>, item<span class="op">=</span><span class="cn">NULL</span>, reduction<span class="op">=</span><span class="cn">NULL</span>, point_size<span class="op">=</span><span class="fl">1</span>,text_size<span class="op">=</span><span class="fl">16</span>, 
                     cols<span class="op">=</span><span class="cn">NULL</span>,font_family<span class="op">=</span><span class="st">''</span>, border_col<span class="op">=</span><span class="st">"gray10"</span>,
-                    fill_col<span class="op">=</span><span class="st">"white"</span><span class="op">)</span></code></pre></div>
+                    fill_col<span class="op">=</span><span class="st">"white"</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>seuInt</dt>
 <dd><p>an object named "Seurat".</p></dd>
-<dt>item</dt>
+
+  <dt>item</dt>
 <dd><p>the item used for coloring the plot in the meta data of seuInt object.</p></dd>
-<dt>reduction</dt>
+
+  <dt>reduction</dt>
 <dd><p>the reduction used for plot in the seuInt object. If reduction is null, the last added one is used for plotting.</p></dd>
-<dt>point_size</dt>
+
+  <dt>point_size</dt>
 <dd><p>the size of point in the scatter plot.</p></dd>
-<dt>text_size</dt>
+
+  <dt>text_size</dt>
 <dd><p>the text size in the plot.</p></dd>
-<dt>cols</dt>
+
+  <dt>cols</dt>
 <dd><p>colors used in the plot</p></dd>
-<dt>font_family</dt>
+
+  <dt>font_family</dt>
 <dd><p>the font family used for the plot.</p></dd>
-<dt>border_col</dt>
+
+  <dt>border_col</dt>
 <dd><p>the border color in the plot.</p></dd>
-<dt>fill_col</dt>
+
+  <dt>fill_col</dt>
 <dd><p>the  color used in backgroup.</p></dd>
-</dl></div>
+
+  <dt>...</dt>
+<dd><p>other arguments passed to <code><a href="plot_scatter.html">plot_scatter</a></code></p></dd>
+</dl><p>.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>Nothing</p>
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Return a ggplot2 object.</p>
+    
+
+<p>Return a ggplot2 object.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -141,7 +155,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
       </span>
     </div>
 
@@ -69,17 +69,23 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">IntegrateSpaData</span><span class="op">(</span><span class="va">PRECASTObj</span>, species<span class="op">=</span><span class="st">"Human"</span>, custom_housekeep<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">IntegrateSpaData</span><span class="op">(</span><span class="va">PRECASTObj</span>, species<span class="op">=</span><span class="st">"Human"</span>, custom_housekeep<span class="op">=</span><span class="cn">NULL</span>, covariates_use<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>PRECASTObj</dt>
 <dd><p>a PRECASTObj object after finishing the PRECAST model fitting and model selection.</p></dd>
-<dt>species</dt>
+
+  <dt>species</dt>
 <dd><p>an optional string, one of 'Human', 'Mouse' and 'Unknown', specify the species of the SRT data to help choose the housekeeping genes. 'Unknown' means only using the PRECAST results reconstruct the alligned gene expression.</p></dd>
-<dt>custom_housekeep</dt>
+
+  <dt>custom_housekeep</dt>
 <dd><p>user-specified housekeeping genes.</p></dd>
+
+  <dt>covariates_use</dt>
+<dd><p>a string vector, the colnames  in `PRECASTObj@seulist[[1]]@meta.data`, representing other biological covariates to considered when removing batch effects.  This is achieved by adding additional covariates for biological conditions in the regression, such as case or control. Default as `NULL`, denoting no other covariates to be considered.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -87,7 +93,14 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Return a Seurat object by integrating all SRT data batches into a SRT data, where the column "batch" in the meta.data represents the batch ID, and the column "cluster" represents the clusters obtained by PRECAST.</p>
+    
+
+<p>Return a Seurat object by integrating all SRT data batches into a SRT data, where the column "batch" in the meta.data represents the batch ID, and the column "cluster" represents the clusters obtained by PRECAST.</p>
+    </div>
+    <div id="references">
+    <h2>References</h2>
+    <p><a href="https://www.nature.com/articles/s41467-023-35947-w" class="external-link">Wei Liu, Liao, X., Luo, Z. et al, Jin Liu* (2023). Probabilistic embedding, clustering, and alignment for integrating spatial transcriptomics data with PRECAST. Nature Communications, 14, 296</a></p>
+<p>Gagnon-Bartsch, J. A., Jacob, L., &amp; Speed, T. P. (2013). Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, 1-112.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -123,7 +136,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

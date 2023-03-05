@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
       </span>
     </div>
 
@@ -74,39 +74,56 @@
     cols <span class="op">=</span> <span class="cn">NULL</span>, 
     point_size <span class="op">=</span> <span class="fl">0.5</span>, point_alpha<span class="op">=</span><span class="fl">1</span>, 
     base_size <span class="op">=</span> <span class="fl">12</span>, do_points <span class="op">=</span> <span class="cn">TRUE</span>, do_density <span class="op">=</span> <span class="cn">FALSE</span>, border_col<span class="op">=</span><span class="st">'gray'</span>,
-    legend_pos<span class="op">=</span><span class="st">'right'</span>, legend_dir<span class="op">=</span><span class="st">'vertical'</span><span class="op">)</span></code></pre></div>
+    legend_pos<span class="op">=</span><span class="st">'right'</span>, legend_dir<span class="op">=</span><span class="st">'vertical'</span>, nrow.legend<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>embed_use</dt>
 <dd><p>an object named "Seurat", "maxtrix" or "dgCMatrix". The object of class "Seurat" must include slot "scale.data".</p></dd>
-<dt>meta_data</dt>
+
+  <dt>meta_data</dt>
 <dd><p>an optional positive integer, specify the number of features to be extracted.</p></dd>
-<dt>label_name</dt>
+
+  <dt>label_name</dt>
 <dd><p>the size of point in the scatter plot.</p></dd>
-<dt>xy_names</dt>
+
+  <dt>xy_names</dt>
 <dd><p>the text size in the plot.</p></dd>
-<dt>no_guides</dt>
+
+  <dt>no_guides</dt>
 <dd><p>whether display the legend.</p></dd>
-<dt>cols</dt>
+
+  <dt>cols</dt>
 <dd><p>colors used in the plot.</p></dd>
-<dt>point_size</dt>
+
+  <dt>point_size</dt>
 <dd><p>the point size of scatter plot.</p></dd>
-<dt>point_alpha</dt>
+
+  <dt>point_alpha</dt>
 <dd><p>the transparency of the plot.</p></dd>
-<dt>base_size</dt>
+
+  <dt>base_size</dt>
 <dd><p>the base text size.</p></dd>
-<dt>do_points</dt>
+
+  <dt>do_points</dt>
 <dd><p>Plot point plot.</p></dd>
-<dt>do_density</dt>
+
+  <dt>do_density</dt>
 <dd><p>Plot density plot</p></dd>
-<dt>border_col</dt>
+
+  <dt>border_col</dt>
 <dd><p>the border color in the plot.</p></dd>
-<dt>legend_pos</dt>
+
+  <dt>legend_pos</dt>
 <dd><p>the position of legend.</p></dd>
-<dt>legend_dir</dt>
+
+  <dt>legend_dir</dt>
 <dd><p>the direction of legend.</p></dd>
+
+  <dt>nrow.legend</dt>
+<dd><p>the number of rows of legend.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -114,7 +131,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Return a ggplot2 object.</p>
+    
+
+<p>Return a ggplot2 object.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -149,7 +168,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

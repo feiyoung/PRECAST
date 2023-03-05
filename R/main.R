@@ -1,8 +1,10 @@
+# library(pkgdown)
 # pkgdown::build_site()
 # pkgdown::build_reference()
-# build_article(name="PRECAST.DLPFC") # Solely compile one article for updating.
+# build_home()
+# build_article(name="PRECAST") # Solely compile one article for updating.
 # build_article(name="PRECAST.BreastCancer")
-# R CMD check --as-cran PRECAST_1.3.tar.gz
+# R CMD check --as-cran PRECAST_1.5.tar.gz
 # devtools::check_win_release()
 # iDR.SC <- function(...) UseMethod("iDR.SC")
 model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,

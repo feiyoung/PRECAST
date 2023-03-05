@@ -67,11 +67,11 @@ For usage examples and guided walkthroughs, check the `vignettes` directory of t
 
 For the users that don't have set up system properly, the following setup on different systems can be referred.
 ## Setup on Windows system
-First, download [Rtools](https://cran.r-project.org/bin/windows/Rtools/); second, add the Rtools directory to the environment variable. Users can follow [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/#:~:text=Go%20ahead%20and%20click%20on%20the%20Environment%20Variables,you%20have%20to%20decide%20which%20one%20to%20edit) to add Windows PATH Environment Variable.
+First, download [Rtools](https://cran.r-project.org/bin/windows/Rtools/); second, add the Rtools directory to the environment variable.
 
 
 ## Setup on MacOS system
-First, install Xcode. Installation about Xcode can be referred [here](https://stackoverflow.com/questions/8291146/xcode-installation-on-mac#:~:text=You%20get%20it%20from%20the%20Mac%20App%20Store.,find%20the%20app%2C%20and%20click%20the%20install%20button).
+First, install Xcode. Installation about Xcode can be referred [here](https://stackoverflow.com/questions/8291146/xcode-installation-on-mac).
 
 
 Second, install "gfortran" for compiling C++ and Fortran at [here](https://github.com/fxcoudert/gfortran-for-macOS).
@@ -108,11 +108,19 @@ install.packages("DR.SC")
 For an example of typical PRECAST usage, please see our [Package Website](https://feiyoung.github.io/PRECAST/index.html) for a demonstration and overview of the functions included in PRECAST.
 
 # NEWs
+
+PRECAST version 1.5 (2023-03-05)
+
+* Fix the [issue](https://github.com/feiyoung/PRECAST/issues/2) reported by anvaly. Specifically, the assay name "RNA" used in functions `IntegrateSpaData()`  is replaced  by  the default assay using `DefaultAssay` function in Seurat. Fix the typo `human = {intersect((genelist),Mouse_HK_genes$Gene)}` with replacement of `human = {intersect(toupper(genelist), PRECAST::Human_HK_genes$Gene)}`。
+
+
+* Add two functions for visualization: `chooseColors()` and `drawFigs()`.
+
 PRECAST version 1.3 (2022-10-05)
 
-* Fix the [issue](https://github.com/feiyoung/PRECAST_Analysis/issues/1) reported by Boyi Guo. Specifically, the assay name "RNA" used in functions `CreatePRECASTObject` and  `PRECAST` is replaced  by  the default assay using `DefaultAssay` function in Seurat.
+* Fix the [issue](https://github.com/feiyoung/PRECAST_Analysis/issues/1) reported by Boyi Guo. Specifically, the assay name "RNA" used in functions `CreatePRECASTObject()` and  `PRECAST()` is replaced  by  the default assay using `DefaultAssay` function in Seurat.
 
-* Provide more detailed help file for `CreatePRECASTObject` function. Users can use `?CreatePRECASTObject` in Rstudio to access the help file.
+* Provide more detailed help file for `CreatePRECASTObject()` function. Users can use `?CreatePRECASTObject` in Rstudio to access the help file.
 In detail, seuList is a list  with Seurat object as component, and each Seurat object at least includes the raw expression count matrix, and spatial coordinates in metadata for each data batch, where the spatial coordinates information must be saved in the metadata of Seurat, named "row" and "col" for each data batch. See the help file for more details.
 
 * Add the [data](https://github.com/feiyoung/PRECAST/tree/main/vignettes_data) used in [Package Website](https://feiyoung.github.io/PRECAST/index.html).

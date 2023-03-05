@@ -1,8 +1,8 @@
 Package: PRECAST
 Type: Package
 Title: Embedding and Clustering with Alignment for Spatial Datasets
-Version: 1.4
-Date: 2023-02-11
+Version: 1.5
+Date: 2023-03-04
 Authors@R: 
     c(person(given = "Wei",
              family = "Liu",
@@ -41,6 +41,9 @@ Imports:
     stats,
     DR.SC, 
     scales,
+    ggpubr,
+    graphics,
+    colorspace,
     Rcpp (>= 1.0.5)
 LazyData: true
 URL: https://github.com/feiyoung/PRECAST

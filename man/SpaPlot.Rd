@@ -7,7 +7,8 @@
 \usage{
   SpaPlot(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12, 
                     cols=NULL,font_family='', border_col="gray10",
-                    fill_col='white', ncol=2, combine = TRUE, title_name="Sample")
+                    fill_col='white', ncol=2, combine = TRUE,
+                    title_name="Sample", ...)
 }
 \arguments{
   \item{seuInt}{an object named "Seurat".}
@@ -22,6 +23,7 @@
   \item{ncol}{the number of columns in the layout of plots.}
   \item{combine}{an optional logical value, whether plot all on a figure. If TRUE, all figures are plotted; otherwise, return a list with each plot as component.}
   \item{title_name}{an optional string, title name in the plot.}
+  \item{...}{other arguments passed to \code{\link{plot_scatter}}}.
 }
 \details{
   Nothing
