@@ -5,7 +5,8 @@
   Integrate multiple SRT data based on the PRECASTObj by PRECAST model fitting.
 }
 \usage{
-  IntegrateSpaData(PRECASTObj, species="Human", custom_housekeep=NULL, covariates_use=NULL)
+  IntegrateSpaData(PRECASTObj, species="Human", 
+                 custom_housekeep=NULL, covariates_use=NULL)
 }
 \arguments{
   \item{PRECASTObj}{a PRECASTObj object after finishing the PRECAST model fitting and model selection.}

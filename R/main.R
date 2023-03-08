@@ -2,7 +2,7 @@
 # pkgdown::build_site()
 # pkgdown::build_reference()
 # build_home()
-# build_article(name="PRECAST") # Solely compile one article for updating.
+# build_article(name="PRECAST.DLPFC") # Solely compile one article for updating.
 # build_article(name="PRECAST.BreastCancer")
 # R CMD check --as-cran PRECAST_1.5.tar.gz
 # devtools::check_win_release()

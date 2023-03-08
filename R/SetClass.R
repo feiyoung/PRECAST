@@ -346,6 +346,50 @@ setMethod(
   }
 )
 
+.findSVGs <-function(seu, nfeatures=2000, covariates=NULL, num_core=1, verbose=TRUE){
+  
+  if (!inherits(seu, "Seurat"))
+    stop("method is only for Seurat objects")
+  # require(SPARK)
+  # require(Seurat)
+  sparkx <- getFromNamespace("sparkx", "DR.SC")
+  assy <- DefaultAssay(seu)
+  sp_count <- seu[[assy]]@counts
+  
+  # if(nrow(sp_count)> (2*nfeatures) && nrow(sp_count) >10000){
+  #   
+  #   seu <- FindVariableFeatures(seu, nfeatures = 2*nfeatures, verbose=verbose)
+  #   sp_count <- seu[[assy]]@counts[seu[[assy]]@var.features,]
+  # }
+  location <- as.data.frame(cbind(seu$row, seu$col))
+  if(verbose){
+    message("Find the spatially variables genes by SPARK-X...\n")
+  }
+  sparkX <- sparkx(sp_count,location, X_in = covariates, numCores=num_core, option="mixture",  verbose=verbose)
+  if(nfeatures > nrow(sp_count)) nfeatures <- nrow(sp_count)
+  
+  ## If some features are filtered in sparkx, then the length of gene list returned by spark-x is less than nfeatures.
+  ## Find top nfeatures smallest adjusted p-values
+  order_nfeatures <- order(sparkX$res_mtest$adjustedPval)[1:nfeatures]
+  genes <- row.names(sp_count)[order_nfeatures]
+  
+  ## Access the gene based on gene name 
+  is.SVGs <- rep(FALSE, nrow(seu))
+  order.SVGs <- rep(NA, nrow(seu))
+  adjusted.pval.SVGs <- rep(NA, nrow(seu))
+  names(is.SVGs) <- names(order.SVGs)<- names(adjusted.pval.SVGs) <- row.names(seu)
+  
+  order.SVGs[genes] <- 1:length(genes)
+  is.SVGs[genes] <- TRUE
+  adjusted.pval.SVGs[genes] <- sparkX$res_mtest$adjustedPval[order_nfeatures]
+  
+  seu[[assy]]@meta.features$is.SVGs <- is.SVGs
+  seu[[assy]]@meta.features$order.SVGs <- order.SVGs
+  seu[[assy]]@meta.features$adjusted.pval.SVGs <- adjusted.pval.SVGs
+  seu[[assy]]@var.features <- genes
+  seu
+}
+
 
 
 CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000, 
@@ -404,7 +448,7 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
   
   if(is.null(customGenelist)){
     if(tolower(selectGenesMethod)=='spark-x'){
-      seuList <- pbapply::pblapply(seuList ,DR.SC::FindSVGs, nfeatures=gene.number, 
+      seuList <- pbapply::pblapply(seuList, .findSVGs, nfeatures=gene.number, 
                                    num_core=numCores_sparkx, verbose=verbose)
       spaFeatureList <- lapply(seuList, DR.SC::topSVGs, ntop = gene.number)
     }else if(tolower(selectGenesMethod)=='hvgs'){
