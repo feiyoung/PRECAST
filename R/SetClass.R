@@ -558,8 +558,7 @@ PRECAST <- function(PRECASTObj, K=NULL, q= 15){
   }
   XList <- lapply(PRECASTObj@seulist,  get_norm_data)
   
-  ## Centering
-  XList <- lapply(XList, scale, scale=FALSE)
+  
   PRECASTObj@resList <- ICM.EM_structure(XList, K=K, q=q, AdjList = PRECASTObj@AdjList, 
                              parameterList = PRECASTObj@parameterList)
   

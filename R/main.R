@@ -34,6 +34,10 @@ ICM.EM_structure  <- function(XList,  K, AdjList, q=15,parameterList=NULL){
   for(i in 1:n_par){
     assign(names(parameterList)[i], parameterList[[i]])
   }
+  
+  ## Centering
+  XList <- lapply(XList, scale, scale=FALSE)
+  
   resList <- ICM.EM(XList, q, K, AdjList=AdjList, 
               beta_grid=beta_grid,
               maxIter_ICM=maxIter_ICM,maxIter=maxIter, epsLogLik=epsLogLik, verbose=verbose,
@@ -71,6 +75,10 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
     stop('The dimension of Adj matrix does not match that of X!\n')
   
   if(is.null(Adjlist_car)) Adjlist_car <- AdjList
+  
+  ## Centering
+  XList <- lapply(XList, scale, scale=FALSE)
+  
   
   Xmat <- NULL
   for(r in 1:r_max){
