@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>XList</dt>
-<dd><p>an M-length list consisting of multiple matrices with class <code>dgCMatrix</code> or <code>matrix</code> that specify the log-normalization gene expression matrix for each data sample used for iDR-SC model.</p></dd>
+<dd><p>an M-length list consisting of multiple matrices with class <code>dgCMatrix</code> or <code>matrix</code> that specify the log-normalization gene expression matrix for each data sample used for PRECAST model.</p></dd>
 
   <dt>q</dt>
 <dd><p>a positive integer, specify the number of latent features to be extracted, default as 15.</p></dd>
@@ -88,10 +88,10 @@
 <dd><p>a positive  integer allowing scalar or vector, specify the number of clusters in model fitting.</p></dd>
 
  <dt>AdjList</dt>
-<dd><p>an M-length list of sparse matrices with class <code>dgCMatrix</code>, specify the adjacency matrix used for Potts model in iDR-SC. We provide this interface for those users  who would like to define the adjacency matrix by their own.</p></dd>
+<dd><p>an M-length list of sparse matrices with class <code>dgCMatrix</code>, specify the adjacency matrix used for Potts model in PRECAST. We provide this interface for those users  who would like to define the adjacency matrix by their own.</p></dd>
 
  <dt>Adjlist_car</dt>
-<dd><p>an M-length list of sparse matrices with class <code>dgCMatrix</code>, specify the adjacency matrix used for CAR model in iDR-SC, default as AdjList in the Potts model. We provide this interface for those users  who would like to use the different adjacency matrix in CAR model.</p></dd>
+<dd><p>an M-length list of sparse matrices with class <code>dgCMatrix</code>, specify the adjacency matrix used for CAR model in PRECAST, default as AdjList in the Potts model. We provide this interface for those users  who would like to use the different adjacency matrix in CAR model.</p></dd>
 
  <dt>posList</dt>
 <dd><p>an M-length list composed by spatial coordinate matrix for each data sample.</p></dd>
@@ -125,7 +125,7 @@
 <dd><p>an optional logical value, specify whether Sigmaks are diagonal matrices, default as <code>TRUE</code>.</p></dd>
 
   <dt>error_heter</dt>
-<dd><p>an optional logical value, whether use the heterogenous error for DR-SC model, default as <code>TRUE</code>. If <code>error_heter=FALSE</code>, then the homogenuous error is used for probabilistic PCA model in iDR-SC.</p></dd>
+<dd><p>an optional logical value, whether use the heterogenous error for DR-SC model, default as <code>TRUE</code>. If <code>error_heter=FALSE</code>, then the homogenuous error is used for probabilistic PCA model in PRECAST.</p></dd>
 
   <dt>Sp2</dt>
 <dd><p>an optional logical value, whether add the ICAR model component in the model, default as TRUE. We provide this interface for those users  who don't want to include the  ICAR model.</p></dd>

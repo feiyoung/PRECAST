@@ -12,11 +12,11 @@
       wpca_int=FALSE, int.model='EEE', seed=1,coreNum = 1, coreNum_int=coreNum)
 }
 \arguments{
- \item{XList}{an M-length list consisting of multiple matrices with class \code{dgCMatrix} or \code{matrix} that specify the log-normalization gene expression matrix for each data sample used for iDR-SC model.}
+ \item{XList}{an M-length list consisting of multiple matrices with class \code{dgCMatrix} or \code{matrix} that specify the log-normalization gene expression matrix for each data sample used for PRECAST model.}
   \item{q}{a positive integer, specify the number of latent features to be extracted, default as 15.}
   \item{K}{a positive  integer allowing scalar or vector, specify the number of clusters in model fitting.}
- \item{AdjList}{an M-length list of sparse matrices with class \code{dgCMatrix}, specify the adjacency matrix used for Potts model in iDR-SC. We provide this interface for those users  who would like to define the adjacency matrix by their own.}
- \item{Adjlist_car}{an M-length list of sparse matrices with class \code{dgCMatrix}, specify the adjacency matrix used for CAR model in iDR-SC, default as AdjList in the Potts model. We provide this interface for those users  who would like to use the different adjacency matrix in CAR model.}
+ \item{AdjList}{an M-length list of sparse matrices with class \code{dgCMatrix}, specify the adjacency matrix used for Potts model in PRECAST. We provide this interface for those users  who would like to define the adjacency matrix by their own.}
+ \item{Adjlist_car}{an M-length list of sparse matrices with class \code{dgCMatrix}, specify the adjacency matrix used for CAR model in PRECAST, default as AdjList in the Potts model. We provide this interface for those users  who would like to use the different adjacency matrix in CAR model.}
  \item{posList}{an M-length list composed by spatial coordinate matrix for each data sample.}
  \item{platform}{a string, specify the platform of the provided data, default as "Visium".
   There are many platforms to be supported, including ("Visuim", "ST", "SeqFISH", 'merFISH', 'slide-seqv2', 'seqscope', "HDST"). If AdjList is not given, the The platform helps to calculate the adjacency matrix by defining the neighbors.} 
@@ -28,7 +28,7 @@
   \item{mix_prop_heter}{an optional logical value, specify whether betar are distict, default as \code{TRUE}.}
   \item{Sigma_equal}{an optional logical value, specify whether Sigmaks are equal, default as FALSE.}
   \item{Sigma_diag}{an optional logical value, specify whether Sigmaks are diagonal matrices, default as \code{TRUE}.}
-  \item{error_heter}{an optional logical value, whether use the heterogenous error for DR-SC model, default as \code{TRUE}. If \code{error_heter=FALSE}, then the homogenuous error is used for probabilistic PCA model in iDR-SC.}
+  \item{error_heter}{an optional logical value, whether use the heterogenous error for DR-SC model, default as \code{TRUE}. If \code{error_heter=FALSE}, then the homogenuous error is used for probabilistic PCA model in PRECAST.}
   \item{Sp2}{an optional logical value, whether add the ICAR model component in the model, default as TRUE. We provide this interface for those users  who don't want to include the  ICAR model.}
   \item{wpca_int}{an optional logical value, means whether use the weighted PCA to obtain the initial values of loadings and other paramters, default as \code{FALSE} which means the ordinary PCA  is used.}
   \item{int.model}{an optional string, specify which Gaussian mixture model is used in evaluting the initial values for PRECAST, default as "EEE"; and see \code{Mclust} for more models' names.}

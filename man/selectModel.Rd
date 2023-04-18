@@ -1,14 +1,14 @@
-\name{selectModel}
-\alias{selectModel}
-\alias{selectModel.SeqK_PRECAST_Object}
-\alias{selectModel.PRECASTObj}
+\name{SelectModel}
+\alias{SelectModel}
+\alias{SelectModel.SeqK_PRECAST_Object}
+\alias{SelectModel.PRECASTObj}
 \title{Select best PRECAST model from candidated models}
 \description{
   Select best PRECAST model from candidated models with different number of clusters.
 }
 \usage{
-  \method{selectModel}{SeqK_PRECAST_Object}(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
-  \method{selectModel}{PRECASTObj}(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
+  \method{SelectModel}{SeqK_PRECAST_Object}(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
+  \method{SelectModel}{PRECASTObj}(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE)
 }
 \arguments{
   \item{obj}{a SeqK_PRECAST_Object or  PRECASTObj object after PRECAST model fitting.}
@@ -35,6 +35,6 @@
 \examples{
 
   data(PRECASTObj)
-  PRECASTObj <- selectModel(PRECASTObj)
+  PRECASTObj <- SelectModel(PRECASTObj)
   
 }

@@ -233,15 +233,13 @@ filter_gene <- function(seu, min_spots=20, assay= NULL){
   if(is.null(assay)) assay <- DefaultAssay(seu)
   if(sum(dim(seu[[assay]]@counts))!=0){
     gene_flag <- Matrix::rowSums(seu[[assay]]@counts>0)>min_spots
-    return(seu[names(gene_flag), ])
+    return(seu[names(gene_flag[unname(gene_flag)]), ])
   }else if(sum(dim(seu[[assay]]@data))!=0){
     gene_flag <- Matrix::rowSums(seu[[assay]]@data>0)>min_spots
-    return(seu[names(gene_flag), ])
+    return(seu[names(gene_flag[unname(gene_flag)]), ])
   }else{
     stop("filter_gene: Seuat object must provide slots count or data in assay!")
   }
-  
-  
 }
 
 ## select the features for multiple samples based on a rank rule.
@@ -398,6 +396,8 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
                                    premin.features=20, postmin.spots=15, postmin.features=15,
                               rawData.preserve=FALSE,verbose=TRUE){
   
+  # project = "PRECAST";  gene.number=2000 
+  # selectGenesMethod='SPARK-X';numCores_sparkx=1 
   # premin.spots = 20;  premin.features=20; postmin.spots=15; postmin.features=15;verbose=TRUE
   #suppressMessages(require(Seurat))
   
@@ -476,10 +476,11 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
     
     
   }else{
-    genelist <- customGenelist
+    
     geneNames <- Reduce(intersect,(lapply(seuList, row.names))) # intersection of  genes from each sample
     if(any(!(customGenelist %in% geneNames)))
-      stop("CreatePRECASTObject: check the argument: customGenelist! It contains the gene not in seuList.")
+      message("CreatePRECASTObject: remove genes:", paste0(setdiff(customGenelist, geneNames),"  "),"with low count reads in seuList.")
+    genelist <- intersect(customGenelist, geneNames)
   }
   
   seulist <- lapply(seuList, function(x) x[genelist, ])
@@ -566,11 +567,11 @@ PRECAST <- function(PRECASTObj, K=NULL, q= 15){
 }
 
 ## select model
-selectModel.PRECASTObj <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
+SelectModel.PRECASTObj <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
   
   if(!inherits(obj, "PRECASTObj")) 
-    stop("selectModel.PRECASTObj: Check the argument: obj!  obj must be a PRECASTObj object.")
-  reslist <- selectModel.SeqK_PRECAST_Object(obj@resList, pen_const = pen_const, criteria = criteria, return_para_est)
+    stop("SelectModel.PRECASTObj: Check the argument: obj!  obj must be a PRECASTObj object.")
+  reslist <- SelectModel.SeqK_PRECAST_Object(obj@resList, pen_const = pen_const, criteria = criteria, return_para_est)
   obj@resList <- reslist
   return(obj)
 }
@@ -682,10 +683,16 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
     for(r in 1:n_r){
       colnames(XList[[r]]) <- firstup(colnames(XList[[r]]))
     }
+    if(!is.null(custom_housekeep)){
+      custom_housekeep <- firstup(custom_housekeep)
+    }
   }
   if(tolower(species) =='human'){
     for(r in 1:n_r){
       colnames(XList[[r]]) <- toupper(colnames(XList[[r]]))
+    }
+    if(!is.null(custom_housekeep)){
+      custom_housekeep <- toupper(custom_housekeep)
     }
   }
   
@@ -712,9 +719,9 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
     }
   )
   houseKeep <- c(houseKeep, custom_housekeep)
+  houseKeep <- intersect(houseKeep, colnames(XList[[1]]))
   if(length(houseKeep) < 5){
     message("Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.")
-    message("Users can specify the custom_housekeep by themselves to use the housekeeping genes based methods.")
     hX <- get_correct_mean_exp(XList,PRECASTObj@resList$hV,  covariateList=covariateList)
   }else{
     message("Using bouth housekeeping gene and PRECAST results to obtain the batch corrected gene expressions.")
@@ -885,7 +892,7 @@ dimPlot <- function(seuInt, item=NULL, reduction=NULL, point_size=1,text_size=16
 # PRECASTObj <- PRECAST(PRECASTObj, K=4:5)
 # resList <- PRECASTObj@resList
 # PRECASTObj@resList <- resList
-# PRECASTObj <- selectModel.PRECASTObj(PRECASTObj)
+# PRECASTObj <- SelectModel.PRECASTObj(PRECASTObj)
 
 # usethis::use_data(seuInt, overwrite = T)
 # seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')

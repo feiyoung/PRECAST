@@ -21,6 +21,7 @@ This vignette introduces the PRECAST workflow for the analysis of integrating mu
 * Probabilistic embedding, clustering and alignment using PRECAST model
 * Downstream analysis (i.e. visualization of clusters and embeddings, combined differential expression analysis)
 
+
 We demonstrate the use of PRECAST to three simulated Visium data that are [here](https://github.com/feiyoung/PRECAST/tree/main/vignettes_data), which can be downloaded to the current working path by the following command:
 ```{r eval=FALSE}
 githubURL <- "https://github.com/feiyoung/PRECAST/blob/main/vignettes_data/data_simu.rda?raw=true"
@@ -53,14 +54,20 @@ row.names(data_simu[[1]])[1:10]
 ```
 
 ## Create a PRECASTObject object
-We show how to create a PRECASTObject object step by step. First, we create a Seurat list object using the count matrix and meta data of each data batch. Although `data_simu` is a prepared Seurat list object, we re-create a same objcet seuList to show the details. 
+We show how to create a PRECASTObject object step by step. First, we create a Seurat list object using the count matrix and meta data of each data batch.  Although `data_simu` is a prepared Seurat list object, we re-create a same objcet seuList to show the details. 
+
+* Note: the spatial coordinates must be contained in the meta data and named as `row` and `col`, which benefits the identification of spaital coordinates by PRECAST. 
 
 ```{r  eval = FALSE}
 ## Get the gene-by-spot read count matrices
 countList <- lapply(data_simu, function(x) x[["RNA"]]@counts)
 
+## Check the spatial coordinates: Yes, they are named as "row" and "col"!
+head(data_simu[[1]]@meta.data)
+
 ## Get the meta data of each spot for each data batch
 metadataList <- lapply(data_simu, function(x) x@meta.data)
+
 
 ## ensure the row.names of metadata in metaList are the same as that of colnames count matrix in countList
 M <- length(countList)
@@ -118,8 +125,9 @@ PRECASTObj@seuList
 ## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
 PRECASTObj <-  AddAdjList(PRECASTObj, platform = "Visium")
 
-## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the information in the algorithm.
-PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, maxIter=30, verbose=TRUE)
+## Add a model setting in advance for a PRECASTObj object: verbose =TRUE helps outputing the information in the algorithm; coreNum set the how many cores are used in PRECAST. If you run PRECAST for multiple number of clusters, you can set multiple cores; otherwise, set it to 1. 
+PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, maxIter=30, verbose=TRUE,
+                             coreNum =1)
 ```
 
 ### Fit PRECAST 
@@ -128,27 +136,65 @@ For function `PRECAST`, users can specify the number of clusters $K$ or set `K` 
 ### Given K
 set.seed(2022)
 PRECASTObj <- PRECAST(PRECASTObj, K=7)
+```
+
+<details>
+<summary>**Other options**</summary>
+Run for multiple K. Here, we set `K=6:9`.
+```{r  eval =FALSE}
+## Reset  parameters by increasing cores.
+PRECASTObj2 <- AddParSetting(PRECASTObj, Sigma_equal=FALSE, maxIter=30, verbose=TRUE,
+                             coreNum =2)
+set.seed(2023)
+PRECASTObj2 <- PRECAST(PRECASTObj2, K=6:7)
+
+resList2 <- PRECASTObj2@resList
+PRECASTObj2 <- SelectModel(PRECASTObj2)
 
 ```
 
-Select a best model and use ARI to check the performance of clustering
+* Note: For parallel compuation based on Rcpp on Linux, users require to use the following system command to set the C_stack unlimited in case of R Error: C stack usage is too close to the limit.
+ 
+`ulimit -s unlimited`
+
+Besides, user can also use different initialization method by setting `int.model`, for example, set `int.model=NULL`; see the functions `AddParSetting()` and `model_set()` for more details.
+
+</details>
+
+Select a best model and re-organize the results by useing `SelectModel()`. Even though `K` is not a vector, it is also necessary to run `SelectModel()` to re-organize the results in `PRECASTObj`. 
+The selected best K is 7 by using command `str(PRECASTObj@resList)`.
 ```{r  eval = FALSE}
-## backup the fitting results in resList
+## check the fitted results: there are four list for the fitted results of each K (6:9).
+str(PRECASTObj@resList)
+## backup the fitted results in resList
 resList <- PRECASTObj@resList
 # PRECASTObj@resList <- resList
-PRECASTObj <- selectModel(PRECASTObj)
-true_cluster <- lapply(data_simu, function(x) x$true_cluster)
+PRECASTObj <- SelectModel(PRECASTObj)
+## check the best and re-organized results
+str(PRECASTObj@resList) ## The selected best K is 7
+```
+
+Use ARI to check the performance of clustering:
+```{r  eval = FALSE}
+true_cluster <- lapply(PRECASTObj@seulist, function(x) x$true_cluster)
 str(true_cluster)
 mclust::adjustedRandIndex(unlist(PRECASTObj@resList$cluster), unlist(true_cluster))
 ```
 
-Integrate the two samples by the function `IntegrateSpaData`.
+We provide two methods to correct the batch effects in gene expression level. Method (1) is using only PRECAST results to obtain the batch corrected gene expressions if the species of data is unknown or the number of overlapped housekeeping genes between the variable genes in `PRECASTObj@seulist` and the genes in database is less than five. Method (2) is using bouth housekeeping gene and PRECAST results to obtain the batch corrected gene expressions.
+
+- Note: to obtain batch corrected gene expressions based on housekeeping genes as the negative control, users must specify the species of data source and use gene symbol names in `PRECASTObj@seulist`.
+
+Integrate the two samples by the function `IntegrateSpaData`. Because this is a simulated data, we use Method (1) by setting `species='unknown'`.
 ```{r  eval = FALSE}
 
 seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
 seuInt 
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
+
+
+
 
 ## Visualization
 First, user can choose a beautiful color schema using `chooseColors()`.
@@ -227,7 +273,9 @@ head(top10)
 
 
 
-## Session information
-```{r  eval = FALSE}
+<details>
+<summary>**Session Info**</summary>
+```{r}
 sessionInfo()
 ```
+</details>

@@ -46,6 +46,9 @@
     <loc>/reference/boxPlot.html</loc>
   </url>
   <url>
+    <loc>/reference/chooseColors.html</loc>
+  </url>
+  <url>
     <loc>/reference/coordinate_rotate.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>/reference/doHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/drawFigs.html</loc>
   </url>
   <url>
     <loc>/reference/featurePlot.html</loc>

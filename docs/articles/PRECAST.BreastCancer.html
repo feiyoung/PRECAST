@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
       <h1 data-toc-skip>PRECAST: Human Breast Cancer Data Analysis</h1>
                         <h4 data-toc-skip class="author">Wei Liu</h4>
             
-            <h4 data-toc-skip class="date">2023-03-05</h4>
+            <h4 data-toc-skip class="date">2023-04-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/feiyoung/PRECAST/blob/HEAD/vignettes/PRECAST.BreastCancer.Rmd" class="external-link"><code>vignettes/PRECAST.BreastCancer.Rmd</code></a></small>
       <div class="hidden name"><code>PRECAST.BreastCancer.Rmd</code></div>
@@ -109,7 +109,7 @@
 <p>Then load to R</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"bc2.rda"</span><span class="op">)</span></code></pre></div>
-<p>This data is also available at 10X genomics data website:</p>
+<details><p><summary><strong>Download data from 10X: another method to access data</strong></summary> This data is also available at 10X genomics data website:</p>
 <ul>
 <li>Section1: <a href="https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1" class="external-link uri">https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1</a>
 </li>
@@ -118,15 +118,14 @@
 </ul>
 <p>Users require the two folders for each dataset: spatial and filtered_feature_bc_matrix. Then the data can be read by the following commond.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/DR.SC" class="external-link">DR.SC</a></span><span class="op">)</span>
-<span class="va">dir.file</span> <span class="op">&lt;-</span> <span class="st">"Section"</span>  <span class="co">## the folders Section1 and Section2, and each includes two folders spatial and filtered_feature_bc_matrix</span>
+<code class="sourceCode R"><span class="va">dir.file</span> <span class="op">&lt;-</span> <span class="st">"Section"</span>  <span class="co">## the folders Section1 and Section2, and each includes two folders spatial and filtered_feature_bc_matrix</span>
 <span class="va">seuList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="op">{</span>
     <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"r = "</span>, <span class="va">r</span><span class="op">)</span>
-    <span class="va">seuList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/read10XVisium.html" class="external-link">read10XVisium</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="va">r</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">seuList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/read10XVisium.html" class="external-link">read10XVisium</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.file</span>, <span class="va">r</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="va">bc2</span> <span class="op">&lt;-</span> <span class="va">seuList</span></code></pre></div>
-<p>The package can be loaded with the command:</p>
+</details><p>The package can be loaded with the command:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></code></pre></div>
@@ -170,17 +169,24 @@
 <div class="section level2">
 <h2 id="create-a-precastobject-object">Create a PRECASTObject object<a class="anchor" aria-label="anchor" href="#create-a-precastobject-object"></a>
 </h2>
-<p>We show how to create a PRECASTObject object step by step. First, we create a Seurat list object using the count matrix and meta data of each data batch. Although <code>bc2</code> is a prepared Seurat list object, we re-create it to show the details of the Seurat list object.</p>
+<p>We show how to create a PRECASTObject object step by step. First, we create a Seurat list object using the count matrix and meta data of each data batch. Although <code>bc2</code> is a prepared Seurat list object, we re-create it to show the details of the Seurat list object. At the same time, check the meta data that must include the spatial coordinates named “row” and “col”, respectively. If the names are not, they are required to rename them.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Get the gene-by-spot read count matrices</span>
 <span class="va">countList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bc2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"RNA"</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">counts</span><span class="op">)</span>
-
+<span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">countList</span><span class="op">)</span>
 <span class="co">## Get the meta data of each spot for each data batch</span>
 <span class="va">metadataList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bc2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">@</span><span class="va">meta.data</span><span class="op">)</span>
 
+<span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">M</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">meta_data</span> <span class="op">&lt;-</span> <span class="va">metadataList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"col"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">meta_data</span><span class="op">)</span><span class="op">)</span>  <span class="co">## the names are correct!</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">meta_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"col"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<span class="op">}</span>
+
+
 <span class="co">## ensure the row.names of metadata in metaList are the same as that of colnames count matrix</span>
 <span class="co">## in countList</span>
-<span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">countList</span><span class="op">)</span>
+
 <span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">M</span><span class="op">)</span> <span class="op">{</span>
     <span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">metadataList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">countList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="op">}</span>
@@ -194,7 +200,8 @@
 <span class="op">}</span>
 
 <span class="va">bc2</span> <span class="op">&lt;-</span> <span class="va">seuList</span>
-<span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">meta_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"col"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="section level3">
 <h3 id="prepare-the-precastobject-with-preprocessing-step-">Prepare the PRECASTObject with preprocessing step.<a class="anchor" aria-label="anchor" href="#prepare-the-precastobject-with-preprocessing-step-"></a>
 </h3>
@@ -204,7 +211,7 @@
 <li>Filter low-quality spots and genes, controlled by the arguments <code>premin.features</code> and <code>premin.spots</code>, respectively; the spots are retained in raw data (bc2) with at least premin.features number of nonzero-count features (genes), and the genes are retained in raw data (bc2) with at least <code>premin.spots</code> number of spots. To ease presentation, we denote the filtered Seurat list object as bc2_filter1.</li>
 </ol></li>
 <li><ol start="2" style="list-style-type: decimal">
-<li>Select the top 2,000 variable genes (by setting <code>gene.number=2000</code>) for each data batch using <code><a href="https://rdrr.io/pkg/DR.SC/man/FindSVGs.html" class="external-link">FindSVGs()</a></code> function in <code>DR.SC</code> package for spatially variable genes or <code><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures()</a></code> function in <code>Seurat</code> package for highly variable genes. Next, we prioritized genes based on the number of times they were selected as variable genes in all samples and chose the top 2,000 genes. Then denote the Seurat list object as bc2_filter2, where only 2,000 genes are retained.</li>
+<li>Select the top 2,000 variable genes (by setting <code>gene.number=2000</code>) for each data batch using <code>FindSVGs()</code> function in <code>DR.SC</code> package for spatially variable genes or <code><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures()</a></code> function in <code>Seurat</code> package for highly variable genes. Next, we prioritized genes based on the number of times they were selected as variable genes in all samples and chose the top 2,000 genes. Then denote the Seurat list object as bc2_filter2, where only 2,000 genes are retained.</li>
 </ol></li>
 <li><ol start="3" style="list-style-type: decimal">
 <li>Conduct strict quality control for bc2_filter2 by filtering spots and genes, controlled by the arguments <code>postmin.features</code> and <code>postmin.spots</code>, respectively; the spots are retained with at least <code>post.features</code> nonzero counts across genes; the features (genes) are retained with at least <code>postmin.spots</code> number of nonzero-count spots. Usually, no genes are filltered because these genes are variable genes.</li>
@@ -231,12 +238,12 @@
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 2000 features across 3798 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (2000 features, 1699 variable features)</span>
+<span class="co">#&gt; Active assay: RNA (2000 features, 1830 variable features)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 2000 features across 3987 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (2000 features, 1572 variable features)</span>
+<span class="co">#&gt; Active assay: RNA (2000 features, 1850 variable features)</span>
 
 <span class="co">## seuList is null since the default value `rawData.preserve` is FALSE.</span>
 <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seuList</span>
@@ -296,94 +303,86 @@
 <a class="sourceLine" id="cb10-37" title="37"><span class="co">#&gt; variable initialize finish! </span></a>
 <a class="sourceLine" id="cb10-38" title="38"><span class="co">#&gt; predict Y and V! </span></a>
 <a class="sourceLine" id="cb10-39" title="39"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-40" title="40"><span class="co">#&gt; iter = 2, loglik= -538710.062500, dloglik=0.999749 </span></a>
+<a class="sourceLine" id="cb10-40" title="40"><span class="co">#&gt; iter = 2, loglik= 2976444.250000, dloglik=1.001386 </span></a>
 <a class="sourceLine" id="cb10-41" title="41"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-42" title="42"><span class="co">#&gt; diff Energy = 3.292397 </span></a>
-<a class="sourceLine" id="cb10-43" title="43"><span class="co">#&gt; diff Energy = 9.490676 </span></a>
+<a class="sourceLine" id="cb10-42" title="42"><span class="co">#&gt; diff Energy = 1.956402 </span></a>
+<a class="sourceLine" id="cb10-43" title="43"><span class="co">#&gt; diff Energy = 3.051846 </span></a>
 <a class="sourceLine" id="cb10-44" title="44"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-45" title="45"><span class="co">#&gt; iter = 3, loglik= -493363.031250, dloglik=0.084177 </span></a>
+<a class="sourceLine" id="cb10-45" title="45"><span class="co">#&gt; iter = 3, loglik= 3025614.000000, dloglik=0.016520 </span></a>
 <a class="sourceLine" id="cb10-46" title="46"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-47" title="47"><span class="co">#&gt; diff Energy = 0.300287 </span></a>
-<a class="sourceLine" id="cb10-48" title="48"><span class="co">#&gt; diff Energy = 18.361187 </span></a>
+<a class="sourceLine" id="cb10-47" title="47"><span class="co">#&gt; diff Energy = 15.693356 </span></a>
+<a class="sourceLine" id="cb10-48" title="48"><span class="co">#&gt; diff Energy = 3.493418 </span></a>
 <a class="sourceLine" id="cb10-49" title="49"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-50" title="50"><span class="co">#&gt; iter = 4, loglik= -474036.593750, dloglik=0.039173 </span></a>
+<a class="sourceLine" id="cb10-50" title="50"><span class="co">#&gt; iter = 4, loglik= 3045882.000000, dloglik=0.006699 </span></a>
 <a class="sourceLine" id="cb10-51" title="51"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-52" title="52"><span class="co">#&gt; diff Energy = 9.838594 </span></a>
-<a class="sourceLine" id="cb10-53" title="53"><span class="co">#&gt; diff Energy = 15.776691 </span></a>
+<a class="sourceLine" id="cb10-52" title="52"><span class="co">#&gt; diff Energy = 1.774072 </span></a>
+<a class="sourceLine" id="cb10-53" title="53"><span class="co">#&gt; diff Energy = 1.585130 </span></a>
 <a class="sourceLine" id="cb10-54" title="54"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-55" title="55"><span class="co">#&gt; iter = 5, loglik= -463934.000000, dloglik=0.021312 </span></a>
+<a class="sourceLine" id="cb10-55" title="55"><span class="co">#&gt; iter = 5, loglik= 3056535.250000, dloglik=0.003498 </span></a>
 <a class="sourceLine" id="cb10-56" title="56"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-57" title="57"><span class="co">#&gt; diff Energy = 5.346053 </span></a>
-<a class="sourceLine" id="cb10-58" title="58"><span class="co">#&gt; diff Energy = 7.665823 </span></a>
+<a class="sourceLine" id="cb10-57" title="57"><span class="co">#&gt; diff Energy = 5.359586 </span></a>
+<a class="sourceLine" id="cb10-58" title="58"><span class="co">#&gt; diff Energy = 18.774706 </span></a>
 <a class="sourceLine" id="cb10-59" title="59"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-60" title="60"><span class="co">#&gt; iter = 6, loglik= -458170.718750, dloglik=0.012423 </span></a>
+<a class="sourceLine" id="cb10-60" title="60"><span class="co">#&gt; iter = 6, loglik= 3062498.750000, dloglik=0.001951 </span></a>
 <a class="sourceLine" id="cb10-61" title="61"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-62" title="62"><span class="co">#&gt; diff Energy = 0.583654 </span></a>
-<a class="sourceLine" id="cb10-63" title="63"><span class="co">#&gt; diff Energy = 2.927822 </span></a>
+<a class="sourceLine" id="cb10-62" title="62"><span class="co">#&gt; diff Energy = 3.253548 </span></a>
+<a class="sourceLine" id="cb10-63" title="63"><span class="co">#&gt; diff Energy = 0.528911 </span></a>
 <a class="sourceLine" id="cb10-64" title="64"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-65" title="65"><span class="co">#&gt; iter = 7, loglik= -454575.250000, dloglik=0.007847 </span></a>
+<a class="sourceLine" id="cb10-65" title="65"><span class="co">#&gt; iter = 7, loglik= 3066057.000000, dloglik=0.001162 </span></a>
 <a class="sourceLine" id="cb10-66" title="66"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-67" title="67"><span class="co">#&gt; diff Energy = 1.349783 </span></a>
-<a class="sourceLine" id="cb10-68" title="68"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-69" title="69"><span class="co">#&gt; iter = 8, loglik= -452263.093750, dloglik=0.005086 </span></a>
-<a class="sourceLine" id="cb10-70" title="70"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-71" title="71"><span class="co">#&gt; diff Energy = 3.229540 </span></a>
-<a class="sourceLine" id="cb10-72" title="72"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-73" title="73"><span class="co">#&gt; iter = 9, loglik= -450667.625000, dloglik=0.003528 </span></a>
-<a class="sourceLine" id="cb10-74" title="74"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-75" title="75"><span class="co">#&gt; diff Energy = 6.483724 </span></a>
-<a class="sourceLine" id="cb10-76" title="76"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-77" title="77"><span class="co">#&gt; iter = 10, loglik= -449615.125000, dloglik=0.002335 </span></a>
-<a class="sourceLine" id="cb10-78" title="78"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-79" title="79"><span class="co">#&gt; diff Energy = 6.646331 </span></a>
-<a class="sourceLine" id="cb10-80" title="80"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-81" title="81"><span class="co">#&gt; iter = 11, loglik= -448821.062500, dloglik=0.001766 </span></a>
-<a class="sourceLine" id="cb10-82" title="82"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-83" title="83"><span class="co">#&gt; diff Energy = 2.279006 </span></a>
-<a class="sourceLine" id="cb10-84" title="84"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-85" title="85"><span class="co">#&gt; iter = 12, loglik= -448168.218750, dloglik=0.001455 </span></a>
-<a class="sourceLine" id="cb10-86" title="86"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-87" title="87"><span class="co">#&gt; diff Energy = 2.202523 </span></a>
-<a class="sourceLine" id="cb10-88" title="88"><span class="co">#&gt; diff Energy = 2.844922 </span></a>
-<a class="sourceLine" id="cb10-89" title="89"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-90" title="90"><span class="co">#&gt; iter = 13, loglik= -447759.875000, dloglik=0.000911 </span></a>
-<a class="sourceLine" id="cb10-91" title="91"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-92" title="92"><span class="co">#&gt; diff Energy = 0.006311 </span></a>
-<a class="sourceLine" id="cb10-93" title="93"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-94" title="94"><span class="co">#&gt; iter = 14, loglik= -447315.375000, dloglik=0.000993 </span></a>
-<a class="sourceLine" id="cb10-95" title="95"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-96" title="96"><span class="co">#&gt; diff Energy = 2.226714 </span></a>
-<a class="sourceLine" id="cb10-97" title="97"><span class="co">#&gt; diff Energy = 1.439908 </span></a>
-<a class="sourceLine" id="cb10-98" title="98"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-99" title="99"><span class="co">#&gt; iter = 15, loglik= -447006.437500, dloglik=0.000691 </span></a>
-<a class="sourceLine" id="cb10-100" title="100"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-101" title="101"><span class="co">#&gt; diff Energy = 0.230797 </span></a>
-<a class="sourceLine" id="cb10-102" title="102"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-103" title="103"><span class="co">#&gt; iter = 16, loglik= -446743.593750, dloglik=0.000588 </span></a>
-<a class="sourceLine" id="cb10-104" title="104"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-105" title="105"><span class="co">#&gt; diff Energy = 1.890100 </span></a>
-<a class="sourceLine" id="cb10-106" title="106"><span class="co">#&gt; diff Energy = 5.112124 </span></a>
-<a class="sourceLine" id="cb10-107" title="107"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-108" title="108"><span class="co">#&gt; iter = 17, loglik= -446530.250000, dloglik=0.000478 </span></a>
-<a class="sourceLine" id="cb10-109" title="109"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-110" title="110"><span class="co">#&gt; diff Energy = 2.172768 </span></a>
-<a class="sourceLine" id="cb10-111" title="111"><span class="co">#&gt; diff Energy = 0.176038 </span></a>
-<a class="sourceLine" id="cb10-112" title="112"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-113" title="113"><span class="co">#&gt; iter = 18, loglik= -446265.531250, dloglik=0.000593 </span></a>
-<a class="sourceLine" id="cb10-114" title="114"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-115" title="115"><span class="co">#&gt; diff Energy = 3.833800 </span></a>
-<a class="sourceLine" id="cb10-116" title="116"><span class="co">#&gt; diff Energy = 1.884645 </span></a>
-<a class="sourceLine" id="cb10-117" title="117"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-118" title="118"><span class="co">#&gt; iter = 19, loglik= -446155.218750, dloglik=0.000247 </span></a>
-<a class="sourceLine" id="cb10-119" title="119"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-120" title="120"><span class="co">#&gt; diff Energy = 0.729388 </span></a>
-<a class="sourceLine" id="cb10-121" title="121"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-122" title="122"><span class="co">#&gt; iter = 20, loglik= -446035.250000, dloglik=0.000269</span></a></code></pre></div>
-<p>Select a best model if <span class="math inline">\(K\)</span> is an integer vector. Even if <span class="math inline">\(K\)</span> is a scalar, this step is also neccessary.</p>
+<a class="sourceLine" id="cb10-67" title="67"><span class="co">#&gt; diff Energy = 3.410646 </span></a>
+<a class="sourceLine" id="cb10-68" title="68"><span class="co">#&gt; diff Energy = 6.913157 </span></a>
+<a class="sourceLine" id="cb10-69" title="69"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-70" title="70"><span class="co">#&gt; iter = 8, loglik= 3068328.500000, dloglik=0.000741 </span></a>
+<a class="sourceLine" id="cb10-71" title="71"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-72" title="72"><span class="co">#&gt; diff Energy = 2.192667 </span></a>
+<a class="sourceLine" id="cb10-73" title="73"><span class="co">#&gt; diff Energy = 4.134452 </span></a>
+<a class="sourceLine" id="cb10-74" title="74"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-75" title="75"><span class="co">#&gt; iter = 9, loglik= 3069820.750000, dloglik=0.000486 </span></a>
+<a class="sourceLine" id="cb10-76" title="76"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-77" title="77"><span class="co">#&gt; diff Energy = 2.634320 </span></a>
+<a class="sourceLine" id="cb10-78" title="78"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-79" title="79"><span class="co">#&gt; iter = 10, loglik= 3070998.000000, dloglik=0.000383 </span></a>
+<a class="sourceLine" id="cb10-80" title="80"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-81" title="81"><span class="co">#&gt; diff Energy = 6.519768 </span></a>
+<a class="sourceLine" id="cb10-82" title="82"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-83" title="83"><span class="co">#&gt; iter = 11, loglik= 3071927.750000, dloglik=0.000303 </span></a>
+<a class="sourceLine" id="cb10-84" title="84"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-85" title="85"><span class="co">#&gt; diff Energy = 2.989436 </span></a>
+<a class="sourceLine" id="cb10-86" title="86"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-87" title="87"><span class="co">#&gt; iter = 12, loglik= 3072684.750000, dloglik=0.000246 </span></a>
+<a class="sourceLine" id="cb10-88" title="88"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-89" title="89"><span class="co">#&gt; diff Energy = 1.782745 </span></a>
+<a class="sourceLine" id="cb10-90" title="90"><span class="co">#&gt; diff Energy = 3.316467 </span></a>
+<a class="sourceLine" id="cb10-91" title="91"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-92" title="92"><span class="co">#&gt; iter = 13, loglik= 3073326.000000, dloglik=0.000209 </span></a>
+<a class="sourceLine" id="cb10-93" title="93"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-94" title="94"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-95" title="95"><span class="co">#&gt; iter = 14, loglik= 3073766.500000, dloglik=0.000143 </span></a>
+<a class="sourceLine" id="cb10-96" title="96"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-97" title="97"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-98" title="98"><span class="co">#&gt; iter = 15, loglik= 3074181.500000, dloglik=0.000135 </span></a>
+<a class="sourceLine" id="cb10-99" title="99"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-100" title="100"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-101" title="101"><span class="co">#&gt; iter = 16, loglik= 3074515.500000, dloglik=0.000109 </span></a>
+<a class="sourceLine" id="cb10-102" title="102"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-103" title="103"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-104" title="104"><span class="co">#&gt; iter = 17, loglik= 3074795.750000, dloglik=0.000091 </span></a>
+<a class="sourceLine" id="cb10-105" title="105"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-106" title="106"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-107" title="107"><span class="co">#&gt; iter = 18, loglik= 3075058.250000, dloglik=0.000085 </span></a>
+<a class="sourceLine" id="cb10-108" title="108"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-109" title="109"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-110" title="110"><span class="co">#&gt; iter = 19, loglik= 3075265.000000, dloglik=0.000067 </span></a>
+<a class="sourceLine" id="cb10-111" title="111"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-112" title="112"><span class="co">#&gt; diff Energy = 0.520772 </span></a>
+<a class="sourceLine" id="cb10-113" title="113"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-114" title="114"><span class="co">#&gt; iter = 20, loglik= 3075446.000000, dloglik=0.000059</span></a></code></pre></div>
+<p>Select a best model if <span class="math inline">\(K\)</span> is an integer vector. Even if <span class="math inline">\(K\)</span> is a scalar, this step is also neccessary to re-organize the results in <code>PRECASTObj</code> object.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## backup the fitting results in resList</span>
 <span class="va">resList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span>
-<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">selectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></code></pre></div>
+<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">SelectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></code></pre></div>
 <p>Integrate the two samples by the function <code>IntegrateSpaData</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
@@ -452,11 +451,7 @@
     face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>, axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span>, face <span class="op">=</span> <span class="st">"italic"</span>, family <span class="op">=</span> <span class="st">"serif"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p1</span></code></pre></div>
 <p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-20-1.png" width="864"></p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
-</h2>
+<details><p><summary><strong>Session Info</strong></summary></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
@@ -477,11 +472,11 @@
 <span class="co">#&gt; [8] base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] ggplot2_3.3.6      dplyr_1.0.9        sp_1.5-0           SeuratObject_4.1.0</span>
-<span class="co">#&gt; [5] Seurat_4.1.1       PRECAST_1.5        gtools_3.9.2.2    </span>
+<span class="co">#&gt; [1] ggplot2_3.4.1      dplyr_1.0.9        sp_1.5-0           SeuratObject_4.1.0</span>
+<span class="co">#&gt; [5] Seurat_4.1.1       PRECAST_1.6        gtools_3.9.2.2    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] utf8_1.2.2                  reticulate_1.25            </span>
+<span class="co">#&gt;   [1] utf8_1.2.3                  reticulate_1.25            </span>
 <span class="co">#&gt;   [3] tidyselect_1.1.2            htmlwidgets_1.5.4          </span>
 <span class="co">#&gt;   [5] grid_4.1.2                  BiocParallel_1.28.3        </span>
 <span class="co">#&gt;   [7] Rtsne_0.16                  munsell_0.5.0              </span>
@@ -489,7 +484,7 @@
 <span class="co">#&gt;  [11] ragg_1.2.2                  ica_1.0-2                  </span>
 <span class="co">#&gt;  [13] future_1.26.1               miniUI_0.1.1.1             </span>
 <span class="co">#&gt;  [15] withr_2.5.0                 spatstat.random_2.2-0      </span>
-<span class="co">#&gt;  [17] colorspace_2.0-3            progressr_0.10.1           </span>
+<span class="co">#&gt;  [17] colorspace_2.1-0            progressr_0.10.1           </span>
 <span class="co">#&gt;  [19] Biobase_2.54.0              highr_0.9                  </span>
 <span class="co">#&gt;  [21] knitr_1.37                  rstudioapi_0.13            </span>
 <span class="co">#&gt;  [23] stats4_4.1.2                SingleCellExperiment_1.16.0</span>
@@ -497,19 +492,19 @@
 <span class="co">#&gt;  [27] tensor_1.5                  listenv_0.8.0              </span>
 <span class="co">#&gt;  [29] labeling_0.4.2              MatrixGenerics_1.6.0       </span>
 <span class="co">#&gt;  [31] GenomeInfoDbData_1.2.7      polyclip_1.10-0            </span>
-<span class="co">#&gt;  [33] farver_2.1.0                rprojroot_2.0.3            </span>
-<span class="co">#&gt;  [35] parallelly_1.32.0           vctrs_0.4.1                </span>
+<span class="co">#&gt;  [33] farver_2.1.1                rprojroot_2.0.3            </span>
+<span class="co">#&gt;  [35] parallelly_1.32.0           vctrs_0.6.1                </span>
 <span class="co">#&gt;  [37] generics_0.1.2              xfun_0.29                  </span>
 <span class="co">#&gt;  [39] ggthemes_4.2.4              R6_2.5.1                   </span>
 <span class="co">#&gt;  [41] GenomeInfoDb_1.30.1         ggbeeswarm_0.6.0           </span>
 <span class="co">#&gt;  [43] rsvd_1.0.5                  bitops_1.0-7               </span>
 <span class="co">#&gt;  [45] spatstat.utils_3.0-1        cachem_1.0.6               </span>
 <span class="co">#&gt;  [47] DelayedArray_0.20.0         assertthat_0.2.1           </span>
-<span class="co">#&gt;  [49] promises_1.2.0.1            scales_1.2.0               </span>
+<span class="co">#&gt;  [49] promises_1.2.0.1            scales_1.2.1               </span>
 <span class="co">#&gt;  [51] rgeos_0.5-9                 beeswarm_0.4.0             </span>
-<span class="co">#&gt;  [53] gtable_0.3.0                beachmat_2.10.0            </span>
+<span class="co">#&gt;  [53] gtable_0.3.3                beachmat_2.10.0            </span>
 <span class="co">#&gt;  [55] globals_0.15.0              goftest_1.2-3              </span>
-<span class="co">#&gt;  [57] rlang_1.0.2                 systemfonts_1.0.4          </span>
+<span class="co">#&gt;  [57] rlang_1.1.0                 systemfonts_1.0.4          </span>
 <span class="co">#&gt;  [59] splines_4.1.2               rstatix_0.7.0              </span>
 <span class="co">#&gt;  [61] lazyeval_0.2.2              broom_0.7.12               </span>
 <span class="co">#&gt;  [63] spatstat.geom_2.4-0         yaml_2.3.6                 </span>
@@ -528,44 +523,45 @@
 <span class="co">#&gt;  [89] zoo_1.8-10                  SummarizedExperiment_1.24.0</span>
 <span class="co">#&gt;  [91] ggrepel_0.9.1               cluster_2.1.2              </span>
 <span class="co">#&gt;  [93] fs_1.5.2                    magrittr_2.0.3             </span>
-<span class="co">#&gt;  [95] GiRaF_1.0.1                 RSpectra_0.16-1            </span>
-<span class="co">#&gt;  [97] data.table_1.14.2           scattermore_0.8            </span>
-<span class="co">#&gt;  [99] lmtest_0.9-40               RANN_2.6.1                 </span>
-<span class="co">#&gt; [101] fitdistrplus_1.1-8          matrixStats_0.62.0         </span>
-<span class="co">#&gt; [103] patchwork_1.1.1             mime_0.12                  </span>
-<span class="co">#&gt; [105] evaluate_0.15               xtable_1.8-4               </span>
-<span class="co">#&gt; [107] mclust_5.4.10               IRanges_2.28.0             </span>
-<span class="co">#&gt; [109] gridExtra_2.3               compiler_4.1.2             </span>
-<span class="co">#&gt; [111] scater_1.25.1               tibble_3.1.7               </span>
-<span class="co">#&gt; [113] KernSmooth_2.23-20          crayon_1.5.1               </span>
-<span class="co">#&gt; [115] htmltools_0.5.2             mgcv_1.8-39                </span>
-<span class="co">#&gt; [117] later_1.3.0                 tidyr_1.2.0                </span>
-<span class="co">#&gt; [119] DBI_1.1.2                   formatR_1.11               </span>
-<span class="co">#&gt; [121] MASS_7.3-55                 car_3.0-12                 </span>
-<span class="co">#&gt; [123] Matrix_1.4-0                cli_3.2.0                  </span>
-<span class="co">#&gt; [125] igraph_1.3.5                DR.SC_3.1                  </span>
-<span class="co">#&gt; [127] GenomicRanges_1.46.1        pkgconfig_2.0.3            </span>
-<span class="co">#&gt; [129] pkgdown_2.0.6               plotly_4.10.0              </span>
-<span class="co">#&gt; [131] scuttle_1.4.0               spatstat.sparse_2.1-1      </span>
-<span class="co">#&gt; [133] vipor_0.4.5                 bslib_0.3.1                </span>
-<span class="co">#&gt; [135] XVector_0.34.0              CompQuadForm_1.4.3         </span>
-<span class="co">#&gt; [137] stringr_1.4.0               digest_0.6.29              </span>
-<span class="co">#&gt; [139] sctransform_0.3.3           RcppAnnoy_0.0.19           </span>
-<span class="co">#&gt; [141] spatstat.data_3.0-0         rmarkdown_2.11             </span>
-<span class="co">#&gt; [143] leiden_0.4.2                uwot_0.1.11                </span>
-<span class="co">#&gt; [145] DelayedMatrixStats_1.16.0   shiny_1.7.1                </span>
-<span class="co">#&gt; [147] lifecycle_1.0.1             nlme_3.1-155               </span>
-<span class="co">#&gt; [149] jsonlite_1.8.0              carData_3.0-5              </span>
-<span class="co">#&gt; [151] BiocNeighbors_1.12.0        limma_3.50.1               </span>
-<span class="co">#&gt; [153] desc_1.4.0                  viridisLite_0.4.0          </span>
-<span class="co">#&gt; [155] fansi_1.0.3                 pillar_1.7.0               </span>
-<span class="co">#&gt; [157] lattice_0.20-45             fastmap_1.1.0              </span>
-<span class="co">#&gt; [159] httr_1.4.3                  survival_3.2-13            </span>
-<span class="co">#&gt; [161] glue_1.6.2                  png_0.1-7                  </span>
-<span class="co">#&gt; [163] stringi_1.7.6               sass_0.4.1                 </span>
-<span class="co">#&gt; [165] textshaping_0.3.6           BiocSingular_1.10.0        </span>
-<span class="co">#&gt; [167] memoise_2.0.1               irlba_2.3.5                </span>
-<span class="co">#&gt; [169] future.apply_1.9.0</span></code></pre></div>
+<span class="co">#&gt;  [95] GiRaF_1.0.1                 data.table_1.14.2          </span>
+<span class="co">#&gt;  [97] scattermore_0.8             lmtest_0.9-40              </span>
+<span class="co">#&gt;  [99] RANN_2.6.1                  fitdistrplus_1.1-8         </span>
+<span class="co">#&gt; [101] matrixStats_0.62.0          patchwork_1.1.1            </span>
+<span class="co">#&gt; [103] mime_0.12                   evaluate_0.15              </span>
+<span class="co">#&gt; [105] xtable_1.8-4                mclust_5.4.10              </span>
+<span class="co">#&gt; [107] IRanges_2.28.0              gridExtra_2.3              </span>
+<span class="co">#&gt; [109] compiler_4.1.2              scater_1.25.1              </span>
+<span class="co">#&gt; [111] tibble_3.2.1                KernSmooth_2.23-20         </span>
+<span class="co">#&gt; [113] crayon_1.5.1                htmltools_0.5.2            </span>
+<span class="co">#&gt; [115] mgcv_1.8-39                 later_1.3.0                </span>
+<span class="co">#&gt; [117] tidyr_1.2.0                 DBI_1.1.2                  </span>
+<span class="co">#&gt; [119] formatR_1.11                MASS_7.3-55                </span>
+<span class="co">#&gt; [121] car_3.0-12                  Matrix_1.4-0               </span>
+<span class="co">#&gt; [123] cli_3.2.0                   igraph_1.3.5               </span>
+<span class="co">#&gt; [125] DR.SC_3.2                   GenomicRanges_1.46.1       </span>
+<span class="co">#&gt; [127] pkgconfig_2.0.3             pkgdown_2.0.6              </span>
+<span class="co">#&gt; [129] plotly_4.10.0               scuttle_1.4.0              </span>
+<span class="co">#&gt; [131] spatstat.sparse_2.1-1       vipor_0.4.5                </span>
+<span class="co">#&gt; [133] bslib_0.3.1                 XVector_0.34.0             </span>
+<span class="co">#&gt; [135] CompQuadForm_1.4.3          stringr_1.4.0              </span>
+<span class="co">#&gt; [137] digest_0.6.29               sctransform_0.3.3          </span>
+<span class="co">#&gt; [139] RcppAnnoy_0.0.19            spatstat.data_3.0-0        </span>
+<span class="co">#&gt; [141] rmarkdown_2.11              leiden_0.4.2               </span>
+<span class="co">#&gt; [143] uwot_0.1.11                 DelayedMatrixStats_1.16.0  </span>
+<span class="co">#&gt; [145] shiny_1.7.1                 lifecycle_1.0.3            </span>
+<span class="co">#&gt; [147] nlme_3.1-155                jsonlite_1.8.0             </span>
+<span class="co">#&gt; [149] carData_3.0-5               BiocNeighbors_1.12.0       </span>
+<span class="co">#&gt; [151] limma_3.50.1                desc_1.4.0                 </span>
+<span class="co">#&gt; [153] viridisLite_0.4.1           fansi_1.0.4                </span>
+<span class="co">#&gt; [155] pillar_1.9.0                lattice_0.20-45            </span>
+<span class="co">#&gt; [157] fastmap_1.1.0               httr_1.4.3                 </span>
+<span class="co">#&gt; [159] survival_3.2-13             glue_1.6.2                 </span>
+<span class="co">#&gt; [161] png_0.1-7                   stringi_1.7.6              </span>
+<span class="co">#&gt; [163] sass_0.4.1                  textshaping_0.3.6          </span>
+<span class="co">#&gt; [165] BiocSingular_1.10.0         memoise_2.0.1              </span>
+<span class="co">#&gt; [167] irlba_2.3.5                 future.apply_1.9.0</span></code></pre></div>
+</details>
+</div>
 </div>
   </div>
 

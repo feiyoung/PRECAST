@@ -65,12 +65,22 @@ First, we view the the spatial transcriptomics data with Visium platform.
 dlpfc_151672 ## a list including two Seurat object
 ```
 
+check the meta data that must include the spatial coordinates named "row" and "col", respectively.
+If the names are not, they are required to rename them.
+```{r  eval = FALSE}
+meta_data <- dlpfc_151672@meta.data
+all(c("row", "col") %in% colnames(meta_data)) ## the names are correct!
+head(meta_data[,c("row", "col")])
+```
+
 ### Prepare the PRECASTObject.
 
-Create a PRECASTObj object to prepare for PRECAST models.
+Create a PRECASTObj object to prepare for PRECAST models. Here, we only show the `HVGs` method to select the 2000 highly variable genes, but users are able to choose more genes or also use the `SPARK-X` to choose the spatially variable genes.
 ```{r  eval = FALSE}
+set.seed(2023)
 library(PRECAST)
-preobj <- CreatePRECASTObject(seuList = list(dlpfc_151672))
+preobj <- CreatePRECASTObject(seuList = list(dlpfc_151672), selectGenesMethod="HVGs",
+                              gene.number = 2000) # 
 ```
 ### Add the model setting
 ```{r  eval = FALSE}
@@ -93,13 +103,34 @@ For function `PRECAST`, users can specify the number of clusters $K$ or set `K` 
 PRECASTObj <- PRECAST(PRECASTObj, K= 7)
 ```
 
-Select a best model 
+Use the function `SelectModel()` to re-organize the fitted results in PRECASTObj.
 ```{r  eval = FALSE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
-PRECASTObj <- selectModel(PRECASTObj)
+PRECASTObj <- SelectModel(PRECASTObj)
 ari_precast <- mclust::adjustedRandIndex(PRECASTObj@resList$cluster[[1]], PRECASTObj@seulist[[1]]$layer_guess_reordered)
 ```
+
+
+<details>
+<summary>**Other options**</summary>
+Users are also able to set multiple K, then choose the  best one
+```{r  eval =FALSE}
+PRECASTObj2 <- AddParSetting(PRECASTObj, Sigma_equal = FALSE, coreNum = 4,
+                            maxIter=30, verbose = TRUE) # set 4 cores to run in parallel.
+PRECASTObj2 <- PRECAST(PRECASTObj2, K= 5:8)
+## backup the fitting results in resList
+resList2 <- PRECASTObj2@resList
+PRECASTObj2 <- SelectModel(PRECASTObj2)
+str(PRECASTObj2@resList)
+mclust::adjustedRandIndex(PRECASTObj2@resList$cluster[[1]], PRECASTObj2@seulist[[1]]$layer_guess_reordered)
+```
+
+Besides, user can also use different initialization method by setting `int.model`, for example, set `int.model=NULL`; see the functions `AddParSetting()` and `model_set()` for more details.
+
+</details>
+
+
 
 Put the reults into a Seurat object seuInt.
 ```{r  eval = FALSE}
@@ -149,7 +180,9 @@ Compare the tSNE visualiztion performance of PRECAST and DR-SC.
 drawFigs(list(p_tsne, p_tsne_drsc), layout.dim = c(1,2))
 ```
 
-## Session information
-```{r  eval = FALSE}
+<details>
+<summary>**Session Info**</summary>
+```{r}
 sessionInfo()
 ```
+</details>

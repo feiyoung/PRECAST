@@ -60,7 +60,7 @@ BiocManager::install(c("scater"))
 For usage examples and guided walkthroughs, check the `vignettes` directory of the repo. 
 
 * [Single SRT data analysis](https://feiyoung.github.io/PRECAST/articles/PRECAST.DLPFC.html)
-* [Toy examples for integrating two bathes](https://feiyoung.github.io/PRECAST/articles/PRECAST.Simu.html)
+* [Toy examples for integrating three batches](https://feiyoung.github.io/PRECAST/articles/PRECAST.Simu.html)
 * [Integration across experimental batches](https://feiyoung.github.io/PRECAST/articles/PRECAST.BreastCancer.html)
 
 
@@ -108,6 +108,13 @@ install.packages("DR.SC")
 For an example of typical PRECAST usage, please see our [Package Website](https://feiyoung.github.io/PRECAST/index.html) for a demonstration and overview of the functions included in PRECAST.
 
 # NEWs
+PRECAST version 1.6 (2023-04-18)
+
+* Fix the bug in `PRECAST:::filter_gene()`.
+
+* Revise the function name `selectModel()` to `SelectModel()`, to avoid the mask when loading DR.SC package.
+
+* Update the tutorials.
 
 PRECAST version 1.5 (2023-03-05)
 

@@ -4,7 +4,8 @@
 # build_home()
 # build_article(name="PRECAST.DLPFC") # Solely compile one article for updating.
 # build_article(name="PRECAST.BreastCancer")
-# R CMD check --as-cran PRECAST_1.5.tar.gz
+# build_article(name="PRECAST.Simu")
+# R CMD check --as-cran PRECAST_1.6.tar.gz
 # devtools::check_win_release()
 # iDR.SC <- function(...) UseMethod("iDR.SC")
 model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
@@ -17,8 +18,8 @@ model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
                         error_heter=error_heter, Sp2=Sp2, wpca_int=wpca_int,int.model=int.model,
                         coreNum = coreNum, coreNum_int=coreNum_int,
                         beta_grid= beta_grid,
-                        maxIter_ICM=maxIter_ICM,maxIter= maxIter, epsLogLik=epsLogLik,
-                        verbose=verbose, seed=seed)
+                        maxIter_ICM = maxIter_ICM, maxIter = maxIter, epsLogLik = epsLogLik,
+                        verbose = verbose, seed = seed)
   return(para_settings)
   
 }
@@ -36,7 +37,8 @@ ICM.EM_structure  <- function(XList,  K, AdjList, q=15,parameterList=NULL){
   }
   
   ## Centering
-  XList <- lapply(XList, scale, scale=FALSE)
+  ## XList <- lapply(XList, scale, scale=FALSE)
+  ## centering in ICM.EM() function
   
   resList <- ICM.EM(XList, q, K, AdjList=AdjList, 
               beta_grid=beta_grid,
@@ -368,8 +370,8 @@ degree_freedom <- function(K, paraList){
   return(dfree)
 }
 
-selectModel <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE) UseMethod("selectModel")
-selectModel.SeqK_PRECAST_Object <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
+SelectModel <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE) UseMethod("SelectModel")
+SelectModel.SeqK_PRECAST_Object <- function(obj, criteria = 'MBIC',pen_const=1, return_para_est=FALSE){
   if(!inherits(obj, 'SeqK_PRECAST_Object')) stop('obj must be "SeqK_PRECAST_Object"!\n')
   para_settings <- attr(obj, 'para_settings')
   K_set <- para_settings$K

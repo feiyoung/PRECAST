@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
       </span>
     </div>
 
@@ -80,34 +80,49 @@
     <h2>Arguments</h2>
     <dl><dt>Sigma_equal</dt>
 <dd><p>an optional logical value, specify whether Sigmaks are equal, default as FALSE.</p></dd>
-<dt>Sigma_diag</dt>
+
+  <dt>Sigma_diag</dt>
 <dd><p>an optional logical value, specify whether Sigmaks are diagonal matrices, default as <code>TRUE</code>.</p></dd>
-<dt>mix_prop_heter</dt>
+
+  <dt>mix_prop_heter</dt>
 <dd><p>an optional logical value, specify whether betar are distict, default as <code>TRUE</code>.</p></dd>
-<dt>error_heter</dt>
+
+  <dt>error_heter</dt>
 <dd><p>an optional logical value, whether use the heterogenous error i.e. lambdarj != lambdark for each sample r, default as <code>TRUE</code>. If <code>error_heter=FALSE</code>, then the homogenuous error is used for probabilistic PCA model.</p></dd>
-<dt>Sp2</dt>
+
+  <dt>Sp2</dt>
 <dd><p>an optional logical value, whether add the ICAR model component in the model, default as TRUE. We provide this interface for those users  who don't want to include the  ICAR model.</p></dd>
-<dt>wpca_int</dt>
+
+  <dt>wpca_int</dt>
 <dd><p>an optional logical value, means whether use the weighted PCA to obtain the initial values of loadings and other paramters, default as <code>FALSE</code> which means the ordinary PCA  is used.</p></dd>
-<dt>int.model</dt>
+
+  <dt>int.model</dt>
 <dd><p>an optional string, specify which Gaussian mixture model is used in evaluting the initial values for PRECAST, default as "EEE"; and see <code>Mclust</code> for more models' names.</p></dd>
-<dt>coreNum</dt>
+
+  <dt>coreNum</dt>
 <dd><p>an optional positive integer, means the number of thread used in parallel computating.</p></dd>
-<dt>coreNum_int</dt>
+
+  <dt>coreNum_int</dt>
 <dd><p>an optional positive integer, means the number of cores used in parallel computation for initial values when <code>K</code> is a vector, default as same as <code>coreNum</code>.</p></dd>
-<dt>beta_grid</dt>
+
+   <dt>beta_grid</dt>
 <dd><p>an optional vector of positive value, the candidate set of the smoothing parameter to be searched by the grid-search optimization approach.</p></dd>
-<dt>maxIter_ICM</dt>
+
+  <dt>maxIter_ICM</dt>
 <dd><p>an optional positive value, represents the maximum iterations of ICM.</p></dd>
-<dt>maxIter</dt>
+
+  <dt>maxIter</dt>
 <dd><p>an optional positive value, represents the maximum iterations of EM.</p></dd>
-<dt>epsLogLik</dt>
+
+  <dt>epsLogLik</dt>
 <dd><p>an optional positive vlaue, tolerance vlaue of relative variation rate of the observed pseudo log-loglikelihood value, defualt as '1e-5'.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>an optional logical value, whether output the information of the ICM-EM algorithm.</p></dd>
-<dt>seed</dt>
+
+  <dt>seed</dt>
 <dd><p>an optional integer, the random seed in fitting PRECAST model.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -115,7 +130,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Return a <a href="https://rdrr.io/r/base/list.html" class="external-link">list</a> including all paramters' setting.</p>
+    
+
+<p>Return a <a href="https://rdrr.io/r/base/list.html" class="external-link">list</a> including all paramters' setting.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -193,7 +210,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

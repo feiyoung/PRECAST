@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
       </span>
     </div>
 
@@ -144,12 +144,14 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="selectModel.html">selectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu">selectModel</span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in selectModel(PRECASTObj):</span> could not find function "selectModel"</span>
 <span class="r-in">  <span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species<span class="op">=</span><span class="st">'unknown'</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Users can specify the custom_housekeep by themselves to use the housekeeping genes based methods.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in matrix(1, nrow = nrow(hV0), ncol = 1):</span> non-numeric matrix extent</span>
 <span class="r-in">  <span class="fu">SpaPlot</span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span></span>
-<span class="r-plt img"><img src="SpaPlot-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in SpaPlot(seuInt):</span> object 'seuInt' not found</span>
 <span class="r-in">  </span>
 </code></pre></div>
     </div>

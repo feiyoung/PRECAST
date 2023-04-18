@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
       </span>
     </div>
 
@@ -136,7 +136,7 @@
 <p>For usage examples and guided walkthroughs, check the <code>vignettes</code> directory of the repo.</p>
 <ul>
 <li><a href="https://feiyoung.github.io/PRECAST/articles/PRECAST.DLPFC.html" class="external-link">Single SRT data analysis</a></li>
-<li><a href="https://feiyoung.github.io/PRECAST/articles/PRECAST.Simu.html" class="external-link">Toy examples for integrating two bathes</a></li>
+<li><a href="https://feiyoung.github.io/PRECAST/articles/PRECAST.Simu.html" class="external-link">Toy examples for integrating three batches</a></li>
 <li><a href="https://feiyoung.github.io/PRECAST/articles/PRECAST.BreastCancer.html" class="external-link">Integration across experimental batches</a></li>
 </ul>
 <p>For the users that don’t have set up system properly, the following setup on different systems can be referred. ## Setup on Windows system First, download <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a>; second, add the Rtools directory to the environment variable.</p>
@@ -174,6 +174,12 @@ conda install -c bioconda bioconductor-scater</code></pre>
 <div class="section level1">
 <h1 id="news">NEWs<a class="anchor" aria-label="anchor" href="#news"></a>
 </h1>
+<p>PRECAST version 1.6 (2023-04-18)</p>
+<ul>
+<li><p>Fix the bug in <code>PRECAST:::filter_gene()</code>.</p></li>
+<li><p>Revise the function name <code>selectModel()</code> to <code><a href="reference/selectModel.html">SelectModel()</a></code>, to avoid the mask when loading DR.SC package.</p></li>
+<li><p>Update the tutorials.</p></li>
+</ul>
 <p>PRECAST version 1.5 (2023-03-05)</p>
 <ul>
 <li><p>Fix the <a href="https://github.com/feiyoung/PRECAST/issues/2" class="external-link">issue</a> reported by anvaly. Specifically, the assay name “RNA” used in functions <code><a href="reference/IntegrateSpaData.html">IntegrateSpaData()</a></code> is replaced by the default assay using <code>DefaultAssay</code> function in Seurat. Fix the typo <code>human = {intersect((genelist),Mouse_HK_genes$Gene)}</code> with replacement of <code>human = {intersect(toupper(genelist), PRECAST::Human_HK_genes$Gene)}</code>。</p></li>

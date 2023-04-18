@@ -50,7 +50,8 @@ Then load to R
 load("bc2.rda")
 ```
 
-
+<details>
+<summary>**Download data from 10X: another method to access data**</summary>
 This data is also available at 10X genomics data website:
 
 * Section1: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1
@@ -58,15 +59,16 @@ This data is also available at 10X genomics data website:
 
 Users require the two folders for each dataset: spatial and filtered_feature_bc_matrix. Then the data can be read by the following commond.
 ```{r  eval=  FALSE}
-library(DR.SC)
 dir.file <- "Section" ## the folders Section1 and Section2, and each includes two folders spatial and filtered_feature_bc_matrix
 seuList <- list()
 for (r in 1:2) {
   message("r = ", r)
-  seuList[[r]] <- read10XVisium(paste0(dir.file, r))
+  seuList[[r]] <- DR.SC::read10XVisium(paste0(dir.file, r))
 }
 bc2 <- seuList
 ```
+</details>
+
 
 The package can be loaded with the command:
 ```{r  eval =  FALSE}
@@ -88,16 +90,25 @@ head(bc2[[1]])
 
 ## Create a PRECASTObject object
 We show how to create a PRECASTObject object step by step. First, we create a Seurat list object using the count matrix and meta data of each data batch. Although `bc2` is a prepared Seurat list object, we re-create it to show the details of the Seurat list object. 
+At the same time, check the meta data that must include the spatial coordinates named "row" and "col", respectively.
+If the names are not, they are required to rename them.
 
 ```{r  eval= FALSE}
 ## Get the gene-by-spot read count matrices
 countList <- lapply(bc2, function(x) x[["RNA"]]@counts)
-
+M <- length(countList)
 ## Get the meta data of each spot for each data batch
 metadataList <- lapply(bc2, function(x) x@meta.data)
 
+for(r in 1:M){
+  meta_data <- metadataList[[r]]
+  all(c("row", "col") %in% colnames(meta_data)) ## the names are correct!
+  head(meta_data[,c("row", "col")])
+}
+
+
 ## ensure the row.names of metadata in metaList are the same as that of colnames count matrix in countList
-M <- length(countList)
+
 for(r in 1:M){
   row.names(metadataList[[r]]) <- colnames(countList[[r]])
 }
@@ -112,6 +123,7 @@ for(r in 1:M){
 
 bc2 <- seuList
 rm(seuList)
+head(meta_data[,c("row", "col")])
 ```
 ### Prepare the PRECASTObject with preprocessing step.
 Next, we use `CreatePRECASTObject()` to create a PRECASTObject based on the Seurat list object `bc2`. This function will do three things: 
@@ -162,11 +174,11 @@ PRECASTObj <- PRECAST(PRECASTObj, K=14)
 
 ```
 
-Select a best model if $K$ is an integer vector. Even if $K$ is a scalar, this step is also neccessary. 
+Select a best model if $K$ is an integer vector. Even if $K$ is a scalar, this step is also neccessary to re-organize the results in `PRECASTObj` object. 
 ```{r  eval =  FALSE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
-PRECASTObj <- selectModel(PRECASTObj)
+PRECASTObj <- SelectModel(PRECASTObj)
 
 ```
 
@@ -254,7 +266,10 @@ p1
 
 
 
-## Session information
-```{r  eval =  FALSE}
+
+<details>
+<summary>**Session Info**</summary>
+```{r}
 sessionInfo()
 ```
+</details>
