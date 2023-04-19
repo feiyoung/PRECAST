@@ -44,7 +44,7 @@
 \examples{
 
   data(PRECASTObj)
-  PRECASTObj <- selectModel(PRECASTObj)
+  PRECASTObj <- SelectModel(PRECASTObj)
   seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
   SpaPlot(seuInt)
   

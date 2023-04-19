@@ -37,7 +37,7 @@
 
   library(Seurat)
   data(PRECASTObj)
-  PRECASTObj <- selectModel(PRECASTObj)
+  PRECASTObj <- SelectModel(PRECASTObj)
   seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
   seuInt <- ScaleData(seuInt)
   doHeatmap(seuInt, features=row.names(seuInt)[1:5])

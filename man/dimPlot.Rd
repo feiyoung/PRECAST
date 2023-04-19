@@ -39,7 +39,7 @@
 }
 \examples{
   data(PRECASTObj)
-  PRECASTObj <- selectModel.PRECASTObj(PRECASTObj)
+  PRECASTObj <- SelectModel(PRECASTObj)
   seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
   dimPlot(seuInt, reduction = 'PRECAST')
   ## or use the Seurat::DimPlot(seuInt, reduction = 'PRECAST')

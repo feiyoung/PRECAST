@@ -38,7 +38,7 @@
 
   library(Seurat)
   data(PRECASTObj)
-  PRECASTObj <- selectModel(PRECASTObj)
+  PRECASTObj <- SelectModel(PRECASTObj)
   seuInt <- IntegrateSpaData(PRECASTObj, species='unknown')
   seuInt <- ScaleData(seuInt)
   featurePlot(seuInt, assay='PRE_CAST')
