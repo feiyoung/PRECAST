@@ -1,8 +1,8 @@
 Package: PRECAST
 Type: Package
 Title: Embedding and Clustering with Alignment for Spatial Datasets
-Version: 1.6
-Date: 2023-04-18
+Version: 1.6.1
+Date: 2023-05-06
 Authors@R: 
     c(person(given = "Wei",
              family = "Liu",

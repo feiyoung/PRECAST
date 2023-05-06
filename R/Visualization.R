@@ -41,6 +41,15 @@ matlist2mat <- function(XList){
   # transfer a matrix list to a matrix stacked by rows.
   r_max <- length(XList)
   X0 <- XList[[1]]
+  if(is.null(dim(X0)) || any(dim(X0)==1)){
+    if(r_max>1){
+      for(r in 2:r_max){
+        X0 <- c(X0, XList[[r]])
+      }
+    }
+    
+    return(matrix(X0, ncol=1))
+  }
   if(r_max>1){
     for(r in 2:r_max){
       X0 <- rbind(X0, XList[[r]])

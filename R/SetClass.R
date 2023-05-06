@@ -586,6 +586,19 @@ SelectModel.PRECASTObj <- function(obj, criteria = 'MBIC',pen_const=1, return_pa
 # usethis::use_data(Mouse_HK_genes, Human_HK_genes, overwrite = T)
 
 ## reference: Removing Unwanted Variation from High Dimensional Data with Negative Controls
+dfList2df <- function(dfList){
+  
+  df <- dfList[[1]]
+  r_max <- length(dfList)
+  if(r_max>1){
+    for(r in 2:r_max){
+      df <- rbind(df, dfList[[r]])
+    }
+  }
+  
+  return(df)
+}
+
 get_correct_exp <- function(XList, RfList,  houseKeep, covariateList=NULL, q_unwanted=10){
   
   
@@ -597,12 +610,15 @@ get_correct_exp <- function(XList, RfList,  houseKeep, covariateList=NULL, q_unw
   
   
   Rf <- matlist2mat(RfList)
+  colnames(Rf) <- paste0("Rf",1:ncol(Rf))
   rm(RfList)
   if(!is.null(covariateList)){
-    covariates <- matlist2mat(covariateList)
-    covariates <- as.matrix(covariates)
-    rm(covariateList)
-    Rf <- cbind(Rf, covariates)
+    # covariates <- matlist2mat(covariateList)
+    # covariates <- as.matrix(covariates)
+    covarites_df <- dfList2df(covariateList)
+    covariates <-  model.matrix.lm(object = ~.+1, data = covarites_df, na.action = "na.pass")
+    rm(covariateList, covarites_df)
+    Rf <- cbind(Rf, covariates[,-1])
     rm(covariates)
   }
   ### XList <-  lapply(XList, scale, scale=FALSE)
@@ -611,10 +627,12 @@ get_correct_exp <- function(XList, RfList,  houseKeep, covariateList=NULL, q_unw
   nc_M0 <- ncol(M0)
   lm1 <- lm(X0~ 0+ cbind(M0, Rf))
   coefmat <- coef(lm1)[c(1:nc_M0),]
+  #row.names(coef(lm1))
   rm(lm1)
   hX <- X0 - M0 %*% coefmat
   return(hX)
 }
+
 
 get_correct_mean_exp <- function(XList,  hVList, covariateList=NULL){
   
@@ -637,10 +655,12 @@ get_correct_mean_exp <- function(XList,  hVList, covariateList=NULL){
   
   rm(XList)
   if(!is.null(covariateList)){
-    covariates <- matlist2mat(covariateList)
-    covariates <- as.matrix(covariates)
-    covariates <- cbind(1, covariates)
-    rm(covariateList)
+    # covariates <- matlist2mat(covariateList)
+    # covariates <- as.matrix(covariates)
+    # covariates <- cbind(1, covariates)
+    covarites_df <- dfList2df(covariateList)
+    covariates <-  model.matrix.lm(object = ~.+1, data = covarites_df, na.action = "na.pass")
+    rm(covariateList, covarites_df)
   }else{
     covariates <- matrix(1, nrow=nrow(hV0), ncol=1)
   }
@@ -648,6 +668,7 @@ get_correct_mean_exp <- function(XList,  hVList, covariateList=NULL){
   nc_M0 <- ncol(hV0)
   lm1 <- lm(X0~  0+ cbind(hV0, covariates))
   coefmat <- coef(lm1)[c(1:nc_M0),]
+  # row.names(coef(lm1))
   rm(lm1)
   X0 - hV0 %*% coefmat
   
@@ -674,7 +695,8 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   XList <- lapply(1:n_r,  function(r) Matrix::t(PRECASTObj@seulist[[r]][[defAssay_vec[r]]]@data))
   
   if(!is.null(covariates_use)){
-    covariateList <- lapply(PRECASTObj@seulist, function(x) x@meta.data[, covariates_use])
+    # covariateList <- lapply(PRECASTObj@seulist, function(x) x@meta.data[, covariates_use])
+    covariateList <- lapply(PRECASTObj@seulist, function(x) x@meta.data[covariates_use])
   }else{
     covariateList <- NULL
   }
