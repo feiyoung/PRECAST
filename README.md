@@ -109,7 +109,7 @@ For an example of typical PRECAST usage, please see our [Package Website](https:
 
 # NEWs
 PRECAST version 1.6.1 (2023-05-06)
-* Fix the bug, reported byagelber-ucsd, in `IntegrateSpaData()` when adusting additional covariates.
+* Fix the bug, reported by `agelber-ucsd`, in `IntegrateSpaData()` when adusting additional covariates.
 
 
 PRECAST version 1.6 (2023-04-18)
