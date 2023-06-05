@@ -789,10 +789,10 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12,
     if(!is.factor(seuInt@meta.data[, item])) seuInt@meta.data[, item] <- factor(seuInt@meta.data[, item])
     
     seuInt@meta.data$tmp_item_id <- as.numeric(seuInt@meta.data[, item])
-  }else if(!(item %in% c("RGB_UMAP", "RBG_tSNE"))){
+  }else if(!(item %in% c("RGB_UMAP", "RGB_tSNE"))){
     stop("SpaPlot: check the value of argument: item! It is not the colname of meta.data of seuInt!")
   }
-  if(is.null(cols)&& item != "RGB_UMAP" && item!="RBG_tSNE"){
+  if(is.null(cols)&& item != "RGB_UMAP" && item!="RGB_tSNE"){
     # to determine the number of colors
     
     nn <- length(unique(seuInt@meta.data[,item]))
@@ -800,7 +800,7 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12,
   }
   
   
-  if(!is.vector(cols) && item != "RGB_UMAP" && item!="RBG_tSNE")
+  if(!is.vector(cols) && item != "RGB_UMAP" && item!="RGB_tSNE")
     stop("Check argument: cols! it must be a vector object.")
   
   
@@ -836,7 +836,7 @@ SpaPlot <- function(seuInt, batch=NULL, item=NULL, point_size=2,text_size=12,
                          point_size=point_size, cols =cols[sort_id], ...)
     }else if(item=="RGB_UMAP"){
       p1 <- plot_RGB(embed_use, seu@reductions$UMAP3@cell.embeddings, pointsize = point_size)
-    }else if(item=="RGB_TSNE"){
+    }else if(item=="RGB_tSNE"){
       p1 <- plot_RGB(embed_use, seu@reductions$tSNE3@cell.embeddings, pointsize = point_size)
     }
     p1 <- p1 + mytheme_graybox(base_size = text_size, base_family = font_family, bg_fill = fill_col,

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.1</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@
 <dd><p>an optional positive integer or integer vector, specify the batches to be extracted. Users can check the batches' names by <code>unique(seuInt$batch)</code>.</p></dd>
 
   <dt>item</dt>
-<dd><p>an optional string, which column is plotted in the meta data of seuInt. Users can check the meta data by <code>head(seuInt@meta.data)</code>.</p></dd>
+<dd><p>an optional string, which column is plotted in the meta data of seuInt. Users can check the meta data by <code>head(seuInt@meta.data)</code>. If <code>item</code> takes value from ("RGB_UMAP", "RGB_tSNE"), this function will plot the RGB plot.</p></dd>
 
   <dt>point_size</dt>
 <dd><p>the size of point in the scatter plot.</p></dd>
