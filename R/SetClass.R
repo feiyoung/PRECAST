@@ -227,21 +227,32 @@ filter_spot <- function(seu, min_feature=0, assay=NULL){ # each spots at least i
   seu[, idx]
   # subset(seu, subset = nFeature_RNA > min_feature)
 }
-# filter_spot(seu, assay='PRE_CAST')
+# filter_spot(seu)
 filter_gene <- function(seu, min_spots=20, assay= NULL){
   
   if(is.null(assay)) assay <- DefaultAssay(seu)
-  if(sum(dim(seu[[assay]]@counts))!=0){
-    gene_flag <- Matrix::rowSums(seu[[assay]]@counts>0)>min_spots
-    return(seu[names(gene_flag[unname(gene_flag)]), ])
-  }else if(sum(dim(seu[[assay]]@data))!=0){
-    gene_flag <- Matrix::rowSums(seu[[assay]]@data>0)>min_spots
-    return(seu[names(gene_flag[unname(gene_flag)]), ])
-  }else{
-    stop("filter_gene: Seuat object must provide slots count or data in assay!")
-  }
+  
+  
+    count_matrix <- data_matrix <- NULL
+    suppressWarnings({
+      out1 <- try(count_matrix <- GetAssayData(seu, assay = assay, slot='counts'),
+                  silent=TRUE)
+      out2 <- try(data_matrix <- GetAssayData(seu, assay =assay, slot='data'),
+                  silent=TRUE)
+    })
+   
+    if(sum(dim(count_matrix))!=0){
+      gene_flag <- Matrix::rowSums(count_matrix>0)>min_spots
+      return(seu[names(gene_flag[unname(gene_flag)]), ])
+    }else if(sum(dim(data_matrix))!=0){
+      gene_flag <- Matrix::rowSums(data_matrix>0)>min_spots
+      return(seu[names(gene_flag[unname(gene_flag)]), ])
+    }else{
+      stop("filter_gene: Seuat object must provide slots count or data in assay!")
+    }
+  
 }
-
+# filter_gene(seu)
 ## select the features for multiple samples based on a rank rule.
 selectIntFeatures <- function(seulist, spaFeatureList, IntFeatures=2000){
   ## This function is used for selecting common informative features
@@ -266,7 +277,8 @@ selectIntFeatures <- function(seulist, spaFeatureList, IntFeatures=2000){
   # Remove zero-variance genes
   genes_zeroVar <- unique(unlist(lapply(seulist, function(x){
     assay <- DefaultAssay(x)
-    geneUnion[Matrix::rowSums(x[[assay]]@counts[geneUnion,])==0]
+    count_matrix <- GetAssayData(x, assay = assay, slot='counts')
+    geneUnion[Matrix::rowSums(count_matrix[geneUnion,])==0]
     })))
   
     
@@ -352,7 +364,7 @@ setMethod(
   # require(Seurat)
   sparkx <- getFromNamespace("sparkx", "DR.SC")
   assy <- DefaultAssay(seu)
-  sp_count <- seu[[assy]]@counts
+  sp_count <- GetAssayData(seu, assay = assy, slot='counts') #seu[[assy]]@counts
   
   # if(nrow(sp_count)> (2*nfeatures) && nrow(sp_count) >10000){
   #   
@@ -381,13 +393,48 @@ setMethod(
   is.SVGs[genes] <- TRUE
   adjusted.pval.SVGs[genes] <- sparkX$res_mtest$adjustedPval[order_nfeatures]
   
-  seu[[assy]]@meta.features$is.SVGs <- is.SVGs
-  seu[[assy]]@meta.features$order.SVGs <- order.SVGs
-  seu[[assy]]@meta.features$adjusted.pval.SVGs <- adjusted.pval.SVGs
-  seu[[assy]]@var.features <- genes
-  seu
+  if(class(seu[[assy]])=="Assay5"){
+    seu[[assy]]@meta.data$is.SVGs <- is.SVGs
+    seu[[assy]]@meta.data$order.SVGs <- order.SVGs
+    seu[[assy]]@meta.data$adjusted.pval.SVGs <- adjusted.pval.SVGs
+    var.features <- rep(NA, nrow(seu))
+    names(var.features) <- row.names(seu)
+    var.features[genes] <- genes
+    seu[[assy]]@meta.data$var.features <- unname(var.features)
+  }else{
+    seu[[assy]]@meta.features$is.SVGs <- is.SVGs
+    seu[[assy]]@meta.features$order.SVGs <- order.SVGs
+    seu[[assy]]@meta.features$adjusted.pval.SVGs <- adjusted.pval.SVGs
+    seu[[assy]]@var.features <- genes
+  }
+  
+  
+  return(seu)
 }
 
+.topSVGs <- function (seu, ntop = 5){
+  if (!inherits(seu, "Seurat")) 
+    stop("method is only for Seurat objects")
+  if (ntop > nrow(seu)) 
+    warning(paste0("Only ", nrow(seu), " SVGs will be returned since the number of genes is less than ", 
+                   ntop, "\n"))
+  assy <- DefaultAssay(seu)
+  if(class(seu[[assy]]) == "Assay5"){
+    if (is.null(seu[[assy]]@meta.data$is.SVGs)) 
+      stop("There is no information about SVGs in default Assay. Please use function FindSVGs first!")
+    SVGs <- row.names(seu)[seu[[assy]]@meta.data$is.SVGs]
+    order_features <- seu[[assy]]@meta.data$order.SVGs
+  }else{
+    if (is.null(seu[[assy]]@meta.features$is.SVGs)) 
+      stop("There is no information about SVGs in default Assay. Please use function FindSVGs first!")
+    SVGs <- row.names(seu)[seu[[assy]]@meta.features$is.SVGs]
+    order_features <- seu[[assy]]@meta.features$order.SVGs
+  }
+  
+  
+  idx <- order(order_features[!is.na(order_features)])[1:ntop]
+  SVGs[idx]
+}
 
 
 CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000, 
@@ -401,6 +448,9 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
   # premin.spots = 20;  premin.features=20; postmin.spots=15; postmin.features=15;verbose=TRUE
   #suppressMessages(require(Seurat))
   
+  
+  
+  
   #Check the arguments
   # Check list object
   if(!inherits(seuList, "list")) stop("CreatePRECASTObject: check the argument: seuList! it must be a list.")
@@ -408,6 +458,7 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
   # Check Seurat object
   flag <- sapply(seuList, function(x) !inherits(x, "Seurat"))
   if(any(flag)) stop("CreatePRECASTObject: check the argument: seuList! Each component of seuList must be a Seurat object.")
+  
   
   # Check spatial coordinates for each object.
   exist_spatial_coods <- function(seu){
@@ -439,24 +490,37 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
     resList = NULL,
     project = project
   )
-  seuList <- object@seuList 
+  seuList <- object@seuList
+  
   if(verbose)
     message("Filter spots and features from Raw count data...")
+  tstart <- Sys.time()
   seuList <- lapply(seuList, filter_spot, premin.features)
   seuList <- pbapply::pblapply(seuList, filter_gene, premin.spots)
   message(" \n ")
+  .logDiffTime(sprintf(paste0("%s Filtering step for raw count data finished!"), "*****"), t1 = tstart, verbose = verbose)
   
+  if(verbose)
+    message("Select the variable genes for each data batch...")
+  tstart <- Sys.time()
   if(is.null(customGenelist)){
     if(tolower(selectGenesMethod)=='spark-x'){
       seuList <- pbapply::pblapply(seuList, .findSVGs, nfeatures=gene.number, 
                                    num_core=numCores_sparkx, verbose=verbose)
-      spaFeatureList <- lapply(seuList, DR.SC::topSVGs, ntop = gene.number)
+      spaFeatureList <- lapply(seuList, .topSVGs, ntop = gene.number)
     }else if(tolower(selectGenesMethod)=='hvgs'){
       seuList <- pbapply::pblapply(seuList ,FindVariableFeatures, nfeatures=gene.number, 
                                     verbose=verbose)
       getHVGs <- function(seu){
         assay <- DefaultAssay(seu)
-        seu[[assay]]@var.features
+        if(class(seu[[assay]]) != "Assay5"){
+          vf <- seu[[assay]]@var.features
+        }else{
+          vf_dat <- seu[[assay]]@meta.data[,c("vf_vst_counts_rank", "var.features")]
+          vf_dat <- vf_dat[complete.cases(vf_dat),]
+          vf <- vf_dat$var.features[order(vf_dat$vf_vst_counts_rank)]
+        }
+        return(vf)
       }
       spaFeatureList <- lapply(seuList, getHVGs)
     }else{
@@ -467,7 +531,7 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
     if(any(sapply(spaFeatureList, length)< gene.number)){
       gene.number_old <- gene.number
       gene.number <- min(sapply(spaFeatureList, length))
-      warning(paste0("Number of genes in one of sample is less than ", gene.number_old, ", so set minimum number of SVGs as gene.number=", gene.number) )
+      warning(paste0("Number of genes in one of sample is less than ", gene.number_old, ", so set minimum number of variable genes as gene.number=", gene.number) )
     }
     if(verbose)
       message("Select common top variable genes  for multiple samples...")
@@ -482,14 +546,19 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
       message("CreatePRECASTObject: remove genes:", paste0(setdiff(customGenelist, geneNames),"  "),"with low count reads in seuList.")
     genelist <- intersect(customGenelist, geneNames)
   }
+  .logDiffTime(sprintf(paste0("%s Gene selection finished!"), "*****"), t1 = tstart, verbose = verbose)
+  
+  
   
   seulist <- lapply(seuList, function(x) x[genelist, ])
   if(verbose)
      message("Filter spots and features from SVGs(HVGs) count data...")
+  tstart <- Sys.time()
   seulist <- lapply(seulist, filter_spot, postmin.features)
   seulist <- pbapply::pblapply(seulist, filter_gene, postmin.spots)
   seulist <- lapply(seulist, NormalizeData, verbose=verbose)
   object@seulist <- seulist
+  .logDiffTime(sprintf(paste0("%s Filtering step for count data with variable genes finished!"), "*****"), t1 = tstart, verbose = verbose)
   
   if(!rawData.preserve){
     object@seuList <- NULL
@@ -552,9 +621,8 @@ PRECAST <- function(PRECASTObj, K=NULL, q= 15){
   ## Get normalized data 
   get_norm_data <- function(seu, assay = NULL){
     
-    if(is.null(assay)) assay <- DefaultAssay(seu)
-    
-    dat <- Matrix::t(seu[[assay]]@data)
+    dat <- get_data_fromSeurat(seu, slot='data')
+    dat <- Matrix::t(dat)
     return(dat)
   }
   XList <- lapply(PRECASTObj@seulist,  get_norm_data)
@@ -679,6 +747,7 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   # suppressMessages(require(Matrix))
   # suppressMessages(require(Seurat))
   
+  verbose <- PRECASTObj@parameterList$verbose
   if(!inherits(PRECASTObj, "PRECASTObj")) 
     stop("IntegrateSpaData: Check the argument: PRECASTObj!  PRECASTObj must be a PRECASTObj object.")
   if(is.null(PRECASTObj@seulist)) 
@@ -692,7 +761,7 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   if(any(defAssay_vec!=defAssay_vec[1])) warning("IntegrateSpaData: there are different default assays in PRECASTObj@seulist that will be used to integrating!")
   n_r <- length(defAssay_vec)
   
-  XList <- lapply(1:n_r,  function(r) Matrix::t(PRECASTObj@seulist[[r]][[defAssay_vec[r]]]@data))
+  XList <- lapply(1:n_r,  function(r) Matrix::t(GetAssayData(PRECASTObj@seulist[[r]], assay = defAssay_vec[r], slot='data')))
   
   if(!is.null(covariates_use)){
     # covariateList <- lapply(PRECASTObj@seulist, function(x) x@meta.data[, covariates_use])
@@ -742,13 +811,28 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   )
   houseKeep <- c(houseKeep, custom_housekeep)
   houseKeep <- intersect(houseKeep, colnames(XList[[1]]))
+  
+  tstart <- Sys.time()
   if(length(houseKeep) < 5){
-    message("Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.")
+    if(verbose){
+      message("Using only PRECAST results to obtain the batch corrected gene expressions since species is unknown or the genelist in PRECASTObj has less than 5 overlapp with the housekeeping genes of given species.")
+      message("Start integration...")
+    }
+    
     hX <- get_correct_mean_exp(XList,PRECASTObj@resList$hV,  covariateList=covariateList)
   }else{
-    message("Using bouth housekeeping gene and PRECAST results to obtain the batch corrected gene expressions.")
+    if(verbose){
+      message("Using bouth housekeeping gene and PRECAST results to obtain the batch corrected gene expressions.")
+      message("Start integration...")
+    }
+    
     hX <- get_correct_exp(XList, PRECASTObj@resList$Rf, houseKeep=houseKeep, q_unwanted=min(10, length(houseKeep)), covariateList=covariateList)
   }
+  .logDiffTime(sprintf(paste0("%s Data integration finished!"), "*****"), t1 = tstart, verbose = verbose)
+  
+  if(verbose)
+    message("Put the data into a new Seurat object...")
+  tstart <- Sys.time()
   meta_data <- data.frame(batch=factor(get_sampleID(XList)), cluster= factor(unlist(PRECASTObj@resList$cluster)))
   row.names(meta_data) <- row.names(hX)
   rm(XList)
@@ -756,7 +840,13 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   row.names(count) <- colnames(hX)
   colnames(count) <- row.names(hX)
   seuInt <- CreateSeuratObject(counts = count, assay = 'PRE_CAST', meta.data=meta_data)
-  seuInt[['PRE_CAST']]@data <- t(hX)
+  if(class(seuInt[['PRE_CAST']]) == "Assay5" ){
+    
+    seuInt <- SetAssayData(object = seuInt, slot='data', assay = "PRE_CAST", new.data =  t(hX))
+  }else{
+    seuInt[['PRE_CAST']]@data <- t(hX)
+  }
+  
   rm(hX)
   
   # seuInt <- CreateSeuratObject(assay, meta.data=meta_data, assay = 'PRECAST')
@@ -764,6 +854,10 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   posList <- lapply(PRECASTObj@seulist, function(x) cbind(x$row, x$col))
   seuInt <- Add_embed(matlist2mat(posList), seuInt, embed_name = 'position', assay='PRE_CAST')
   Idents(seuInt) <- factor(meta_data$cluster)
+  
+  .logDiffTime(sprintf(paste0("%s New Seurat object is generated!"), "*****"), t1 = tstart, verbose = verbose)
+  
+  
   return(seuInt)
 }
 

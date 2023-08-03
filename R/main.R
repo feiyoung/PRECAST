@@ -8,6 +8,50 @@
 # R CMD check --as-cran PRECAST_1.6.tar.gz
 # devtools::check_win_release()
 # iDR.SC <- function(...) UseMethod("iDR.SC")
+
+
+
+# Basic functions ---------------------------------------------------------
+.logDiffTime <- function(main = "", t1 = NULL, verbose = TRUE, addHeader = FALSE,
+                         t2 = Sys.time(), units = "mins", header = "*****",
+                         tail = "elapsed.", precision = 3){
+  
+  # main = ""; t1 = NULL; verbose = TRUE; addHeader = FALSE;
+  # t2 = Sys.time(); units = "mins"; header = "###########";
+  # tail = "elapsed."; precision = 3
+  if (verbose) {
+    timeStamp <- tryCatch({
+      dt <- abs(round(difftime(t2, t1, units = units),
+                      precision))
+      if (addHeader) {
+        msg <- sprintf("%s\n%s : %s, %s %s %s\n%s",
+                       header, Sys.time(), main, dt, units, tail,
+                       header)
+      }
+      else {
+        msg <- sprintf("%s : %s, %s %s %s", Sys.time(),
+                       main, dt, units, tail)
+      }
+      if (verbose)
+        message(msg)
+    }, error = function(x) {
+      if (verbose)
+        message("Time Error : ", x)
+    })
+  }
+  
+  return(invisible(0))
+}
+
+
+.logTime <- function(main='', prefix='*****', versoe=TRUE){
+  
+  if(versoe){
+    message(paste0(Sys.time()," : ", prefix," ",  main))
+  }
+  
+  
+}
 model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
                       error_heter=TRUE, Sp2=TRUE, wpca_int=FALSE,int.model='EEE',
                       coreNum = 1, coreNum_int=coreNum,
@@ -67,9 +111,12 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   if(is.null(posList) && is.null(AdjList)) stop("posList or AdjList must be provided one!")
   n <- sum(sapply(XList, nrow))
   p <-  pf[1]
-  message("Intergrative data info.: ", r_max, ' samples, ', p , " genes X ", n, " spots------")
-  message("PRECAST model setting: ", 'error_heter=',error_heter,", Sigma_equal=",Sigma_equal,
-          ", Sigma_diag=", Sigma_diag, ', mix_prop_heter=', mix_prop_heter)
+  if(verbose){
+    message("-----Intergrative data info.: ", r_max, ' samples, ', p , " genes X ", n, " spots------")
+    message("-----PRECAST model setting: ", 'error_heter=',error_heter,", Sigma_equal=",Sigma_equal,
+            ", Sigma_diag=", Sigma_diag, ', mix_prop_heter=', mix_prop_heter)
+  }
+  
   
   if(is.null(AdjList) && !is.null(posList))
     AdjList <- getAdjList(posList, platform=platform)
@@ -89,7 +136,9 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   ## yangyi
   
   # require(mclust)
-  message('Start computing intial values... \n')
+  if(verbose)
+     message('Start computing intial values... \n')
+  tstart <- Sys.time()
   princ1 <- wpca(Xmat, q, weighted = wpca_int)
   hZ <- princ1$PCs
   W0 <- princ1$loadings
@@ -126,6 +175,8 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
                                 int.model =int.model ,verbose=verbose))
   }
   
+  .logDiffTime(sprintf(paste0("%s Initialization finished!"), "*****"), t1 = tstart, verbose = verbose)
+  
   alpha0List = list()
   Mu0List = list()
   Sigma0List = list()
@@ -144,8 +195,9 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   
   
   
-  
-  message("----Fitting PRECAST model----------------\n")
+  if(verbose)
+    message("----Fitting PRECAST model----------------\n")
+  tstart <- Sys.time()
   beta0  =1.5
   resList <- idrsc2Cpp(XList, AdjList, Adjlist_car, hZ, ymat, Mu0List, 
                        Sigma0List, W0, alpha0List, beta0, 
@@ -153,6 +205,7 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
                        maxIter, epsLogLik, verbose,(!error_heter),
                        Sigma_equal, Sigma_diag, mix_prop_heter, Sp2, max(K), min(K), coreNum)
   
+  .logDiffTime(sprintf(paste0("%s PRECAST model fitting finished!"), "*****"), t1 = tstart, verbose = verbose)
   
   
   
@@ -648,6 +701,32 @@ getAdjList <- function(posList, platform='Visium', ...){
       AdjList <- pbapply::pblapply(posList, function(x, ...)getAdj_auto(x, ...))
   }
   return(AdjList)
+}
+
+
+# Access data from Seurat object ------------------------------------------
+## To compatible with Seurat V5
+
+get_data_fromSeurat <- function(seu, assay=NULL, slot='counts'){
+  
+  if(is.null(assay)) assay <- DefaultAssay(seu)
+  dat <- GetAssayData(seu, assay = assay, slot= slot)
+  
+  
+  return(dat)
+}
+get_varfeature_fromSeurat <- function(seu, assay=NULL){
+  
+  if(is.null(assay)) assay <- DefaultAssay(seu)
+  
+  if(class(seu[[assay]]) == "Assay5"){
+    var.features <- seu[[assay]]@meta.data$var.features
+    var.features <- var.features[!is.na(var.features)] 
+    
+  }else{
+    var.features <- seu[[assay]]@var.features
+  }
+  return(var.features)
 }
 
 

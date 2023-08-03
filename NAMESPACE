@@ -50,12 +50,12 @@ importFrom(colorspace, adjust_transparency)
 #export(Mclust, mclustBIC)
 
 importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, FindVariableFeatures,  
-           "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData)
+           "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData, GetAssayData, SetAssayData)
 # export(ScaleData)
 importFrom("graphics", "barplot")
 importFrom(grDevices, hcl, rgb, col2rgb)
 importFrom(stats,quantile,coef, dist, rnorm, median, 
-           cov, rpois, lm, sd, hclust)
+           cov, rpois, lm, sd, hclust,  complete.cases, model.matrix.lm)
 importFrom("methods", "new")
 importFrom("utils", "data")
 importFrom(scales, hue_pal)

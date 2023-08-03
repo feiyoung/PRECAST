@@ -108,6 +108,10 @@ install.packages("DR.SC")
 For an example of typical PRECAST usage, please see our [Package Website](https://feiyoung.github.io/PRECAST/index.html) for a demonstration and overview of the functions included in PRECAST.
 
 # NEWs
+
+PRECAST version 1.6.2 (2023-08-02)
+* Update the code to ensure compatibility with Seurat V5.
+
 PRECAST version 1.6.1 (2023-05-06)
 * Fix the bug, reported by `agelber-ucsd`, in `IntegrateSpaData()` when adusting additional covariates.
 
