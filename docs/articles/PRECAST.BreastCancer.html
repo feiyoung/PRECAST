@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.2</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
       <h1 data-toc-skip>PRECAST: Human Breast Cancer Data Analysis</h1>
                         <h4 data-toc-skip class="author">Wei Liu</h4>
             
-            <h4 data-toc-skip class="date">2023-04-18</h4>
+            <h4 data-toc-skip class="date">2023-08-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/feiyoung/PRECAST/blob/HEAD/vignettes/PRECAST.BreastCancer.Rmd" class="external-link"><code>vignettes/PRECAST.BreastCancer.Rmd</code></a></small>
       <div class="hidden name"><code>PRECAST.BreastCancer.Rmd</code></div>
@@ -171,8 +171,14 @@
 </h2>
 <p>We show how to create a PRECASTObject object step by step. First, we create a Seurat list object using the count matrix and meta data of each data batch. Although <code>bc2</code> is a prepared Seurat list object, we re-create it to show the details of the Seurat list object. At the same time, check the meta data that must include the spatial coordinates named “row” and “col”, respectively. If the names are not, they are required to rename them.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Get the gene-by-spot read count matrices</span>
-<span class="va">countList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bc2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"RNA"</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">counts</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co">## Get the gene-by-spot read count matrices countList &lt;- lapply(bc2, function(x)</span>
+<span class="co">## x[['RNA']]@counts)</span>
+<span class="va">countList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bc2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+    <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AssayData.html" class="external-link">GetAssayData</a></span><span class="op">(</span><span class="va">x</span>, assay <span class="op">=</span> <span class="va">assay</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
+
+<span class="op">}</span><span class="op">)</span>
+
 <span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">countList</span><span class="op">)</span>
 <span class="co">## Get the meta data of each spot for each data batch</span>
 <span class="va">metadataList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bc2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">@</span><span class="va">meta.data</span><span class="op">)</span>
@@ -254,7 +260,7 @@
 
 <span class="co">## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the</span>
 <span class="co">## information in the algorithm.</span>
-<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddParSetting.html">AddParSetting</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, Sigma_equal <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, int.model <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddParSetting.html">AddParSetting</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, Sigma_equal <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, maxIter <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -271,113 +277,116 @@
 <a class="sourceLine" id="cb10-5" title="5">  <span class="op">|</span><span class="st">                                                                            </span></a>
 <a class="sourceLine" id="cb10-6" title="6"><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</a>
 <a class="sourceLine" id="cb10-7" title="7">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-8" title="8"><span class="st">  </span><span class="er">|=====</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">7</span>%</a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="st">  </span><span class="er">|===================================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%</a>
 <a class="sourceLine" id="cb10-9" title="9">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-10" title="10"><span class="st">  </span><span class="er">|=========</span><span class="st">                                                             </span><span class="er">|</span><span class="st">  </span><span class="dv">13</span>%</a>
-<a class="sourceLine" id="cb10-11" title="11">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-12" title="12"><span class="st">  </span><span class="er">|==============</span><span class="st">                                                        </span><span class="er">|</span><span class="st">  </span><span class="dv">20</span>%</a>
-<a class="sourceLine" id="cb10-13" title="13">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-14" title="14"><span class="st">  </span><span class="er">|===================</span><span class="st">                                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">27</span>%</a>
-<a class="sourceLine" id="cb10-15" title="15">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-16" title="16"><span class="st">  </span><span class="er">|=======================</span><span class="st">                                               </span><span class="er">|</span><span class="st">  </span><span class="dv">33</span>%</a>
-<a class="sourceLine" id="cb10-17" title="17">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-18" title="18"><span class="st">  </span><span class="er">|============================</span><span class="st">                                          </span><span class="er">|</span><span class="st">  </span><span class="dv">40</span>%</a>
-<a class="sourceLine" id="cb10-19" title="19">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-20" title="20"><span class="st">  </span><span class="er">|=================================</span><span class="st">                                     </span><span class="er">|</span><span class="st">  </span><span class="dv">47</span>%</a>
-<a class="sourceLine" id="cb10-21" title="21">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-22" title="22"><span class="st">  </span><span class="er">|=====================================</span><span class="st">                                 </span><span class="er">|</span><span class="st">  </span><span class="dv">53</span>%</a>
-<a class="sourceLine" id="cb10-23" title="23">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-24" title="24"><span class="st">  </span><span class="er">|==========================================</span><span class="st">                            </span><span class="er">|</span><span class="st">  </span><span class="dv">60</span>%</a>
-<a class="sourceLine" id="cb10-25" title="25">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-26" title="26"><span class="st">  </span><span class="er">|===============================================</span><span class="st">                       </span><span class="er">|</span><span class="st">  </span><span class="dv">67</span>%</a>
-<a class="sourceLine" id="cb10-27" title="27">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-28" title="28"><span class="st">  </span><span class="er">|===================================================</span><span class="st">                   </span><span class="er">|</span><span class="st">  </span><span class="dv">73</span>%</a>
-<a class="sourceLine" id="cb10-29" title="29">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-30" title="30"><span class="st">  </span><span class="er">|========================================================</span><span class="st">              </span><span class="er">|</span><span class="st">  </span><span class="dv">80</span>%</a>
-<a class="sourceLine" id="cb10-31" title="31">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-32" title="32"><span class="st">  </span><span class="er">|=============================================================</span><span class="st">         </span><span class="er">|</span><span class="st">  </span><span class="dv">87</span>%</a>
-<a class="sourceLine" id="cb10-33" title="33">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-34" title="34"><span class="st">  </span><span class="er">|=================================================================</span><span class="st">     </span><span class="er">|</span><span class="st">  </span><span class="dv">93</span>%</a>
-<a class="sourceLine" id="cb10-35" title="35">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb10-36" title="36"><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</a>
-<a class="sourceLine" id="cb10-37" title="37"><span class="co">#&gt; variable initialize finish! </span></a>
-<a class="sourceLine" id="cb10-38" title="38"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-39" title="39"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-40" title="40"><span class="co">#&gt; iter = 2, loglik= 2976444.250000, dloglik=1.001386 </span></a>
-<a class="sourceLine" id="cb10-41" title="41"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-42" title="42"><span class="co">#&gt; diff Energy = 1.956402 </span></a>
-<a class="sourceLine" id="cb10-43" title="43"><span class="co">#&gt; diff Energy = 3.051846 </span></a>
-<a class="sourceLine" id="cb10-44" title="44"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-45" title="45"><span class="co">#&gt; iter = 3, loglik= 3025614.000000, dloglik=0.016520 </span></a>
-<a class="sourceLine" id="cb10-46" title="46"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-47" title="47"><span class="co">#&gt; diff Energy = 15.693356 </span></a>
-<a class="sourceLine" id="cb10-48" title="48"><span class="co">#&gt; diff Energy = 3.493418 </span></a>
-<a class="sourceLine" id="cb10-49" title="49"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-50" title="50"><span class="co">#&gt; iter = 4, loglik= 3045882.000000, dloglik=0.006699 </span></a>
-<a class="sourceLine" id="cb10-51" title="51"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-52" title="52"><span class="co">#&gt; diff Energy = 1.774072 </span></a>
-<a class="sourceLine" id="cb10-53" title="53"><span class="co">#&gt; diff Energy = 1.585130 </span></a>
+<a class="sourceLine" id="cb10-10" title="10"><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt; variable initialize finish! </span></a>
+<a class="sourceLine" id="cb10-12" title="12"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-13" title="13"><span class="co">#&gt; diff Energy = 6.937339 </span></a>
+<a class="sourceLine" id="cb10-14" title="14"><span class="co">#&gt; diff Energy = 10.821705 </span></a>
+<a class="sourceLine" id="cb10-15" title="15"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-16" title="16"><span class="co">#&gt; iter = 2, loglik= 2974948.750000, dloglik=1.001385 </span></a>
+<a class="sourceLine" id="cb10-17" title="17"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-18" title="18"><span class="co">#&gt; diff Energy = 3.322086 </span></a>
+<a class="sourceLine" id="cb10-19" title="19"><span class="co">#&gt; diff Energy = 13.919401 </span></a>
+<a class="sourceLine" id="cb10-20" title="20"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-21" title="21"><span class="co">#&gt; iter = 3, loglik= 3023453.750000, dloglik=0.016304 </span></a>
+<a class="sourceLine" id="cb10-22" title="22"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-23" title="23"><span class="co">#&gt; diff Energy = 9.832849 </span></a>
+<a class="sourceLine" id="cb10-24" title="24"><span class="co">#&gt; diff Energy = 4.550838 </span></a>
+<a class="sourceLine" id="cb10-25" title="25"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-26" title="26"><span class="co">#&gt; iter = 4, loglik= 3043752.000000, dloglik=0.006714 </span></a>
+<a class="sourceLine" id="cb10-27" title="27"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-28" title="28"><span class="co">#&gt; diff Energy = 8.840217 </span></a>
+<a class="sourceLine" id="cb10-29" title="29"><span class="co">#&gt; diff Energy = 9.215367 </span></a>
+<a class="sourceLine" id="cb10-30" title="30"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-31" title="31"><span class="co">#&gt; iter = 5, loglik= 3055102.250000, dloglik=0.003729 </span></a>
+<a class="sourceLine" id="cb10-32" title="32"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-33" title="33"><span class="co">#&gt; diff Energy = 11.481340 </span></a>
+<a class="sourceLine" id="cb10-34" title="34"><span class="co">#&gt; diff Energy = 2.416897 </span></a>
+<a class="sourceLine" id="cb10-35" title="35"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-36" title="36"><span class="co">#&gt; iter = 6, loglik= 3061833.500000, dloglik=0.002203 </span></a>
+<a class="sourceLine" id="cb10-37" title="37"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-38" title="38"><span class="co">#&gt; diff Energy = 16.553495 </span></a>
+<a class="sourceLine" id="cb10-39" title="39"><span class="co">#&gt; diff Energy = 6.177974 </span></a>
+<a class="sourceLine" id="cb10-40" title="40"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-41" title="41"><span class="co">#&gt; iter = 7, loglik= 3065976.250000, dloglik=0.001353 </span></a>
+<a class="sourceLine" id="cb10-42" title="42"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-43" title="43"><span class="co">#&gt; diff Energy = 4.010440 </span></a>
+<a class="sourceLine" id="cb10-44" title="44"><span class="co">#&gt; diff Energy = 1.574812 </span></a>
+<a class="sourceLine" id="cb10-45" title="45"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-46" title="46"><span class="co">#&gt; iter = 8, loglik= 3068688.500000, dloglik=0.000885 </span></a>
+<a class="sourceLine" id="cb10-47" title="47"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-48" title="48"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-49" title="49"><span class="co">#&gt; iter = 9, loglik= 3070493.000000, dloglik=0.000588 </span></a>
+<a class="sourceLine" id="cb10-50" title="50"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-51" title="51"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-52" title="52"><span class="co">#&gt; iter = 10, loglik= 3071704.500000, dloglik=0.000395 </span></a>
+<a class="sourceLine" id="cb10-53" title="53"><span class="co">#&gt; predict Y and V! </span></a>
 <a class="sourceLine" id="cb10-54" title="54"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-55" title="55"><span class="co">#&gt; iter = 5, loglik= 3056535.250000, dloglik=0.003498 </span></a>
+<a class="sourceLine" id="cb10-55" title="55"><span class="co">#&gt; iter = 11, loglik= 3072681.500000, dloglik=0.000318 </span></a>
 <a class="sourceLine" id="cb10-56" title="56"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-57" title="57"><span class="co">#&gt; diff Energy = 5.359586 </span></a>
-<a class="sourceLine" id="cb10-58" title="58"><span class="co">#&gt; diff Energy = 18.774706 </span></a>
+<a class="sourceLine" id="cb10-57" title="57"><span class="co">#&gt; diff Energy = 1.922482 </span></a>
+<a class="sourceLine" id="cb10-58" title="58"><span class="co">#&gt; diff Energy = 0.033166 </span></a>
 <a class="sourceLine" id="cb10-59" title="59"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-60" title="60"><span class="co">#&gt; iter = 6, loglik= 3062498.750000, dloglik=0.001951 </span></a>
+<a class="sourceLine" id="cb10-60" title="60"><span class="co">#&gt; iter = 12, loglik= 3073435.500000, dloglik=0.000245 </span></a>
 <a class="sourceLine" id="cb10-61" title="61"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-62" title="62"><span class="co">#&gt; diff Energy = 3.253548 </span></a>
-<a class="sourceLine" id="cb10-63" title="63"><span class="co">#&gt; diff Energy = 0.528911 </span></a>
-<a class="sourceLine" id="cb10-64" title="64"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-65" title="65"><span class="co">#&gt; iter = 7, loglik= 3066057.000000, dloglik=0.001162 </span></a>
-<a class="sourceLine" id="cb10-66" title="66"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-67" title="67"><span class="co">#&gt; diff Energy = 3.410646 </span></a>
-<a class="sourceLine" id="cb10-68" title="68"><span class="co">#&gt; diff Energy = 6.913157 </span></a>
+<a class="sourceLine" id="cb10-62" title="62"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-63" title="63"><span class="co">#&gt; iter = 13, loglik= 3074098.750000, dloglik=0.000216 </span></a>
+<a class="sourceLine" id="cb10-64" title="64"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-65" title="65"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-66" title="66"><span class="co">#&gt; iter = 14, loglik= 3074526.750000, dloglik=0.000139 </span></a>
+<a class="sourceLine" id="cb10-67" title="67"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-68" title="68"><span class="co">#&gt; diff Energy = 0.606221 </span></a>
 <a class="sourceLine" id="cb10-69" title="69"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-70" title="70"><span class="co">#&gt; iter = 8, loglik= 3068328.500000, dloglik=0.000741 </span></a>
+<a class="sourceLine" id="cb10-70" title="70"><span class="co">#&gt; iter = 15, loglik= 3074940.250000, dloglik=0.000134 </span></a>
 <a class="sourceLine" id="cb10-71" title="71"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-72" title="72"><span class="co">#&gt; diff Energy = 2.192667 </span></a>
-<a class="sourceLine" id="cb10-73" title="73"><span class="co">#&gt; diff Energy = 4.134452 </span></a>
-<a class="sourceLine" id="cb10-74" title="74"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-75" title="75"><span class="co">#&gt; iter = 9, loglik= 3069820.750000, dloglik=0.000486 </span></a>
-<a class="sourceLine" id="cb10-76" title="76"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-77" title="77"><span class="co">#&gt; diff Energy = 2.634320 </span></a>
+<a class="sourceLine" id="cb10-72" title="72"><span class="co">#&gt; diff Energy = 4.095134 </span></a>
+<a class="sourceLine" id="cb10-73" title="73"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-74" title="74"><span class="co">#&gt; iter = 16, loglik= 3075283.000000, dloglik=0.000111 </span></a>
+<a class="sourceLine" id="cb10-75" title="75"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-76" title="76"><span class="co">#&gt; diff Energy = 0.458213 </span></a>
+<a class="sourceLine" id="cb10-77" title="77"><span class="co">#&gt; diff Energy = 0.123651 </span></a>
 <a class="sourceLine" id="cb10-78" title="78"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-79" title="79"><span class="co">#&gt; iter = 10, loglik= 3070998.000000, dloglik=0.000383 </span></a>
+<a class="sourceLine" id="cb10-79" title="79"><span class="co">#&gt; iter = 17, loglik= 3075600.500000, dloglik=0.000103 </span></a>
 <a class="sourceLine" id="cb10-80" title="80"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-81" title="81"><span class="co">#&gt; diff Energy = 6.519768 </span></a>
-<a class="sourceLine" id="cb10-82" title="82"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-83" title="83"><span class="co">#&gt; iter = 11, loglik= 3071927.750000, dloglik=0.000303 </span></a>
-<a class="sourceLine" id="cb10-84" title="84"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-85" title="85"><span class="co">#&gt; diff Energy = 2.989436 </span></a>
-<a class="sourceLine" id="cb10-86" title="86"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-87" title="87"><span class="co">#&gt; iter = 12, loglik= 3072684.750000, dloglik=0.000246 </span></a>
-<a class="sourceLine" id="cb10-88" title="88"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-89" title="89"><span class="co">#&gt; diff Energy = 1.782745 </span></a>
-<a class="sourceLine" id="cb10-90" title="90"><span class="co">#&gt; diff Energy = 3.316467 </span></a>
-<a class="sourceLine" id="cb10-91" title="91"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-92" title="92"><span class="co">#&gt; iter = 13, loglik= 3073326.000000, dloglik=0.000209 </span></a>
-<a class="sourceLine" id="cb10-93" title="93"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-94" title="94"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-95" title="95"><span class="co">#&gt; iter = 14, loglik= 3073766.500000, dloglik=0.000143 </span></a>
-<a class="sourceLine" id="cb10-96" title="96"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-97" title="97"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-98" title="98"><span class="co">#&gt; iter = 15, loglik= 3074181.500000, dloglik=0.000135 </span></a>
-<a class="sourceLine" id="cb10-99" title="99"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-100" title="100"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-101" title="101"><span class="co">#&gt; iter = 16, loglik= 3074515.500000, dloglik=0.000109 </span></a>
-<a class="sourceLine" id="cb10-102" title="102"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-103" title="103"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-104" title="104"><span class="co">#&gt; iter = 17, loglik= 3074795.750000, dloglik=0.000091 </span></a>
-<a class="sourceLine" id="cb10-105" title="105"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-81" title="81"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-82" title="82"><span class="co">#&gt; iter = 18, loglik= 3075839.750000, dloglik=0.000078 </span></a>
+<a class="sourceLine" id="cb10-83" title="83"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-84" title="84"><span class="co">#&gt; diff Energy = 0.676546 </span></a>
+<a class="sourceLine" id="cb10-85" title="85"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-86" title="86"><span class="co">#&gt; iter = 19, loglik= 3075971.250000, dloglik=0.000043 </span></a>
+<a class="sourceLine" id="cb10-87" title="87"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-88" title="88"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-89" title="89"><span class="co">#&gt; iter = 20, loglik= 3076198.500000, dloglik=0.000074 </span></a>
+<a class="sourceLine" id="cb10-90" title="90"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-91" title="91"><span class="co">#&gt; diff Energy = 0.350057 </span></a>
+<a class="sourceLine" id="cb10-92" title="92"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-93" title="93"><span class="co">#&gt; iter = 21, loglik= 3076318.250000, dloglik=0.000039 </span></a>
+<a class="sourceLine" id="cb10-94" title="94"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-95" title="95"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-96" title="96"><span class="co">#&gt; iter = 22, loglik= 3076481.750000, dloglik=0.000053 </span></a>
+<a class="sourceLine" id="cb10-97" title="97"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-98" title="98"><span class="co">#&gt; diff Energy = 3.005715 </span></a>
+<a class="sourceLine" id="cb10-99" title="99"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-100" title="100"><span class="co">#&gt; iter = 23, loglik= 3076585.250000, dloglik=0.000034 </span></a>
+<a class="sourceLine" id="cb10-101" title="101"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-102" title="102"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-103" title="103"><span class="co">#&gt; iter = 24, loglik= 3076744.000000, dloglik=0.000052 </span></a>
+<a class="sourceLine" id="cb10-104" title="104"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-105" title="105"><span class="co">#&gt; diff Energy = 0.412564 </span></a>
 <a class="sourceLine" id="cb10-106" title="106"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-107" title="107"><span class="co">#&gt; iter = 18, loglik= 3075058.250000, dloglik=0.000085 </span></a>
+<a class="sourceLine" id="cb10-107" title="107"><span class="co">#&gt; iter = 25, loglik= 3076794.750000, dloglik=0.000016 </span></a>
 <a class="sourceLine" id="cb10-108" title="108"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-109" title="109"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-110" title="110"><span class="co">#&gt; iter = 19, loglik= 3075265.000000, dloglik=0.000067 </span></a>
-<a class="sourceLine" id="cb10-111" title="111"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb10-112" title="112"><span class="co">#&gt; diff Energy = 0.520772 </span></a>
+<a class="sourceLine" id="cb10-109" title="109"><span class="co">#&gt; diff Energy = 2.933459 </span></a>
+<a class="sourceLine" id="cb10-110" title="110"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-111" title="111"><span class="co">#&gt; iter = 26, loglik= 3076932.250000, dloglik=0.000045 </span></a>
+<a class="sourceLine" id="cb10-112" title="112"><span class="co">#&gt; predict Y and V! </span></a>
 <a class="sourceLine" id="cb10-113" title="113"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb10-114" title="114"><span class="co">#&gt; iter = 20, loglik= 3075446.000000, dloglik=0.000059</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-114" title="114"><span class="co">#&gt; iter = 27, loglik= 3077026.000000, dloglik=0.000030 </span></a>
+<a class="sourceLine" id="cb10-115" title="115"><span class="co">#&gt; predict Y and V! </span></a>
+<a class="sourceLine" id="cb10-116" title="116"><span class="co">#&gt; Finish ICM step! </span></a>
+<a class="sourceLine" id="cb10-117" title="117"><span class="co">#&gt; iter = 28, loglik= 3077050.750000, dloglik=0.000008</span></a></code></pre></div>
 <p>Select a best model if <span class="math inline">\(K\)</span> is an integer vector. Even if <span class="math inline">\(K\)</span> is a scalar, this step is also neccessary to re-organize the results in <code>PRECASTObj</code> object.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## backup the fitting results in resList</span>
@@ -473,7 +482,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt; [1] ggplot2_3.4.1      dplyr_1.0.9        sp_1.5-0           SeuratObject_4.1.0</span>
-<span class="co">#&gt; [5] Seurat_4.1.1       PRECAST_1.6        gtools_3.9.2.2    </span>
+<span class="co">#&gt; [5] Seurat_4.1.1       PRECAST_1.6.2      gtools_3.9.2.2    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] utf8_1.2.3                  reticulate_1.25            </span>
@@ -523,43 +532,44 @@
 <span class="co">#&gt;  [89] zoo_1.8-10                  SummarizedExperiment_1.24.0</span>
 <span class="co">#&gt;  [91] ggrepel_0.9.1               cluster_2.1.2              </span>
 <span class="co">#&gt;  [93] fs_1.5.2                    magrittr_2.0.3             </span>
-<span class="co">#&gt;  [95] GiRaF_1.0.1                 data.table_1.14.2          </span>
-<span class="co">#&gt;  [97] scattermore_0.8             lmtest_0.9-40              </span>
-<span class="co">#&gt;  [99] RANN_2.6.1                  fitdistrplus_1.1-8         </span>
-<span class="co">#&gt; [101] matrixStats_0.62.0          patchwork_1.1.1            </span>
-<span class="co">#&gt; [103] mime_0.12                   evaluate_0.15              </span>
-<span class="co">#&gt; [105] xtable_1.8-4                mclust_5.4.10              </span>
-<span class="co">#&gt; [107] IRanges_2.28.0              gridExtra_2.3              </span>
-<span class="co">#&gt; [109] compiler_4.1.2              scater_1.25.1              </span>
-<span class="co">#&gt; [111] tibble_3.2.1                KernSmooth_2.23-20         </span>
-<span class="co">#&gt; [113] crayon_1.5.1                htmltools_0.5.2            </span>
-<span class="co">#&gt; [115] mgcv_1.8-39                 later_1.3.0                </span>
-<span class="co">#&gt; [117] tidyr_1.2.0                 DBI_1.1.2                  </span>
-<span class="co">#&gt; [119] formatR_1.11                MASS_7.3-55                </span>
-<span class="co">#&gt; [121] car_3.0-12                  Matrix_1.4-0               </span>
-<span class="co">#&gt; [123] cli_3.2.0                   igraph_1.3.5               </span>
-<span class="co">#&gt; [125] DR.SC_3.2                   GenomicRanges_1.46.1       </span>
-<span class="co">#&gt; [127] pkgconfig_2.0.3             pkgdown_2.0.6              </span>
-<span class="co">#&gt; [129] plotly_4.10.0               scuttle_1.4.0              </span>
-<span class="co">#&gt; [131] spatstat.sparse_2.1-1       vipor_0.4.5                </span>
-<span class="co">#&gt; [133] bslib_0.3.1                 XVector_0.34.0             </span>
-<span class="co">#&gt; [135] CompQuadForm_1.4.3          stringr_1.4.0              </span>
-<span class="co">#&gt; [137] digest_0.6.29               sctransform_0.3.3          </span>
-<span class="co">#&gt; [139] RcppAnnoy_0.0.19            spatstat.data_3.0-0        </span>
-<span class="co">#&gt; [141] rmarkdown_2.11              leiden_0.4.2               </span>
-<span class="co">#&gt; [143] uwot_0.1.11                 DelayedMatrixStats_1.16.0  </span>
-<span class="co">#&gt; [145] shiny_1.7.1                 lifecycle_1.0.3            </span>
-<span class="co">#&gt; [147] nlme_3.1-155                jsonlite_1.8.0             </span>
-<span class="co">#&gt; [149] carData_3.0-5               BiocNeighbors_1.12.0       </span>
-<span class="co">#&gt; [151] limma_3.50.1                desc_1.4.0                 </span>
-<span class="co">#&gt; [153] viridisLite_0.4.1           fansi_1.0.4                </span>
-<span class="co">#&gt; [155] pillar_1.9.0                lattice_0.20-45            </span>
-<span class="co">#&gt; [157] fastmap_1.1.0               httr_1.4.3                 </span>
-<span class="co">#&gt; [159] survival_3.2-13             glue_1.6.2                 </span>
-<span class="co">#&gt; [161] png_0.1-7                   stringi_1.7.6              </span>
-<span class="co">#&gt; [163] sass_0.4.1                  textshaping_0.3.6          </span>
-<span class="co">#&gt; [165] BiocSingular_1.10.0         memoise_2.0.1              </span>
-<span class="co">#&gt; [167] irlba_2.3.5                 future.apply_1.9.0</span></code></pre></div>
+<span class="co">#&gt;  [95] GiRaF_1.0.1                 RSpectra_0.16-1            </span>
+<span class="co">#&gt;  [97] data.table_1.14.2           scattermore_0.8            </span>
+<span class="co">#&gt;  [99] lmtest_0.9-40               RANN_2.6.1                 </span>
+<span class="co">#&gt; [101] fitdistrplus_1.1-8          matrixStats_0.62.0         </span>
+<span class="co">#&gt; [103] patchwork_1.1.1             mime_0.12                  </span>
+<span class="co">#&gt; [105] evaluate_0.15               xtable_1.8-4               </span>
+<span class="co">#&gt; [107] mclust_5.4.10               IRanges_2.28.0             </span>
+<span class="co">#&gt; [109] gridExtra_2.3               compiler_4.1.2             </span>
+<span class="co">#&gt; [111] scater_1.25.1               tibble_3.2.1               </span>
+<span class="co">#&gt; [113] KernSmooth_2.23-20          crayon_1.5.1               </span>
+<span class="co">#&gt; [115] htmltools_0.5.2             mgcv_1.8-39                </span>
+<span class="co">#&gt; [117] later_1.3.0                 tidyr_1.2.0                </span>
+<span class="co">#&gt; [119] DBI_1.1.2                   formatR_1.11               </span>
+<span class="co">#&gt; [121] MASS_7.3-55                 car_3.0-12                 </span>
+<span class="co">#&gt; [123] Matrix_1.4-0                cli_3.2.0                  </span>
+<span class="co">#&gt; [125] igraph_1.3.5                DR.SC_3.3                  </span>
+<span class="co">#&gt; [127] GenomicRanges_1.46.1        pkgconfig_2.0.3            </span>
+<span class="co">#&gt; [129] pkgdown_2.0.6               plotly_4.10.0              </span>
+<span class="co">#&gt; [131] scuttle_1.4.0               spatstat.sparse_2.1-1      </span>
+<span class="co">#&gt; [133] vipor_0.4.5                 bslib_0.3.1                </span>
+<span class="co">#&gt; [135] XVector_0.34.0              CompQuadForm_1.4.3         </span>
+<span class="co">#&gt; [137] stringr_1.4.0               digest_0.6.29              </span>
+<span class="co">#&gt; [139] sctransform_0.3.3           RcppAnnoy_0.0.19           </span>
+<span class="co">#&gt; [141] spatstat.data_3.0-0         rmarkdown_2.11             </span>
+<span class="co">#&gt; [143] leiden_0.4.2                uwot_0.1.11                </span>
+<span class="co">#&gt; [145] DelayedMatrixStats_1.16.0   shiny_1.7.1                </span>
+<span class="co">#&gt; [147] lifecycle_1.0.3             nlme_3.1-155               </span>
+<span class="co">#&gt; [149] jsonlite_1.8.0              carData_3.0-5              </span>
+<span class="co">#&gt; [151] BiocNeighbors_1.12.0        limma_3.50.1               </span>
+<span class="co">#&gt; [153] desc_1.4.0                  viridisLite_0.4.1          </span>
+<span class="co">#&gt; [155] fansi_1.0.4                 pillar_1.9.0               </span>
+<span class="co">#&gt; [157] lattice_0.20-45             fastmap_1.1.0              </span>
+<span class="co">#&gt; [159] httr_1.4.3                  survival_3.2-13            </span>
+<span class="co">#&gt; [161] glue_1.6.2                  png_0.1-7                  </span>
+<span class="co">#&gt; [163] stringi_1.7.6               sass_0.4.1                 </span>
+<span class="co">#&gt; [165] textshaping_0.3.6           BiocSingular_1.10.0        </span>
+<span class="co">#&gt; [167] memoise_2.0.1               irlba_2.3.5                </span>
+<span class="co">#&gt; [169] future.apply_1.9.0</span></code></pre></div>
 </details>
 </div>
 </div>

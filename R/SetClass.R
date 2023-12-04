@@ -393,7 +393,7 @@ setMethod(
   is.SVGs[genes] <- TRUE
   adjusted.pval.SVGs[genes] <- sparkX$res_mtest$adjustedPval[order_nfeatures]
   
-  if(class(seu[[assy]])=="Assay5"){
+  if(inherits(seu[[assy]], "Assay5")){
     seu[[assy]]@meta.data$is.SVGs <- is.SVGs
     seu[[assy]]@meta.data$order.SVGs <- order.SVGs
     seu[[assy]]@meta.data$adjusted.pval.SVGs <- adjusted.pval.SVGs
@@ -419,7 +419,7 @@ setMethod(
     warning(paste0("Only ", nrow(seu), " SVGs will be returned since the number of genes is less than ", 
                    ntop, "\n"))
   assy <- DefaultAssay(seu)
-  if(class(seu[[assy]]) == "Assay5"){
+  if(inherits(seu[[assy]], "Assay5")){
     if (is.null(seu[[assy]]@meta.data$is.SVGs)) 
       stop("There is no information about SVGs in default Assay. Please use function FindSVGs first!")
     SVGs <- row.names(seu)[seu[[assy]]@meta.data$is.SVGs]
@@ -513,7 +513,7 @@ CreatePRECASTObject <- function(seuList,  project = "PRECAST",  gene.number=2000
                                     verbose=verbose)
       getHVGs <- function(seu){
         assay <- DefaultAssay(seu)
-        if(class(seu[[assay]]) != "Assay5"){
+        if(!inherits(seu[[assay]], "Assay5")){
           vf <- seu[[assay]]@var.features
         }else{
           vf_dat <- seu[[assay]]@meta.data[,c("vf_vst_counts_rank", "var.features")]
@@ -840,7 +840,7 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   row.names(count) <- colnames(hX)
   colnames(count) <- row.names(hX)
   seuInt <- CreateSeuratObject(counts = count, assay = 'PRE_CAST', meta.data=meta_data)
-  if(class(seuInt[['PRE_CAST']]) == "Assay5" ){
+  if(inherits(seuInt[['PRE_CAST']], "Assay5") ){
     
     seuInt <- SetAssayData(object = seuInt, slot='data', assay = "PRE_CAST", new.data =  t(hX))
   }else{

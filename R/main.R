@@ -2,10 +2,10 @@
 # pkgdown::build_site()
 # pkgdown::build_reference()
 # build_home()
-# build_article(name="PRECAST.DLPFC") # Solely compile one article for updating.
+# build_article(name="PRECAST.DLPFC4") # Solely compile one article for updating.
 # build_article(name="PRECAST.BreastCancer")
 # build_article(name="PRECAST.Simu")
-# R CMD check --as-cran PRECAST_1.6.tar.gz
+# R CMD check --as-cran PRECAST_1.6.3.tar.gz
 # devtools::check_win_release()
 # iDR.SC <- function(...) UseMethod("iDR.SC")
 
@@ -719,7 +719,7 @@ get_varfeature_fromSeurat <- function(seu, assay=NULL){
   
   if(is.null(assay)) assay <- DefaultAssay(seu)
   
-  if(class(seu[[assay]]) == "Assay5"){
+  if(inherits(seu[[assay]], "Assay5")){
     var.features <- seu[[assay]]@meta.data$var.features
     var.features <- var.features[!is.na(var.features)] 
     

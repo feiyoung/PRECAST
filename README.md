@@ -61,7 +61,8 @@ For usage examples and guided walkthroughs, check the `vignettes` directory of t
 
 * [Single SRT data analysis](https://feiyoung.github.io/PRECAST/articles/PRECAST.DLPFC.html)
 * [Toy examples for integrating three batches](https://feiyoung.github.io/PRECAST/articles/PRECAST.Simu.html)
-* [Integration across experimental batches](https://feiyoung.github.io/PRECAST/articles/PRECAST.BreastCancer.html)
+* [Integration across experimental batches: DLPFC](https://feiyoung.github.io/PRECAST/articles/PRECAST.DLPFC4.html)
+* [Integration across experimental batches: breast cancer](https://feiyoung.github.io/PRECAST/articles/PRECAST.BreastCancer.html)
 
 
 

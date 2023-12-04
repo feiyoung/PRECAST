@@ -270,12 +270,15 @@ doHeatmap <- function(seu, features=NULL, cell_label='Cell type', grp_label = FA
 
 featurePlot <- function(seu, feature=NULL, cols=NULL, pt_size=1, title_size=16, 
                         quant=0.5, assay='RNA', reduction="position"){
-  dat <- as.data.frame(seu[[reduction]]@cell.embeddings)
+  
+  #dat <- as.data.frame(seu[[reduction]]@cell.embeddings)
+  dat <- as.data.frame(Embeddings(seu, reduction = reduction))
   colnames(dat) <- c("Spatial_1", "Spatial_2")
   if(is.null(feature)) feature <- row.names(seu)[1]
-  dat$Expression <- seu[[assay]]@scale.data[feature,]
+  #dat$Expression <- seu[[assay]]@scale.data[feature,]
+  dat$Expression <- GetAssayData(seu, slot='scale.data')[feature,]
   if(is.null(cols)) cols <- c("#0571B0",  "#CA0020")
-  med <- quantile(seu[[assay]]@scale.data[feature,], quant)
+  med <- quantile(dat$Expression, quant)
   ggplot(data=dat, aes_string(x='Spatial_1', y='Spatial_2', color='Expression')) + geom_point(size=pt_size) +
     scale_colour_gradient2(
       low = cols[1],

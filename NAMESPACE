@@ -50,7 +50,8 @@ importFrom(colorspace, adjust_transparency)
 #export(Mclust, mclustBIC)
 
 importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, FindVariableFeatures,  
-           "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData, GetAssayData, SetAssayData)
+           "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData, GetAssayData,
+           SetAssayData, Embeddings)
 # export(ScaleData)
 importFrom("graphics", "barplot")
 importFrom(grDevices, hcl, rgb, col2rgb)

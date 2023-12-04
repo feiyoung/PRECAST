@@ -1,0 +1,239 @@
+---
+title: 'PRECAST: Four DLPFC Sample Analysis'
+author: "Wei Liu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PRECAST: Four DLPFC Sample Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  tidy = TRUE,
+  fig.width = 11,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+```
+This vignette introduces the PRECAST workflow for the analysis of four spatial transcriptomics datasets. The workflow consists of three steps
+
+* Independent preprocessing and model setting
+* Probabilistic embedding and clustering  using PRECAST model
+* Downstream analysis (i.e. visualization of clusters and embeddings)
+
+We demonstrate the use of PRECAST to four human dorsolateral prefrontal cortex Visium data. Download the data  to R 
+```{r  eval = TRUE}
+suppressPackageStartupMessages(library(Seurat))
+suppressPackageStartupMessages(library(SingleCellExperiment))
+name_ID4 <- as.character(c(151673, 151674, 151675, 151676))
+
+### Read data in an online manner
+n_ID <- length(name_ID4)
+url_brainA <- "https://github.com/feiyoung/DR-SC.Analysis/raw/main/data/DLPFC_data/"; url_brainB <- ".rds"
+seuList <- list()
+if(!require(FAST)){
+  remotes::install_github("feiyoung/FAST")
+}
+for(i in 1:n_ID){
+  # i <- 1
+  cat('input brain data', i, '\n')
+  # load and read data
+  dlpfc <- readRDS(url(paste0(url_brainA, name_ID4[i],url_brainB) ))
+  count <- dlpfc@assays@data$counts
+  row.names(count) <- FAST::transferGeneNames(row.names(count), species = "Human")
+  seu1 <- CreateSeuratObject(counts = count, 
+                             meta.data = as.data.frame(colData(dlpfc)), 
+                              min.cells = 10,min.features = 10)
+  seuList[[i]] <- seu1
+}
+```
+
+
+The package can be loaded with the command:
+```{r  eval = TRUE}
+library(PRECAST)
+```
+
+
+## Compare PRECAST with DR-SC in analyzing one sample
+First, we view the the spatial transcriptomics data with Visium platform.
+```{r  eval = TRUE}
+seuList ## a list including  Seurat objects
+```
+
+check the meta data that must include the spatial coordinates named "row" and "col", respectively.
+If the names are not, they are required to rename them.
+```{r  eval = TRUE}
+metadataList <- lapply(seuList, function(x) x@meta.data)
+
+for(r in seq_along(metadataList)){
+  meta_data <- metadataList[[r]]
+  cat(all(c("row", "col") %in% colnames(meta_data)), '\n') ## the names are correct!
+  
+}
+```
+
+### Prepare the PRECASTObject.
+
+Create a PRECASTObj object to prepare for PRECAST models. Here, we only show the `HVGs` method to select the 2000 highly variable genes, but users are able to choose more genes or also use the `SPARK-X` to choose the spatially variable genes.
+```{r  eval = TRUE}
+set.seed(2023)
+preobj <- CreatePRECASTObject(seuList = seuList, selectGenesMethod="HVGs",
+                              gene.number = 2000) # 
+```
+### Add the model setting
+```{r  eval = TRUE}
+## check the number of genes/features after filtering step
+preobj@seulist
+## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
+PRECASTObj <-  AddAdjList(preobj, platform = "Visium")
+## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the
+## information in the algorithm.
+PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = TRUE, coreNum = 1,
+                            maxIter=30, verbose = TRUE)
+
+```
+
+
+### Fit PRECAST 
+For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. Here, we use user-specified number of clusters. 
+```{r  eval = TRUE}
+### Given K
+PRECASTObj <- PRECAST(PRECASTObj, K= 7)
+```
+
+Use the function `SelectModel()` to re-organize the fitted results in PRECASTObj.
+```{r  eval = TRUE}
+## backup the fitting results in resList
+resList <- PRECASTObj@resList
+PRECASTObj <- SelectModel(PRECASTObj)
+ari_precast <- sapply(1:length(seuList), function(r) mclust::adjustedRandIndex(PRECASTObj@resList$cluster[[r]], PRECASTObj@seulist[[r]]$layer_guess_reordered))
+mat <- matrix(round(ari_precast,2), nrow=1)
+colnames(mat) <-   name_ID4            
+DT::datatable(mat)
+```
+
+
+<details>
+<summary>**Other options**</summary>
+Users are also able to set multiple K, then choose the  best one
+```{r  eval =FALSE}
+PRECASTObj2 <- AddParSetting(PRECASTObj, Sigma_equal = FALSE, coreNum = 4,
+                            maxIter=30, verbose = TRUE) # set 4 cores to run in parallel.
+PRECASTObj2 <- PRECAST(PRECASTObj2, K= 5:8)
+## backup the fitting results in resList
+resList2 <- PRECASTObj2@resList
+PRECASTObj2 <- SelectModel(PRECASTObj2)
+
+```
+
+Besides, user can also use different initialization method by setting `int.model`, for example, set `int.model=NULL`; see the functions `AddParSetting()` and `model_set()` for more details.
+
+</details>
+
+
+### Integration and Visualization
+
+Integrate the  samples by the function `IntegrateSpaData`.
+```{r  eval = TRUE}
+seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
+seuInt 
+## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
+```
+
+First, user can choose a beautiful color schema using `chooseColors()`.
+```{r  eval = TRUE}
+cols_cluster <- chooseColors(palettes_name = 'Classic 20', n_colors=7, plot_colors = TRUE)
+```
+
+
+Show the spatial scatter plot for clusters
+```{r  eval = TRUE, fig.height = 8, fig.width=9}
+
+p12 <- SpaPlot(seuInt, item='cluster', batch=NULL,point_size=1, cols=cols_cluster, combine=TRUE, nrow.legend=7)
+p12
+
+# users can plot each sample by setting combine=FALSE
+```
+
+Users can re-plot the above figures for specific need by returning a ggplot list object. For example, we  plot the spatial heatmap using a common legend.
+
+```{r  eval = TRUE, fig.height = 8, fig.width=8.5}
+library(ggplot2)
+pList <- SpaPlot(seuInt, item='cluster', batch=NULL,point_size=2.5, cols=cols_cluster, combine=FALSE, nrow.legend=7)
+pList <- lapply(pList, function(x) x +  coord_flip() + scale_x_reverse())
+drawFigs(pList, layout.dim = c(2,2), common.legend = TRUE, legend.position = 'right', align='hv')
+
+```
+
+Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.
+
+```{r  eval = TRUE, fig.height = 6, fig.width=5.5}
+seuInt <- AddUMAP(seuInt) 
+p13List <- SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=FALSE, text_size=15)
+p13List <- lapply(p13List, function(x) x +  coord_flip() + scale_x_reverse())
+drawFigs(p13List, layout.dim = c(2,2), common.legend = TRUE, legend.position = 'right', align='hv')
+#seuInt <- AddTSNE(seuInt) 
+#SpaPlot(seuInt, batch=NULL,item='RGB_TSNE',point_size=2, combine=T, text_size=15)
+```
+
+
+
+Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.
+```{r  eval = TRUE, fig.height = 4.5, fig.width=12}
+seuInt <- AddTSNE(seuInt, n_comp = 2) 
+p1 <- dimPlot(seuInt, item='cluster', point_size = 0.5, font_family='serif', cols=cols_cluster,border_col="gray10", nrow.legend=14, legend_pos='right') # Times New Roman
+p2 <- dimPlot(seuInt, item='batch', point_size = 0.5,  font_family='serif', legend_pos='right')
+
+drawFigs(list(p1, p2), layout.dim = c(1,2), legend.position = 'right', align='hv')
+
+```
+
+
+Combined differential expression analysis 
+```{r  eval = TRUE}
+library(Seurat)
+dat_deg <- FindAllMarkers(seuInt)
+library(dplyr)
+n <- 5
+dat_deg %>%
+  group_by(cluster) %>%
+  top_n(n = n, wt = avg_log2FC) -> top10
+
+
+```
+
+Plot DE genes' heatmap for each spatial domain identified by PRECAST.
+```{r  eval = TRUE, fig.height = 6, fig.width=8}
+library(ggplot2)
+## HeatMap
+p1 <- DotPlot(seuInt, features = unique(top10$gene), col.min = 0, col.max = 1) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=8))
+p1
+```
+
+
+<details>
+<summary>**Session Info**</summary>
+```{r}
+sessionInfo()
+```
+</details>
