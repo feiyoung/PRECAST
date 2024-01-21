@@ -401,10 +401,12 @@ setMethod(
     names(var.features) <- row.names(seu)
     var.features[genes] <- genes
     seu[[assy]]@meta.data$var.features <- unname(var.features)
+    seu[[assy]]@meta.data$var.features.rank <- order.SVGs
   }else{
     seu[[assy]]@meta.features$is.SVGs <- is.SVGs
     seu[[assy]]@meta.features$order.SVGs <- order.SVGs
     seu[[assy]]@meta.features$adjusted.pval.SVGs <- adjusted.pval.SVGs
+    seu[[assy]]@meta.features$var.features.rank <- order.SVGs
     seu[[assy]]@var.features <- genes
   }
   
