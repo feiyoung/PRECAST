@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>PRECAST: Four DLPFC Sample Analysis</h1>
                         <h4 data-toc-skip class="author">Wei Liu</h4>
             
-            <h4 data-toc-skip class="date">2023-12-04</h4>
+            <h4 data-toc-skip class="date">2024-01-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/feiyoung/PRECAST/blob/HEAD/vignettes/PRECAST.DLPFC4.Rmd" class="external-link"><code>vignettes/PRECAST.DLPFC4.Rmd</code></a></small>
       <div class="hidden name"><code>PRECAST.DLPFC4.Rmd</code></div>
@@ -120,8 +120,8 @@
 <span class="va">url_brainA</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/feiyoung/DR-SC.Analysis/raw/main/data/DLPFC_data/"</span>
 <span class="va">url_brainB</span> <span class="op">&lt;-</span> <span class="st">".rds"</span>
 <span class="va">seuList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/FAST" class="external-link">FAST</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"feiyoung/FAST"</span><span class="op">)</span>
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/ProFAST" class="external-link">ProFAST</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"feiyoung/ProFAST"</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_ID</span><span class="op">)</span> <span class="op">{</span>
     <span class="co"># i &lt;- 1</span>
@@ -129,15 +129,12 @@
     <span class="co"># load and read data</span>
     <span class="va">dlpfc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">url</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">url_brainA</span>, <span class="va">name_ID4</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">url_brainB</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
     <span class="va">count</span> <span class="op">&lt;-</span> <span class="va">dlpfc</span><span class="op">@</span><span class="va">assays</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">counts</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">FAST</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/FAST/man/transferGeneNames.html" class="external-link">transferGeneNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
-    <span class="va">seu1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">count</span>, meta.data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">dlpfc</span><span class="op">)</span><span class="op">)</span>, min.cells <span class="op">=</span> <span class="fl">10</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">ProFAST</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ProFAST/man/transferGeneNames.html" class="external-link">transferGeneNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
+    <span class="va">seu1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">count</span>, meta.data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">dlpfc</span><span class="op">)</span><span class="op">)</span>, min.cells <span class="op">=</span> <span class="fl">10</span>,
         min.features <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
     <span class="va">seuList</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">seu1</span>
 <span class="op">}</span>
-<span class="co">#&gt; input brain data 1 </span>
-<span class="co">#&gt; input brain data 2 </span>
-<span class="co">#&gt; input brain data 3 </span>
-<span class="co">#&gt; input brain data 4</span></code></pre></div>
+<span class="co"># saveRDS(seuList, file='seuList4.RDS')</span></code></pre></div>
 <p>The package can be loaded with the command:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span></code></pre></div>
@@ -146,7 +143,8 @@
 </h2>
 <p>First, we view the the spatial transcriptomics data with Visium platform.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seuList</span>  <span class="co">## a list including  Seurat objects</span>
+<code class="sourceCode R"><span class="va">seuList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"seuList4.RDS"</span><span class="op">)</span>
+<span class="va">seuList</span>  <span class="co">## a list including  Seurat objects</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 16578 features across 3639 samples within 1 assay </span>
@@ -416,9 +414,10 @@
 <code class="sourceCode R"><span class="co">## backup the fitting results in resList</span>
 <span class="va">resList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span>
 <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">SelectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span>
-<span class="va">ari_precast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span>,
+<span class="va">ari_precast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mclust/man/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span>,
     <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span><span class="op">)</span>
 <span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ari_precast</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">name_ID4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">151673</span>, <span class="fl">151674</span>, <span class="fl">151675</span>, <span class="fl">151676</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">name_ID4</span>
 <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></code></pre></div>
 <div id="htmlwidget-061d0a6446314c746aaa" style="width:100%;height:auto;" class="datatables html-widget"></div>
@@ -435,75 +434,92 @@
 <div class="section level3">
 <h3 id="integration-and-visualization">Integration and Visualization<a class="anchor" aria-label="anchor" href="#integration-and-visualization"></a>
 </h3>
-<p>Integrate the samples by the function <code>IntegrateSpaData</code>.</p>
+<p>Integrate the all samples using the <code>IntegrateSpaData</code> function. For computational efficiency, this function exclusively integrates the variable genes. Specifically, in cases where users do not specify the <code>PRECASTObj@seuList</code> or <code>seuList</code> argument within the <code>IntegrateSpaData</code> function, it automatically focuses on integrating only the variable genes. The default setting for <code>PRECASTObj@seuList</code> is <code>NULL</code> when <code>rawData.preserve</code> in <code>CreatePRECASTObject</code> is set to <code>FALSE</code>. For instance:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seuList</span><span class="op">)</span>
+<span class="co">#&gt; NULL</span>
+<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
 <span class="va">seuInt</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 2000 features across 14364 samples within 1 assay </span>
 <span class="co">#&gt; Active assay: PRE_CAST (2000 features, 0 variable features)</span>
 <span class="co">#&gt;  2 dimensional reductions calculated: PRECAST, position</span>
 <span class="co">## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.</span></code></pre></div>
-<p>First, user can choose a beautiful color schema using <code><a href="../reference/chooseColors.html">chooseColors()</a></code>.</p>
+<details><p><summary><strong>Integrating all genes</strong></summary> There are two ways to use <code>IntegrateSpaData</code> integrating all genes, which will require more memory. We recommand running for all genes on server. The first one is to set value for <code>PRECASTObj@seuList</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cols_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chooseColors.html">chooseColors</a></span><span class="op">(</span>palettes_name <span class="op">=</span> <span class="st">"Classic 20"</span>, n_colors <span class="op">=</span> <span class="fl">7</span>, plot_colors <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-12-1.png" width="1056"></p>
-<p>Show the spatial scatter plot for clusters</p>
+<code class="sourceCode R"><span class="co">## assign the raw Seurat list object to it.  For illustration, we generate a new seuList with</span>
+<span class="co">## more genes; For integrating all genes, users can set `seuList &lt;- bc2`.</span>
+<span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">seuList</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span>
+<span class="va">seuList_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">seuList</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="va">genes</span>, <span class="op">]</span><span class="op">)</span>
+<span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seuList</span> <span class="op">&lt;-</span> <span class="va">seuList_sub</span>  <span class="co"># </span>
+<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
+<span class="va">seuInt</span></code></pre></div>
+<p>The second method is to set a value for the argument <code>seuList</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seuList</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
+<span class="co">## At the same time, we can set subsampling to speed up the computation.</span>
+<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span>, seuList <span class="op">=</span> <span class="va">seuList_sub</span>, subsample_rate <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+<span class="va">seuInt</span></code></pre></div>
+</details><p>First, user can choose a beautiful color schema using <code><a href="../reference/chooseColors.html">chooseColors()</a></code>.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cols_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chooseColors.html">chooseColors</a></span><span class="op">(</span>palettes_name <span class="op">=</span> <span class="st">"Classic 20"</span>, n_colors <span class="op">=</span> <span class="fl">7</span>, plot_colors <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-14-1.png" width="1056"></p>
+<p>Show the spatial scatter plot for clusters</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">p12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, point_size <span class="op">=</span> <span class="fl">1</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span>, combine <span class="op">=</span> <span class="cn">TRUE</span>,
     nrow.legend <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
 <span class="va">p12</span></code></pre></div>
-<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-13-1.png" width="864"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-15-1.png" width="864"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># users can plot each sample by setting combine=FALSE</span></code></pre></div>
 <p>Users can re-plot the above figures for specific need by returning a ggplot list object. For example, we plot the spatial heatmap using a common legend.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
 <span class="va">pList</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, point_size <span class="op">=</span> <span class="fl">2.5</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span>,
     combine <span class="op">=</span> <span class="cn">FALSE</span>, nrow.legend <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
-<span class="va">pList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pList</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="va">pList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pList</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="va">pList</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, common.legend <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"right"</span>, align <span class="op">=</span> <span class="st">"hv"</span><span class="op">)</span></code></pre></div>
-<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-14-1.png" width="816"></p>
+<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-16-1.png" width="816"></p>
 <p>Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddUMAP.html">AddUMAP</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="va">p13List</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, item <span class="op">=</span> <span class="st">"RGB_UMAP"</span>, point_size <span class="op">=</span> <span class="fl">2</span>, combine <span class="op">=</span> <span class="cn">FALSE</span>, text_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>
-<span class="va">p13List</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">p13List</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="va">p13List</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">p13List</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="va">p13List</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, common.legend <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"right"</span>, align <span class="op">=</span> <span class="st">"hv"</span><span class="op">)</span></code></pre></div>
-<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-15-1.png" width="528"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-17-1.png" width="528"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># seuInt &lt;- AddTSNE(seuInt) SpaPlot(seuInt, batch=NULL,item='RGB_TSNE',point_size=2,</span>
 <span class="co"># combine=T, text_size=15)</span></code></pre></div>
 <p>Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTSNE.html">AddTSNE</a></span><span class="op">(</span><span class="va">seuInt</span>, n_comp <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, point_size <span class="op">=</span> <span class="fl">0.5</span>, font_family <span class="op">=</span> <span class="st">"serif"</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span>,
     border_col <span class="op">=</span> <span class="st">"gray10"</span>, nrow.legend <span class="op">=</span> <span class="fl">14</span>, legend_pos <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span>  <span class="co"># Times New Roman</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"batch"</span>, point_size <span class="op">=</span> <span class="fl">0.5</span>, font_family <span class="op">=</span> <span class="st">"serif"</span>, legend_pos <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, legend.position <span class="op">=</span> <span class="st">"right"</span>, align <span class="op">=</span> <span class="st">"hv"</span><span class="op">)</span></code></pre></div>
-<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-16-1.png" width="1152"></p>
+<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
 <p>Combined differential expression analysis</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span>
-<span class="va">dat_deg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
+<span class="va">dat_deg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="va">dat_deg</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/top_n.html" class="external-link">top_n</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, wt <span class="op">=</span> <span class="va">avg_log2FC</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">top10</span></code></pre></div>
+<span class="va">dat_deg</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/top_n.html" class="external-link">top_n</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, wt <span class="op">=</span> <span class="va">avg_log2FC</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">top10</span></code></pre></div>
 <p>Plot DE genes’ heatmap for each spatial domain identified by PRECAST.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
 <span class="co">## HeatMap</span>
-<span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DotPlot.html" class="external-link">DotPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">top10</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span>, col.min <span class="op">=</span> <span class="fl">0</span>, col.max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>,
+<span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/DotPlot.html" class="external-link">DotPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">top10</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span>, col.min <span class="op">=</span> <span class="fl">0</span>, col.max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>,
     hjust <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p1</span></code></pre></div>
-<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-18-1.png" width="768"></p>
+<p><img src="PRECAST.DLPFC4_files/figure-html/unnamed-chunk-20-1.png" width="768"></p>
 <details><p><summary><strong>Session Info</strong></summary></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
 <span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
@@ -519,113 +535,100 @@
 <span class="co">#&gt; [5] LC_TIME=Chinese (Simplified)_China.936    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
-<span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
-<span class="co">#&gt; [8] methods   base     </span>
+<span class="co">#&gt; [1] parallel  stats     graphics  grDevices utils     datasets  methods  </span>
+<span class="co">#&gt; [8] base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] dplyr_1.0.9                 ggplot2_3.4.1              </span>
-<span class="co">#&gt;  [3] PRECAST_1.6.2               FAST_1.2                   </span>
-<span class="co">#&gt;  [5] gtools_3.9.2.2              SingleCellExperiment_1.16.0</span>
-<span class="co">#&gt;  [7] SummarizedExperiment_1.24.0 Biobase_2.54.0             </span>
-<span class="co">#&gt;  [9] GenomicRanges_1.46.1        GenomeInfoDb_1.30.1        </span>
-<span class="co">#&gt; [11] IRanges_2.28.0              S4Vectors_0.32.3           </span>
-<span class="co">#&gt; [13] BiocGenerics_0.40.0         MatrixGenerics_1.6.0       </span>
-<span class="co">#&gt; [15] matrixStats_0.62.0          sp_1.5-0                   </span>
-<span class="co">#&gt; [17] SeuratObject_4.1.0          Seurat_4.1.1               </span>
+<span class="co">#&gt; [1] dplyr_1.0.9        sp_1.5-0           SeuratObject_4.1.0 Seurat_4.1.1      </span>
+<span class="co">#&gt; [5] ggplot2_3.4.1      PRECAST_1.6.3      gtools_3.9.2.2    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] rappdirs_0.3.3            scattermore_0.8          </span>
-<span class="co">#&gt;   [3] ggthemes_4.2.4            GiRaF_1.0.1              </span>
-<span class="co">#&gt;   [5] ragg_1.2.2                tidyr_1.2.0              </span>
-<span class="co">#&gt;   [7] bit64_4.0.5               knitr_1.37               </span>
-<span class="co">#&gt;   [9] irlba_2.3.5               DelayedArray_0.20.0      </span>
-<span class="co">#&gt;  [11] data.table_1.14.2         rpart_4.1.16             </span>
-<span class="co">#&gt;  [13] KEGGREST_1.34.0           RCurl_1.98-1.6           </span>
-<span class="co">#&gt;  [15] generics_0.1.2            org.Mm.eg.db_3.14.0      </span>
-<span class="co">#&gt;  [17] ScaledMatrix_1.2.0        cowplot_1.1.1            </span>
-<span class="co">#&gt;  [19] RSQLite_2.2.10            RANN_2.6.1               </span>
-<span class="co">#&gt;  [21] future_1.26.1             bit_4.0.4                </span>
-<span class="co">#&gt;  [23] spatstat.data_3.0-0       xml2_1.3.3               </span>
-<span class="co">#&gt;  [25] httpuv_1.6.5              assertthat_0.2.1         </span>
-<span class="co">#&gt;  [27] viridis_0.6.2             xfun_0.29                </span>
-<span class="co">#&gt;  [29] hms_1.1.1                 jquerylib_0.1.4          </span>
-<span class="co">#&gt;  [31] evaluate_0.15             promises_1.2.0.1         </span>
-<span class="co">#&gt;  [33] fansi_1.0.4               progress_1.2.2           </span>
-<span class="co">#&gt;  [35] dbplyr_2.1.1              igraph_1.3.5             </span>
-<span class="co">#&gt;  [37] DBI_1.1.2                 htmlwidgets_1.5.4        </span>
-<span class="co">#&gt;  [39] spatstat.geom_2.4-0       purrr_0.3.4              </span>
-<span class="co">#&gt;  [41] ellipsis_0.3.2            RSpectra_0.16-1          </span>
-<span class="co">#&gt;  [43] crosstalk_1.2.0           ggpubr_0.4.0             </span>
-<span class="co">#&gt;  [45] backports_1.4.1           DR.SC_3.4                </span>
-<span class="co">#&gt;  [47] insight_0.17.0            biomaRt_2.50.3           </span>
-<span class="co">#&gt;  [49] deldir_1.0-6              sparseMatrixStats_1.6.0  </span>
-<span class="co">#&gt;  [51] vctrs_0.6.1               ROCR_1.0-11              </span>
-<span class="co">#&gt;  [53] abind_1.4-5               withr_2.5.0              </span>
-<span class="co">#&gt;  [55] cachem_1.0.6              progressr_0.10.1         </span>
-<span class="co">#&gt;  [57] sctransform_0.3.3         prettyunits_1.1.1        </span>
-<span class="co">#&gt;  [59] mclust_5.4.10             goftest_1.2-3            </span>
-<span class="co">#&gt;  [61] cluster_2.1.2             lazyeval_0.2.2           </span>
-<span class="co">#&gt;  [63] crayon_1.5.1              labeling_0.4.2           </span>
-<span class="co">#&gt;  [65] pkgconfig_2.0.3           nlme_3.1-155             </span>
-<span class="co">#&gt;  [67] vipor_0.4.5               nnet_7.3-17              </span>
-<span class="co">#&gt;  [69] rlang_1.1.0               globals_0.15.0           </span>
-<span class="co">#&gt;  [71] lifecycle_1.0.3           miniUI_0.1.1.1           </span>
-<span class="co">#&gt;  [73] filelock_1.0.2            BiocFileCache_2.2.1      </span>
-<span class="co">#&gt;  [75] rsvd_1.0.5                rprojroot_2.0.3          </span>
-<span class="co">#&gt;  [77] polyclip_1.10-0           lmtest_0.9-40            </span>
-<span class="co">#&gt;  [79] Matrix_1.4-0              carData_3.0-5            </span>
-<span class="co">#&gt;  [81] zoo_1.8-10                beeswarm_0.4.0           </span>
-<span class="co">#&gt;  [83] ggridges_0.5.3            png_0.1-7                </span>
-<span class="co">#&gt;  [85] viridisLite_0.4.1         bitops_1.0-7             </span>
-<span class="co">#&gt;  [87] KernSmooth_2.23-20        Biostrings_2.62.0        </span>
-<span class="co">#&gt;  [89] blob_1.2.2                DelayedMatrixStats_1.16.0</span>
-<span class="co">#&gt;  [91] stringr_1.4.0             parallelly_1.32.0        </span>
-<span class="co">#&gt;  [93] spatstat.random_2.2-0     rstatix_0.7.0            </span>
-<span class="co">#&gt;  [95] ggsignif_0.6.3            beachmat_2.10.0          </span>
-<span class="co">#&gt;  [97] scales_1.2.1              memoise_2.0.1            </span>
-<span class="co">#&gt;  [99] magrittr_2.0.3            plyr_1.8.7               </span>
-<span class="co">#&gt; [101] ica_1.0-2                 zlibbioc_1.40.0          </span>
-<span class="co">#&gt; [103] compiler_4.1.2            RColorBrewer_1.1-3       </span>
-<span class="co">#&gt; [105] fitdistrplus_1.1-8        cli_3.2.0                </span>
-<span class="co">#&gt; [107] XVector_0.34.0            listenv_0.8.0            </span>
-<span class="co">#&gt; [109] patchwork_1.1.1           pbapply_1.5-0            </span>
-<span class="co">#&gt; [111] formatR_1.11              MASS_7.3-55              </span>
-<span class="co">#&gt; [113] mgcv_1.8-39               tidyselect_1.1.2         </span>
-<span class="co">#&gt; [115] stringi_1.7.6             textshaping_0.3.6        </span>
-<span class="co">#&gt; [117] highr_0.9                 yaml_2.3.6               </span>
-<span class="co">#&gt; [119] BiocSingular_1.10.0       ggrepel_0.9.1            </span>
-<span class="co">#&gt; [121] grid_4.1.2                sass_0.4.1               </span>
-<span class="co">#&gt; [123] tools_4.1.2               future.apply_1.9.0       </span>
-<span class="co">#&gt; [125] rstudioapi_0.13           gridExtra_2.3            </span>
-<span class="co">#&gt; [127] farver_2.1.1              Rtsne_0.16               </span>
-<span class="co">#&gt; [129] digest_0.6.29             rgeos_0.5-9              </span>
-<span class="co">#&gt; [131] shiny_1.7.1               Rcpp_1.0.10              </span>
-<span class="co">#&gt; [133] car_3.0-12                broom_0.7.12             </span>
-<span class="co">#&gt; [135] scuttle_1.4.0             performance_0.8.0        </span>
-<span class="co">#&gt; [137] later_1.3.0               harmony_0.1.0            </span>
-<span class="co">#&gt; [139] RcppAnnoy_0.0.19          org.Hs.eg.db_3.14.0      </span>
-<span class="co">#&gt; [141] httr_1.4.3                AnnotationDbi_1.56.2     </span>
-<span class="co">#&gt; [143] colorspace_2.1-0          XML_3.99-0.9             </span>
-<span class="co">#&gt; [145] fs_1.5.2                  tensor_1.5               </span>
-<span class="co">#&gt; [147] reticulate_1.25           splines_4.1.2            </span>
-<span class="co">#&gt; [149] uwot_0.1.11               spatstat.utils_3.0-1     </span>
-<span class="co">#&gt; [151] pkgdown_2.0.6             scater_1.25.1            </span>
-<span class="co">#&gt; [153] plotly_4.10.0             systemfonts_1.0.4        </span>
-<span class="co">#&gt; [155] xtable_1.8-4              jsonlite_1.8.0           </span>
-<span class="co">#&gt; [157] R6_2.5.1                  pillar_1.9.0             </span>
-<span class="co">#&gt; [159] htmltools_0.5.2           mime_0.12                </span>
-<span class="co">#&gt; [161] glue_1.6.2                fastmap_1.1.0            </span>
-<span class="co">#&gt; [163] DT_0.21                   BiocParallel_1.28.3      </span>
-<span class="co">#&gt; [165] BiocNeighbors_1.12.0      codetools_0.2-18         </span>
-<span class="co">#&gt; [167] utf8_1.2.3                lattice_0.20-45          </span>
-<span class="co">#&gt; [169] bslib_0.3.1               spatstat.sparse_2.1-1    </span>
-<span class="co">#&gt; [171] tibble_3.2.1              curl_4.3.2               </span>
-<span class="co">#&gt; [173] ggbeeswarm_0.6.0          leiden_0.4.2             </span>
-<span class="co">#&gt; [175] limma_3.50.1              survival_3.2-13          </span>
-<span class="co">#&gt; [177] CompQuadForm_1.4.3        rmarkdown_2.11           </span>
-<span class="co">#&gt; [179] desc_1.4.0                munsell_0.5.0            </span>
-<span class="co">#&gt; [181] GenomeInfoDbData_1.2.7    reshape2_1.4.4           </span>
-<span class="co">#&gt; [183] gtable_0.3.3              spatstat.core_2.4-4</span></code></pre></div>
+<span class="co">#&gt;   [1] utf8_1.2.3                  reticulate_1.25            </span>
+<span class="co">#&gt;   [3] tidyselect_1.1.2            htmlwidgets_1.5.4          </span>
+<span class="co">#&gt;   [5] grid_4.1.2                  BiocParallel_1.28.3        </span>
+<span class="co">#&gt;   [7] Rtsne_0.16                  munsell_0.5.0              </span>
+<span class="co">#&gt;   [9] ScaledMatrix_1.2.0          codetools_0.2-18           </span>
+<span class="co">#&gt;  [11] ragg_1.2.2                  ica_1.0-2                  </span>
+<span class="co">#&gt;  [13] DT_0.21                     future_1.26.1              </span>
+<span class="co">#&gt;  [15] miniUI_0.1.1.1              withr_2.5.0                </span>
+<span class="co">#&gt;  [17] spatstat.random_2.2-0       colorspace_2.1-0           </span>
+<span class="co">#&gt;  [19] progressr_0.10.1            Biobase_2.54.0             </span>
+<span class="co">#&gt;  [21] highr_0.9                   knitr_1.37                 </span>
+<span class="co">#&gt;  [23] rstudioapi_0.13             stats4_4.1.2               </span>
+<span class="co">#&gt;  [25] SingleCellExperiment_1.16.0 ROCR_1.0-11                </span>
+<span class="co">#&gt;  [27] ggsignif_0.6.3              tensor_1.5                 </span>
+<span class="co">#&gt;  [29] listenv_0.8.0               labeling_0.4.2             </span>
+<span class="co">#&gt;  [31] MatrixGenerics_1.6.0        GenomeInfoDbData_1.2.7     </span>
+<span class="co">#&gt;  [33] polyclip_1.10-0             farver_2.1.1               </span>
+<span class="co">#&gt;  [35] rprojroot_2.0.3             parallelly_1.32.0          </span>
+<span class="co">#&gt;  [37] vctrs_0.6.1                 generics_0.1.2             </span>
+<span class="co">#&gt;  [39] xfun_0.29                   ggthemes_4.2.4             </span>
+<span class="co">#&gt;  [41] R6_2.5.1                    GenomeInfoDb_1.30.1        </span>
+<span class="co">#&gt;  [43] ggbeeswarm_0.6.0            rsvd_1.0.5                 </span>
+<span class="co">#&gt;  [45] bitops_1.0-7                spatstat.utils_3.0-1       </span>
+<span class="co">#&gt;  [47] cachem_1.0.6                DelayedArray_0.20.0        </span>
+<span class="co">#&gt;  [49] assertthat_0.2.1            promises_1.2.0.1           </span>
+<span class="co">#&gt;  [51] scales_1.2.1                rgeos_0.5-9                </span>
+<span class="co">#&gt;  [53] beeswarm_0.4.0              gtable_0.3.3               </span>
+<span class="co">#&gt;  [55] beachmat_2.10.0             globals_0.15.0             </span>
+<span class="co">#&gt;  [57] goftest_1.2-3               rlang_1.1.0                </span>
+<span class="co">#&gt;  [59] systemfonts_1.0.4           splines_4.1.2              </span>
+<span class="co">#&gt;  [61] rstatix_0.7.0               lazyeval_0.2.2             </span>
+<span class="co">#&gt;  [63] broom_0.7.12                spatstat.geom_2.4-0        </span>
+<span class="co">#&gt;  [65] yaml_2.3.6                  reshape2_1.4.4             </span>
+<span class="co">#&gt;  [67] abind_1.4-5                 crosstalk_1.2.0            </span>
+<span class="co">#&gt;  [69] backports_1.4.1             httpuv_1.6.5               </span>
+<span class="co">#&gt;  [71] tools_4.1.2                 ellipsis_0.3.2             </span>
+<span class="co">#&gt;  [73] spatstat.core_2.4-4         jquerylib_0.1.4            </span>
+<span class="co">#&gt;  [75] RColorBrewer_1.1-3          BiocGenerics_0.40.0        </span>
+<span class="co">#&gt;  [77] ggridges_0.5.3              Rcpp_1.0.10                </span>
+<span class="co">#&gt;  [79] plyr_1.8.7                  sparseMatrixStats_1.6.0    </span>
+<span class="co">#&gt;  [81] zlibbioc_1.40.0             purrr_0.3.4                </span>
+<span class="co">#&gt;  [83] RCurl_1.98-1.6              ggpubr_0.4.0               </span>
+<span class="co">#&gt;  [85] rpart_4.1.16                deldir_1.0-6               </span>
+<span class="co">#&gt;  [87] viridis_0.6.2               pbapply_1.5-0              </span>
+<span class="co">#&gt;  [89] cowplot_1.1.1               S4Vectors_0.32.3           </span>
+<span class="co">#&gt;  [91] zoo_1.8-10                  SummarizedExperiment_1.24.0</span>
+<span class="co">#&gt;  [93] ggrepel_0.9.1               cluster_2.1.2              </span>
+<span class="co">#&gt;  [95] fs_1.5.2                    magrittr_2.0.3             </span>
+<span class="co">#&gt;  [97] GiRaF_1.0.1                 RSpectra_0.16-1            </span>
+<span class="co">#&gt;  [99] data.table_1.14.2           scattermore_0.8            </span>
+<span class="co">#&gt; [101] lmtest_0.9-40               RANN_2.6.1                 </span>
+<span class="co">#&gt; [103] fitdistrplus_1.1-8          matrixStats_0.62.0         </span>
+<span class="co">#&gt; [105] patchwork_1.1.1             mime_0.12                  </span>
+<span class="co">#&gt; [107] evaluate_0.15               xtable_1.8-4               </span>
+<span class="co">#&gt; [109] mclust_5.4.10               IRanges_2.28.0             </span>
+<span class="co">#&gt; [111] gridExtra_2.3               compiler_4.1.2             </span>
+<span class="co">#&gt; [113] scater_1.25.1               tibble_3.2.1               </span>
+<span class="co">#&gt; [115] KernSmooth_2.23-20          crayon_1.5.1               </span>
+<span class="co">#&gt; [117] htmltools_0.5.2             mgcv_1.8-39                </span>
+<span class="co">#&gt; [119] later_1.3.0                 tidyr_1.2.0                </span>
+<span class="co">#&gt; [121] DBI_1.1.2                   formatR_1.11               </span>
+<span class="co">#&gt; [123] MASS_7.3-55                 car_3.0-12                 </span>
+<span class="co">#&gt; [125] Matrix_1.4-0                cli_3.2.0                  </span>
+<span class="co">#&gt; [127] igraph_1.3.5                DR.SC_3.4                  </span>
+<span class="co">#&gt; [129] GenomicRanges_1.46.1        pkgconfig_2.0.3            </span>
+<span class="co">#&gt; [131] pkgdown_2.0.6               plotly_4.10.0              </span>
+<span class="co">#&gt; [133] scuttle_1.4.0               spatstat.sparse_2.1-1      </span>
+<span class="co">#&gt; [135] vipor_0.4.5                 bslib_0.3.1                </span>
+<span class="co">#&gt; [137] XVector_0.34.0              CompQuadForm_1.4.3         </span>
+<span class="co">#&gt; [139] stringr_1.4.0               digest_0.6.29              </span>
+<span class="co">#&gt; [141] sctransform_0.3.3           RcppAnnoy_0.0.19           </span>
+<span class="co">#&gt; [143] spatstat.data_3.0-0         rmarkdown_2.11             </span>
+<span class="co">#&gt; [145] leiden_0.4.2                uwot_0.1.11                </span>
+<span class="co">#&gt; [147] DelayedMatrixStats_1.16.0   shiny_1.7.1                </span>
+<span class="co">#&gt; [149] lifecycle_1.0.3             nlme_3.1-155               </span>
+<span class="co">#&gt; [151] jsonlite_1.8.0              carData_3.0-5              </span>
+<span class="co">#&gt; [153] BiocNeighbors_1.12.0        limma_3.50.1               </span>
+<span class="co">#&gt; [155] desc_1.4.0                  viridisLite_0.4.1          </span>
+<span class="co">#&gt; [157] fansi_1.0.4                 pillar_1.9.0               </span>
+<span class="co">#&gt; [159] lattice_0.20-45             fastmap_1.1.0              </span>
+<span class="co">#&gt; [161] httr_1.4.3                  survival_3.2-13            </span>
+<span class="co">#&gt; [163] glue_1.6.2                  png_0.1-7                  </span>
+<span class="co">#&gt; [165] stringi_1.7.6               sass_0.4.1                 </span>
+<span class="co">#&gt; [167] textshaping_0.3.6           BiocSingular_1.10.0        </span>
+<span class="co">#&gt; [169] memoise_2.0.1               irlba_2.3.5                </span>
+<span class="co">#&gt; [171] future.apply_1.9.0</span></code></pre></div>
 </details>
 </div>
 </div>

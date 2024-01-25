@@ -5,9 +5,8 @@
 # build_article(name="PRECAST.DLPFC4") # Solely compile one article for updating.
 # build_article(name="PRECAST.BreastCancer")
 # build_article(name="PRECAST.Simu")
-# R CMD check --as-cran PRECAST_1.6.3.tar.gz
+# R CMD check --as-cran PRECAST_1.6.4.tar.gz
 # devtools::check_win_release()
-# iDR.SC <- function(...) UseMethod("iDR.SC")
 
 
 

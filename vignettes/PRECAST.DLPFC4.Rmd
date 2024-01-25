@@ -40,7 +40,7 @@ This vignette introduces the PRECAST workflow for the analysis of four spatial t
 * Downstream analysis (i.e. visualization of clusters and embeddings)
 
 We demonstrate the use of PRECAST to four human dorsolateral prefrontal cortex Visium data. Download the data  to R 
-```{r  eval = TRUE}
+```{r  eval =FALSE}
 suppressPackageStartupMessages(library(Seurat))
 suppressPackageStartupMessages(library(SingleCellExperiment))
 name_ID4 <- as.character(c(151673, 151674, 151675, 151676))
@@ -49,8 +49,8 @@ name_ID4 <- as.character(c(151673, 151674, 151675, 151676))
 n_ID <- length(name_ID4)
 url_brainA <- "https://github.com/feiyoung/DR-SC.Analysis/raw/main/data/DLPFC_data/"; url_brainB <- ".rds"
 seuList <- list()
-if(!require(FAST)){
-  remotes::install_github("feiyoung/FAST")
+if(!require(ProFAST)){
+  remotes::install_github("feiyoung/ProFAST")
 }
 for(i in 1:n_ID){
   # i <- 1
@@ -58,30 +58,33 @@ for(i in 1:n_ID){
   # load and read data
   dlpfc <- readRDS(url(paste0(url_brainA, name_ID4[i],url_brainB) ))
   count <- dlpfc@assays@data$counts
-  row.names(count) <- FAST::transferGeneNames(row.names(count), species = "Human")
+  row.names(count) <- ProFAST::transferGeneNames(row.names(count), species = "Human")
   seu1 <- CreateSeuratObject(counts = count, 
                              meta.data = as.data.frame(colData(dlpfc)), 
                               min.cells = 10,min.features = 10)
   seuList[[i]] <- seu1
 }
+# saveRDS(seuList, file='seuList4.RDS')
+
 ```
 
 
 The package can be loaded with the command:
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 library(PRECAST)
 ```
 
 
 ## Compare PRECAST with DR-SC in analyzing one sample
 First, we view the the spatial transcriptomics data with Visium platform.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
+seuList <- readRDS("seuList4.RDS")
 seuList ## a list including  Seurat objects
 ```
 
 check the meta data that must include the spatial coordinates named "row" and "col", respectively.
 If the names are not, they are required to rename them.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 metadataList <- lapply(seuList, function(x) x@meta.data)
 
 for(r in seq_along(metadataList)){
@@ -94,13 +97,13 @@ for(r in seq_along(metadataList)){
 ### Prepare the PRECASTObject.
 
 Create a PRECASTObj object to prepare for PRECAST models. Here, we only show the `HVGs` method to select the 2000 highly variable genes, but users are able to choose more genes or also use the `SPARK-X` to choose the spatially variable genes.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 set.seed(2023)
 preobj <- CreatePRECASTObject(seuList = seuList, selectGenesMethod="HVGs",
                               gene.number = 2000) # 
 ```
 ### Add the model setting
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## check the number of genes/features after filtering step
 preobj@seulist
 ## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
@@ -115,18 +118,19 @@ PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = TRUE, coreNum = 1,
 
 ### Fit PRECAST 
 For function `PRECAST`, users can specify the number of clusters $K$ or set `K` to be an integer vector by using modified BIC(MBIC) to determine $K$. Here, we use user-specified number of clusters. 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ### Given K
 PRECASTObj <- PRECAST(PRECASTObj, K= 7)
 ```
 
 Use the function `SelectModel()` to re-organize the fitted results in PRECASTObj.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 ## backup the fitting results in resList
 resList <- PRECASTObj@resList
 PRECASTObj <- SelectModel(PRECASTObj)
 ari_precast <- sapply(1:length(seuList), function(r) mclust::adjustedRandIndex(PRECASTObj@resList$cluster[[r]], PRECASTObj@seulist[[r]]$layer_guess_reordered))
 mat <- matrix(round(ari_precast,2), nrow=1)
+name_ID4 <- as.character(c(151673, 151674, 151675, 151676))
 colnames(mat) <-   name_ID4            
 DT::datatable(mat)
 ```
@@ -152,21 +156,47 @@ Besides, user can also use different initialization method by setting `int.model
 
 ### Integration and Visualization
 
-Integrate the  samples by the function `IntegrateSpaData`.
-```{r  eval = TRUE}
+Integrate the all samples using the `IntegrateSpaData` function. For computational efficiency, this function exclusively integrates the variable genes. Specifically, in cases where users do not specify the `PRECASTObj@seuList` or `seuList` argument within the `IntegrateSpaData` function, it automatically focuses on integrating only the variable genes. The default setting for `PRECASTObj@seuList` is `NULL` when `rawData.preserve` in  `CreatePRECASTObject` is set to `FALSE`. For instance:
+```{r  eval = FALSE}
+print(PRECASTObj@seuList)
 seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
 seuInt 
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
+<details>
+<summary>**Integrating all genes**</summary>
+There are two ways to use `IntegrateSpaData` integrating all genes, which will require more memory. We recommand running for all genes on server. The first one is to set value for `PRECASTObj@seuList`.
+```{r  eval =FALSE}
+## assign the raw Seurat list object to it. 
+## For illustration, we generate a new seuList with more genes; 
+## For integrating all genes, users can set `seuList <- bc2`.
+genes <- c(row.names(PRECASTObj@seulist[[1]]), row.names(seuList[[1]])[1:10])
+seuList_sub <- lapply(seuList, function(x) x[genes,])
+PRECASTObj@seuList <- seuList_sub # 
+seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
+seuInt 
+```
+
+The second method is to set a value for the argument  `seuList`:
+```{r  eval =FALSE}
+PRECASTObj@seuList <- NULL 
+## At the same time, we can set subsampling to speed up the computation.
+seuInt <- IntegrateSpaData(PRECASTObj, species='Human', seuList=seuList_sub, subsample_rate = 0.5)
+seuInt 
+```
+</details>
+
+
+
 
 First, user can choose a beautiful color schema using `chooseColors()`.
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 cols_cluster <- chooseColors(palettes_name = 'Classic 20', n_colors=7, plot_colors = TRUE)
 ```
 
 
 Show the spatial scatter plot for clusters
-```{r  eval = TRUE, fig.height = 8, fig.width=9}
+```{r  eval = FALSE, fig.height = 8, fig.width=9}
 
 p12 <- SpaPlot(seuInt, item='cluster', batch=NULL,point_size=1, cols=cols_cluster, combine=TRUE, nrow.legend=7)
 p12
@@ -176,7 +206,7 @@ p12
 
 Users can re-plot the above figures for specific need by returning a ggplot list object. For example, we  plot the spatial heatmap using a common legend.
 
-```{r  eval = TRUE, fig.height = 8, fig.width=8.5}
+```{r  eval = FALSE, fig.height = 8, fig.width=8.5}
 library(ggplot2)
 pList <- SpaPlot(seuInt, item='cluster', batch=NULL,point_size=2.5, cols=cols_cluster, combine=FALSE, nrow.legend=7)
 pList <- lapply(pList, function(x) x +  coord_flip() + scale_x_reverse())
@@ -186,7 +216,7 @@ drawFigs(pList, layout.dim = c(2,2), common.legend = TRUE, legend.position = 'ri
 
 Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.
 
-```{r  eval = TRUE, fig.height = 6, fig.width=5.5}
+```{r  eval = FALSE, fig.height = 6, fig.width=5.5}
 seuInt <- AddUMAP(seuInt) 
 p13List <- SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=FALSE, text_size=15)
 p13List <- lapply(p13List, function(x) x +  coord_flip() + scale_x_reverse())
@@ -198,7 +228,7 @@ drawFigs(p13List, layout.dim = c(2,2), common.legend = TRUE, legend.position = '
 
 
 Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.
-```{r  eval = TRUE, fig.height = 4.5, fig.width=12}
+```{r  eval = FALSE, fig.height = 4.5, fig.width=12}
 seuInt <- AddTSNE(seuInt, n_comp = 2) 
 p1 <- dimPlot(seuInt, item='cluster', point_size = 0.5, font_family='serif', cols=cols_cluster,border_col="gray10", nrow.legend=14, legend_pos='right') # Times New Roman
 p2 <- dimPlot(seuInt, item='batch', point_size = 0.5,  font_family='serif', legend_pos='right')
@@ -209,7 +239,7 @@ drawFigs(list(p1, p2), layout.dim = c(1,2), legend.position = 'right', align='hv
 
 
 Combined differential expression analysis 
-```{r  eval = TRUE}
+```{r  eval = FALSE}
 library(Seurat)
 dat_deg <- FindAllMarkers(seuInt)
 library(dplyr)
@@ -222,7 +252,7 @@ dat_deg %>%
 ```
 
 Plot DE genes' heatmap for each spatial domain identified by PRECAST.
-```{r  eval = TRUE, fig.height = 6, fig.width=8}
+```{r  eval = FALSE, fig.height = 6, fig.width=8}
 library(ggplot2)
 ## HeatMap
 p1 <- DotPlot(seuInt, features = unique(top10$gene), col.min = 0, col.max = 1) + 

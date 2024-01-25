@@ -187,12 +187,36 @@ PRECASTObj <- SelectModel(PRECASTObj)
 
 ```
 
-Integrate the two samples by the function `IntegrateSpaData`.
+Integrate the two samples using the `IntegrateSpaData` function. For computational efficiency, this function exclusively integrates the variable genes. Specifically, in cases where users do not specify the `PRECASTObj@seuList` or `seuList` argument within the `IntegrateSpaData` function, it automatically focuses on integrating only the variable genes. The default setting for `PRECASTObj@seuList` is `NULL` when `rawData.preserve` in  `CreatePRECASTObject` is set to `FALSE`. For instance:
 ```{r  eval =  FALSE}
+print(PRECASTObj@seuList)
 seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
 seuInt 
 ## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.
 ```
+<details>
+<summary>**Integrating all genes**</summary>
+There are two ways to use `IntegrateSpaData` integrating all genes, which will require more memory. We recommand running for all genes on server. The first one is to set value for `PRECASTObj@seuList`.
+```{r  eval =FALSE}
+## assign the raw Seurat list object to it 
+## For illustration, we generate a new seuList with more genes; 
+## For integrating all genes, users can set `seuList <- bc2`.
+genes <- c(row.names(PRECASTObj@seulist[[1]]), row.names(bc2[[1]])[1:10])
+seuList <- lapply(bc2, function(x) x[genes,])
+PRECASTObj@seuList <- seuList # 
+seuInt <- IntegrateSpaData(PRECASTObj, species='Human')
+seuInt 
+```
+
+The second method is to set a value for the argument  `seuList`:
+```{r  eval =FALSE}
+PRECASTObj@seuList <- NULL 
+## At the same time, we can set subsampling to speed up the computation.
+seuInt <- IntegrateSpaData(PRECASTObj, species='Human', seuList=seuList, subsample_rate = 0.5)
+seuInt 
+```
+</details>
+
 
 First, user can choose a beautiful color schema using `chooseColors()`.
 ```{r  eval =  FALSE}

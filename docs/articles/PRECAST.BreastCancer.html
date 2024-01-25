@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.4</span>
       </span>
     </div>
 
@@ -57,6 +57,9 @@
     </li>
     <li>
       <a href="../articles/PRECAST.DLPFC.html">PRECAST: DLPFC Single Sample Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PRECAST.DLPFC4.html">PRECAST: Four DLPFC Sample Analysis</a>
     </li>
     <li>
       <a href="../articles/PRECAST.Simu.html">PRECAST: simulation</a>
@@ -87,7 +90,7 @@
       <h1 data-toc-skip>PRECAST: Human Breast Cancer Data Analysis</h1>
                         <h4 data-toc-skip class="author">Wei Liu</h4>
             
-            <h4 data-toc-skip class="date">2023-08-12</h4>
+            <h4 data-toc-skip class="date">2024-01-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/feiyoung/PRECAST/blob/HEAD/vignettes/PRECAST.BreastCancer.Rmd" class="external-link"><code>vignettes/PRECAST.BreastCancer.Rmd</code></a></small>
       <div class="hidden name"><code>PRECAST.BreastCancer.Rmd</code></div>
@@ -174,8 +177,8 @@
 <code class="sourceCode R"><span class="co">## Get the gene-by-spot read count matrices countList &lt;- lapply(bc2, function(x)</span>
 <span class="co">## x[['RNA']]@counts)</span>
 <span class="va">countList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bc2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-    <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AssayData.html" class="external-link">GetAssayData</a></span><span class="op">(</span><span class="va">x</span>, assay <span class="op">=</span> <span class="va">assay</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
+    <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/AssayData.html" class="external-link">GetAssayData</a></span><span class="op">(</span><span class="va">x</span>, assay <span class="op">=</span> <span class="va">assay</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
 
 <span class="op">}</span><span class="op">)</span>
 
@@ -202,7 +205,7 @@
 
 <span class="va">seuList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">M</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">seuList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">countList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span>, meta.data <span class="op">=</span> <span class="va">metadataList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span>, project <span class="op">=</span> <span class="st">"BreastCancerPRECAST"</span><span class="op">)</span>
+    <span class="va">seuList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">countList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span>, meta.data <span class="op">=</span> <span class="va">metadataList</span><span class="op">[[</span><span class="va">r</span><span class="op">]</span><span class="op">]</span>, project <span class="op">=</span> <span class="st">"BreastCancerPRECAST"</span><span class="op">)</span>
 <span class="op">}</span>
 
 <span class="va">bc2</span> <span class="op">&lt;-</span> <span class="va">seuList</span>
@@ -392,54 +395,71 @@
 <code class="sourceCode R"><span class="co">## backup the fitting results in resList</span>
 <span class="va">resList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span>
 <span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">SelectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></code></pre></div>
-<p>Integrate the two samples by the function <code>IntegrateSpaData</code>.</p>
+<p>Integrate the two samples using the <code>IntegrateSpaData</code> function. For computational efficiency, this function exclusively integrates the variable genes. Specifically, in cases where users do not specify the <code>PRECASTObj@seuList</code> or <code>seuList</code> argument within the <code>IntegrateSpaData</code> function, it automatically focuses on integrating only the variable genes. The default setting for <code>PRECASTObj@seuList</code> is <code>NULL</code> when <code>rawData.preserve</code> in <code>CreatePRECASTObject</code> is set to <code>FALSE</code>. For instance:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seuList</span><span class="op">)</span>
+<span class="co">#&gt; NULL</span>
+<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
 <span class="va">seuInt</span>
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 2000 features across 7785 samples within 1 assay </span>
 <span class="co">#&gt; Active assay: PRE_CAST (2000 features, 0 variable features)</span>
 <span class="co">#&gt;  2 dimensional reductions calculated: PRECAST, position</span>
 <span class="co">## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.</span></code></pre></div>
-<p>First, user can choose a beautiful color schema using <code><a href="../reference/chooseColors.html">chooseColors()</a></code>.</p>
+<details><p><summary><strong>Integrating all genes</strong></summary> There are two ways to use <code>IntegrateSpaData</code> integrating all genes, which will require more memory. We recommand running for all genes on server. The first one is to set value for <code>PRECASTObj@seuList</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cols_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chooseColors.html">chooseColors</a></span><span class="op">(</span>palettes_name <span class="op">=</span> <span class="st">"Classic 20"</span>, n_colors <span class="op">=</span> <span class="fl">14</span>, plot_colors <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-14-1.png" width="1056"></p>
-<p>Show the spatial scatter plot for clusters</p>
+<code class="sourceCode R"><span class="co">## assign the raw Seurat list object to it For illustration, we generate a new seuList with</span>
+<span class="co">## more genes; For integrating all genes, users can set `seuList &lt;- bc2`.</span>
+<span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">bc2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span>
+<span class="va">seuList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bc2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="va">genes</span>, <span class="op">]</span><span class="op">)</span>
+<span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seuList</span> <span class="op">&lt;-</span> <span class="va">seuList</span>  <span class="co"># </span>
+<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span>
+<span class="va">seuInt</span></code></pre></div>
+<p>The second method is to set a value for the argument <code>seuList</code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seuList</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
+<span class="co">## At the same time, we can set subsampling to speed up the computation.</span>
+<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IntegrateSpaData.html">IntegrateSpaData</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, species <span class="op">=</span> <span class="st">"Human"</span>, seuList <span class="op">=</span> <span class="va">seuList</span>, subsample_rate <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+<span class="va">seuInt</span></code></pre></div>
+</details><p>First, user can choose a beautiful color schema using <code><a href="../reference/chooseColors.html">chooseColors()</a></code>.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cols_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chooseColors.html">chooseColors</a></span><span class="op">(</span>palettes_name <span class="op">=</span> <span class="st">"Classic 20"</span>, n_colors <span class="op">=</span> <span class="fl">14</span>, plot_colors <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-16-1.png" width="1056"></p>
+<p>Show the spatial scatter plot for clusters</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">p12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, point_size <span class="op">=</span> <span class="fl">1</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span>, combine <span class="op">=</span> <span class="cn">TRUE</span>,
     nrow.legend <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
 <span class="va">p12</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-15-1.png" width="864"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-17-1.png" width="864"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># users can plot each sample by setting combine=FALSE</span></code></pre></div>
 <p>Users can re-plot the above figures for specific need by returning a ggplot list object. For example, we plot the spatial heatmap using a common legend.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pList</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, point_size <span class="op">=</span> <span class="fl">1</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span>, combine <span class="op">=</span> <span class="cn">FALSE</span>,
     nrow.legend <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
 <span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="va">pList</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, common.legend <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"right"</span>, align <span class="op">=</span> <span class="st">"hv"</span><span class="op">)</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-16-1.png" width="816"></p>
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-18-1.png" width="816"></p>
 <p>Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddUMAP.html">AddUMAP</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="va">p13</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, batch <span class="op">=</span> <span class="cn">NULL</span>, item <span class="op">=</span> <span class="st">"RGB_UMAP"</span>, point_size <span class="op">=</span> <span class="fl">2</span>, combine <span class="op">=</span> <span class="cn">TRUE</span>, text_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>
 <span class="va">p13</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-17-1.png" width="528"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-19-1.png" width="528"></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># seuInt &lt;- AddTSNE(seuInt) SpaPlot(seuInt, batch=NULL,item='RGB_TSNE',point_size=2,</span>
 <span class="co"># combine=T, text_size=15)</span></code></pre></div>
 <p>Show the tSNE plot based on the extracted features from PRECAST to check the performance of integration.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTSNE.html">AddTSNE</a></span><span class="op">(</span><span class="va">seuInt</span>, n_comp <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, point_size <span class="op">=</span> <span class="fl">0.5</span>, font_family <span class="op">=</span> <span class="st">"serif"</span>, cols <span class="op">=</span> <span class="va">cols_cluster</span>,
     border_col <span class="op">=</span> <span class="st">"gray10"</span>, nrow.legend <span class="op">=</span> <span class="fl">14</span>, legend_pos <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span>  <span class="co"># Times New Roman</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"batch"</span>, point_size <span class="op">=</span> <span class="fl">0.5</span>, font_family <span class="op">=</span> <span class="st">"serif"</span>, legend_pos <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, legend.position <span class="op">=</span> <span class="st">"right"</span>, align <span class="op">=</span> <span class="st">"hv"</span><span class="op">)</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-20-1.png" width="1152"></p>
 <p>Combined differential expression analysis</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span>
 <span class="va">dat_deg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
@@ -451,17 +471,17 @@
 <span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span>
 <span class="va">seus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">seuInt</span>, downsample <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></code></pre></div>
 <p>Plot DE genes’ heatmap for each spatial domain identified by PRECAST.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">color_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seus</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">color_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seus</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
 <span class="co">## HeatMap</span>
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doHeatmap.html">doHeatmap</a></span><span class="op">(</span><span class="va">seus</span>, features <span class="op">=</span> <span class="va">top10</span><span class="op">$</span><span class="va">gene</span>, cell_label <span class="op">=</span> <span class="st">"Domain"</span>, grp_label <span class="op">=</span> <span class="cn">F</span>, grp_color <span class="op">=</span> <span class="va">cols_cluster</span><span class="op">[</span><span class="va">color_id</span><span class="op">]</span>,
     pt_size <span class="op">=</span> <span class="fl">6</span>, slot <span class="op">=</span> <span class="st">"scale.data"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">13</span>,
     face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>, axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span>, face <span class="op">=</span> <span class="st">"italic"</span>, family <span class="op">=</span> <span class="st">"serif"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p1</span></code></pre></div>
-<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-20-1.png" width="864"></p>
+<p><img src="PRECAST.BreastCancer_files/figure-html/unnamed-chunk-22-1.png" width="864"></p>
 <details><p><summary><strong>Session Info</strong></summary></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
 <span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
@@ -482,7 +502,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt; [1] ggplot2_3.4.1      dplyr_1.0.9        sp_1.5-0           SeuratObject_4.1.0</span>
-<span class="co">#&gt; [5] Seurat_4.1.1       PRECAST_1.6.2      gtools_3.9.2.2    </span>
+<span class="co">#&gt; [5] Seurat_4.1.1       PRECAST_1.6.3      gtools_3.9.2.2    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] utf8_1.2.3                  reticulate_1.25            </span>
@@ -547,7 +567,7 @@
 <span class="co">#&gt; [119] DBI_1.1.2                   formatR_1.11               </span>
 <span class="co">#&gt; [121] MASS_7.3-55                 car_3.0-12                 </span>
 <span class="co">#&gt; [123] Matrix_1.4-0                cli_3.2.0                  </span>
-<span class="co">#&gt; [125] igraph_1.3.5                DR.SC_3.3                  </span>
+<span class="co">#&gt; [125] igraph_1.3.5                DR.SC_3.4                  </span>
 <span class="co">#&gt; [127] GenomicRanges_1.46.1        pkgconfig_2.0.3            </span>
 <span class="co">#&gt; [129] pkgdown_2.0.6               plotly_4.10.0              </span>
 <span class="co">#&gt; [131] scuttle_1.4.0               spatstat.sparse_2.1-1      </span>
