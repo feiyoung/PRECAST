@@ -109,6 +109,10 @@ install.packages("DR.SC")
 For an example of typical PRECAST usage, please see our [Package Website](https://feiyoung.github.io/PRECAST/index.html) for a demonstration and overview of the functions included in PRECAST.
 
 # NEWs
+
+PRECAST version 1.6.5 (2024-03-19)
+* Update the email adress of maintainer.
+
 PRECAST version 1.6.4 (2024-01-24)
 * Update `IntegrateSpaData()` to make it able to remove unwanted variations for all genes rather than only variable genes.
 
