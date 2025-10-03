@@ -21,7 +21,7 @@ drawFigs(
 
 \item{legend.position}{a string, the position of legend.}
 
-\item{...}{other arguments that pass to \code{\link{ggarrange}}.}
+\item{...}{other arguments that pass to \code{\link[ggpubr]{ggarrange}}.}
 }
 \value{
 return a new ggplot object.

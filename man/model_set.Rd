@@ -6,9 +6,10 @@
 }
 \usage{
   model_set(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
-                      error_heter=TRUE, Sp2=TRUE, wpca_int=FALSE,int.model='EEE',
+                      error_heter=TRUE, Sp2=TRUE, wpca_int=FALSE,
+                      int.model= c('mclust', 'kmeans'),
                       coreNum = 1, coreNum_int=coreNum,
-                      beta_grid=seq(0.2,4, by=0.2),
+                      beta_grid=seq(0.2,4, by=0.2),init.nstart=5,
                       maxIter_ICM=6,maxIter=20, epsLogLik=1e-5, verbose=TRUE, seed=1)
 }
 \arguments{
@@ -18,7 +19,8 @@
   \item{error_heter}{an optional logical value, whether use the heterogenous error i.e. lambdarj != lambdark for each sample r, default as \code{TRUE}. If \code{error_heter=FALSE}, then the homogenuous error is used for probabilistic PCA model.}
   \item{Sp2}{an optional logical value, whether add the ICAR model component in the model, default as TRUE. We provide this interface for those users  who don't want to include the  ICAR model.}
   \item{wpca_int}{an optional logical value, means whether use the weighted PCA to obtain the initial values of loadings and other paramters, default as \code{FALSE} which means the ordinary PCA  is used.}
-  \item{int.model}{an optional string, specify which Gaussian mixture model is used in evaluting the initial values for PRECAST, default as "EEE"; and see \code{Mclust} for more models' names.}
+  \item{int.model}{an optional string, specify which model is used in evaluting the initial values for PRECAST; "kmeans" and "mclust" are supported, default as "mclust".}
+  \item{init.nstart}{an optional positive integer, how many times to be run for obtaining the initial values, default as 5.}
   \item{coreNum}{an optional positive integer, means the number of thread used in parallel computating.}
   \item{coreNum_int}{an optional positive integer, means the number of cores used in parallel computation for initial values when \code{K} is a vector, default as same as \code{coreNum}.}
    \item{beta_grid}{an optional vector of positive value, the candidate set of the smoothing parameter to be searched by the grid-search optimization approach.}

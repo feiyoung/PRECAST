@@ -220,7 +220,7 @@ seuInt
 
 First, user can choose a beautiful color schema using `chooseColors()`.
 ```{r  eval =  FALSE}
-cols_cluster <- chooseColors(palettes_name = 'Classic 20', n_colors=14, plot_colors = TRUE)
+cols_cluster <- chooseColors(palettes_name = 'Classic 20', n_colors=14, plot_colors = FALSE)
 ```
 
 
@@ -234,7 +234,7 @@ p12
 
 Users can re-plot the above figures for specific need by returning a ggplot list object. For example, we  plot the spatial heatmap using a common legend.
 
-```{r  eval =  FALSE, fig.height = 4, fig.width=8.5}
+```{r  eval =  FALSE, fig.height = 4, fig.width=7.5}
 pList <- SpaPlot(seuInt, item='cluster', batch=NULL,point_size=1, cols=cols_cluster, combine=FALSE, nrow.legend=7)
 drawFigs(pList, layout.dim = c(1,2), common.legend = TRUE, legend.position = 'right', align='hv')
 
@@ -242,7 +242,7 @@ drawFigs(pList, layout.dim = c(1,2), common.legend = TRUE, legend.position = 'ri
 
 Show the spatial UMAP/tNSE RGB plot to illustrate the performance in extracting features.
 
-```{r  eval =  FALSE, fig.height = 4, fig.width=5.5}
+```{r  eval =  FALSE, fig.height = 4, fig.width=5.7}
 seuInt <- AddUMAP(seuInt) 
 p13 <- SpaPlot(seuInt, batch=NULL,item='RGB_UMAP',point_size=2, combine=TRUE, text_size=15)
 p13

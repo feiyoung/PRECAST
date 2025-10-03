@@ -4,7 +4,6 @@
 #include<ctime>
 #include "idrsc2.h"
 
-#define INT_MIN (-INT_MAX - 1)
 
 using namespace Rcpp;
 using namespace arma;
@@ -46,8 +45,8 @@ sp_mat get_spNbs(ivec y, const sp_mat& Adj) {   // ivec是索引型向量
   return spNbs; // return the class label of neighbor matrix, i-th column is the neighbor label of sample i
 }
 
-// Calculate the value of energy function of y, which is equal to negative logliklihood up to a constant
-MATTYPE calYenergy2D_sp(const arma::ivec& y, const arma::sp_mat& Adj, int K, const VECTYPE alpha, const float beta)	{
+// Previous version: Calculate the value of energy function of y, which is equal to negative logliklihood up to a constant
+MATTYPE calYenergy2D_sp2(const arma::ivec& y, const arma::sp_mat& Adj, int K, const VECTYPE alpha, const float beta)	{
   
   int n = y.n_rows;
   arma::sp_mat spNbs = get_spNbs(y, Adj); // transform spNbs to iterate by column.
@@ -78,6 +77,49 @@ MATTYPE calYenergy2D_sp(const arma::ivec& y, const arma::sp_mat& Adj, int K, con
   
 }
 
+// Optimized version of calYenergy2D_sp
+MATTYPE  calYenergy2D_sp(const ivec& y, const sp_mat& Adj, int K, const VECTYPE alpha, const float beta) {
+  const int n = y.n_rows;
+  MATTYPE  Uy(n, K);
+  
+  // 1. 创建标签指示矩阵 (n × K)
+  // arma::mat Y_indicator(n, K, arma::fill::zeros);
+  // for(int k=0; k<K; ++k) {
+  //   Y_indicator.col(k) = conv_to<vec>::from(y == (k+1));
+  // }
+  arma::sp_mat Y_indicator(n, K);  // 默认为全零稀疏矩阵
+  for(int k=0; k<K; ++k) {
+    // 找到所有y == (k+1)的位置
+    arma::uvec pos = find(y == (k+1));
+    // 正确设置稀疏矩阵的非零值
+    for(arma::uword i=0; i<pos.n_elem; ++i) {
+      Y_indicator(pos(i), k) = 1.0;  // 直接在(i,k)位置赋值
+    }
+  }
+  
+  // 2. 计算每个样本的邻居数 (n × 1)
+  // arma::vec nn = sum(Adj, 1); // 每行的和即为邻居数
+  VECTYPE nn(Adj.n_rows); // calculate the row sum using iterator.
+  sp_mat::const_iterator it = Adj.begin();
+  sp_mat::const_iterator it_end = Adj.end();
+  for(; it != it_end; ++it) {
+    nn(it.row()) += *it;
+  }
+  
+  // 3. 计算相同标签的邻居数 (n × K)
+  MATTYPE n_sameS(Adj * Y_indicator);
+  
+  // 4. 批量计算能量
+  Uy = beta * 0.5 * (repmat(nn, 1, K) - n_sameS);
+  Uy.each_row() += alpha.t();
+  
+  // 5. 标准化
+  MATTYPE C_mat = normalise(exp(-Uy), 1, 1);
+  Uy = -log(C_mat);
+  
+  return Uy;
+}  
+  
 // When smoothing parameter is shared by all sample, this function is used to evaluate the objective function of beta.
 float obj_beta(const field<ivec>& yf, const field<MATTYPE>& Rf, 
                   const arma::field<sp_mat>& Adjf, int K, const VECTYPE alpha, const float beta)	{
@@ -182,5 +224,6 @@ VECTYPE decomp(const MATTYPE& Cki, const MATTYPE& W0){
     WC12 = W0 * (U * diagmat(sqrt(s)));
     tmp1 = sum(WC12 % WC12, 1);
     return tmp1;
-}  
+}
+
 

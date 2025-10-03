@@ -1,8 +1,8 @@
 Package: PRECAST
 Type: Package
-Title: Embedding and Clustering with Alignment for Spatial Datasets
-Version: 1.6.5
-Date: 2024-03-19
+Title: Embedding and Clustering with Alignment for Spatial Omics Datasets
+Version: 1.7
+Date: 2025-09-29
 Authors@R: 
     c(person(given = "Wei",
              family = "Liu",
@@ -23,7 +23,6 @@ Depends:
     gtools,
     R (>= 4.0.0)
 Imports: 
-    GiRaF,
     MASS,
     Matrix,
     mclust,
@@ -31,6 +30,7 @@ Imports:
     purrr,
     utils,
     Seurat,
+    irlba,
     cowplot,
     patchwork,
     scater,
@@ -39,6 +39,7 @@ Imports:
     dplyr,
     ggplot2,
     stats,
+    harmony,
     DR.SC, 
     scales,
     ggpubr,

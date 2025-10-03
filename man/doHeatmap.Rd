@@ -15,7 +15,7 @@
   \item{grp_label}{an optional logical value, whether display the group names.}
   \item{pt_size}{the point size used in the plot}
   \item{grp_color}{the colors to use for the group color bar.}
-  \item{...}{Other paramters passed to \link{DoHeatmap}.}
+  \item{...}{Other paramters passed to \link[Seurat]{DoHeatmap}.}
 }
 \details{
   Nothing

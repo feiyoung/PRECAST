@@ -110,8 +110,11 @@ For an example of typical PRECAST usage, please see our [Package Website](https:
 
 # NEWs
 
+PRECAST version 1.7 (2025-08-31)
+* Improve the computational efficiency in Cpp and initialization method. Now, our algorithm supports both "kmeans" and "mclust" initialization schemes.
+
 PRECAST version 1.6.5 (2024-03-19)
-* Update the email adress of maintainer.
+* Update the email address of maintainer.
 
 PRECAST version 1.6.4 (2024-01-24)
 * Update `IntegrateSpaData()` to make it able to remove unwanted variations for all genes rather than only variable genes.

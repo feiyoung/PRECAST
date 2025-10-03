@@ -6,20 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PRECAST: DLPFC Single Sample Analysis • PRECAST</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="PRECAST: DLPFC Single Sample Analysis">
-<meta property="og:description" content="PRECAST">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -33,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PRECAST</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7</span>
       </span>
     </div>
 
@@ -46,9 +45,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -57,6 +56,9 @@
     </li>
     <li>
       <a href="../articles/PRECAST.DLPFC.html">PRECAST: DLPFC Single Sample Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PRECAST.DLPFC4.html">PRECAST: Four DLPFC Sample Analysis</a>
     </li>
     <li>
       <a href="../articles/PRECAST.Simu.html">PRECAST: simulation</a>
@@ -68,7 +70,7 @@
 <li>
   <a href="https://github.com/feiyoung/PRECAST/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -79,7 +81,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -87,7 +89,7 @@
       <h1 data-toc-skip>PRECAST: DLPFC Single Sample Analysis</h1>
                         <h4 data-toc-skip class="author">Wei Liu</h4>
             
-            <h4 data-toc-skip class="date">2023-04-18</h4>
+            <h4 data-toc-skip class="date">2025-09-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/feiyoung/PRECAST/blob/HEAD/vignettes/PRECAST.DLPFC.Rmd" class="external-link"><code>vignettes/PRECAST.DLPFC.Rmd</code></a></small>
       <div class="hidden name"><code>PRECAST.DLPFC.Rmd</code></div>
@@ -96,390 +98,326 @@
 
     
     
-<p>This vignette introduces the PRECAST workflow for the analysis of single spatial transcriptomics dataset. The workflow consists of three steps</p>
+<p>This vignette introduces the PRECAST workflow for the analysis of
+single spatial transcriptomics dataset. The workflow consists of three
+steps</p>
 <ul>
 <li>Independent preprocessing and model setting</li>
 <li>Probabilistic embedding and clustering using PRECAST model</li>
-<li>Downstream analysis (i.e. visualization of clusters and embeddings)</li>
+<li>Downstream analysis (i.e. visualization of clusters and
+embeddings)</li>
 </ul>
-<p>We demonstrate the use of PRECAST to one human dorsolateral prefrontal cortex Visium data that are <a href="https://github.com/feiyoung/PRECAST/tree/main/vignettes_data" class="external-link">here</a>, which can be downloaded to the current working path by the following command:</p>
+<p>We demonstrate the use of PRECAST to one human dorsolateral
+prefrontal cortex Visium data that are <a href="https://github.com/feiyoung/PRECAST/tree/main/vignettes_data" class="external-link">here</a>,
+which can be downloaded to the current working path by the following
+command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">githubURL</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/feiyoung/PRECAST/blob/main/vignettes_data/dlpfc_151672.rda?raw=true"</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">githubURL</span>, <span class="st">"dlpfc_151672.rda"</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">githubURL</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/feiyoung/PRECAST/blob/main/vignettes_data/dlpfc_151672.rda?raw=true"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">githubURL</span>, <span class="st">"dlpfc_151672.rda"</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span></code></pre></div>
 <p>Then load to R</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"dlpfc_151672.rda"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"dlpfc_151672.rda"</span><span class="op">)</span></span></code></pre></div>
 <p>The package can be loaded with the command:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="compare-precast-with-dr-sc-in-analyzing-one-sample">Compare PRECAST with DR-SC in analyzing one sample<a class="anchor" aria-label="anchor" href="#compare-precast-with-dr-sc-in-analyzing-one-sample"></a>
 </h2>
-<p>First, we view the the spatial transcriptomics data with Visium platform.</p>
+<p>First, we view the the spatial transcriptomics data with Visium
+platform.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dlpfc_151672</span>  <span class="co">## a list including two Seurat object</span>
-<span class="co">#&gt; An object of class Seurat </span>
-<span class="co">#&gt; 33538 features across 4015 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (33538 features, 0 variable features)</span></code></pre></div>
-<p>check the meta data that must include the spatial coordinates named “row” and “col”, respectively. If the names are not, they are required to rename them.</p>
+<code class="sourceCode R"><span><span class="va">dlpfc_151672</span>  <span class="co">## a list including two Seurat object</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 33538 features across 4015 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: RNA (33538 features, 0 variable features)</span></span>
+<span><span class="co">#&gt;  2 layers present: counts, data</span></span></code></pre></div>
+<p>check the meta data that must include the spatial coordinates named
+“row” and “col”, respectively. If the names are not, they are required
+to rename them.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">meta_data</span> <span class="op">&lt;-</span> <span class="va">dlpfc_151672</span><span class="op">@</span><span class="va">meta.data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"col"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">meta_data</span><span class="op">)</span><span class="op">)</span>  <span class="co">## the names are correct!</span>
-<span class="co">#&gt; [1] TRUE</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">meta_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"col"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;                    row col</span>
-<span class="co">#&gt; AAACAAGTATCTCCCA-1  50 102</span>
-<span class="co">#&gt; AAACACCAATAACTGC-1  59  19</span>
-<span class="co">#&gt; AAACAGAGCGACTCCT-1  14  94</span>
-<span class="co">#&gt; AAACAGCTTTCAGAAG-1  43   9</span>
-<span class="co">#&gt; AAACAGGGTCTATATT-1  47  13</span>
-<span class="co">#&gt; AAACATTTCCCGGATT-1  61  97</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">meta_data</span> <span class="op">&lt;-</span> <span class="va">dlpfc_151672</span><span class="op">@</span><span class="va">meta.data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"col"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">meta_data</span><span class="op">)</span><span class="op">)</span>  <span class="co">## the names are correct!</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">meta_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"col"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                    row col</span></span>
+<span><span class="co">#&gt; AAACAAGTATCTCCCA-1  50 102</span></span>
+<span><span class="co">#&gt; AAACACCAATAACTGC-1  59  19</span></span>
+<span><span class="co">#&gt; AAACAGAGCGACTCCT-1  14  94</span></span>
+<span><span class="co">#&gt; AAACAGCTTTCAGAAG-1  43   9</span></span>
+<span><span class="co">#&gt; AAACAGGGTCTATATT-1  47  13</span></span>
+<span><span class="co">#&gt; AAACATTTCCCGGATT-1  61  97</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="prepare-the-precastobject-">Prepare the PRECASTObject.<a class="anchor" aria-label="anchor" href="#prepare-the-precastobject-"></a>
 </h3>
-<p>Create a PRECASTObj object to prepare for PRECAST models. Here, we only show the <code>HVGs</code> method to select the 2000 highly variable genes, but users are able to choose more genes or also use the <code>SPARK-X</code> to choose the spatially variable genes.</p>
+<p>Create a PRECASTObj object to prepare for PRECAST models. Here, we
+only show the <code>HVGs</code> method to select the 2000 highly
+variable genes, but users are able to choose more genes or also use the
+<code>SPARK-X</code> to choose the spatially variable genes.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span>
-<span class="va">preobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CreateiDRSCObject.html">CreatePRECASTObject</a></span><span class="op">(</span>seuList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">dlpfc_151672</span><span class="op">)</span>, selectGenesMethod <span class="op">=</span> <span class="st">"HVGs"</span>, gene.number <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>  <span class="co"># </span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feiyoung/PRECAST" class="external-link">PRECAST</a></span><span class="op">)</span></span>
+<span><span class="va">preobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CreateiDRSCObject.html">CreatePRECASTObject</a></span><span class="op">(</span>seuList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">dlpfc_151672</span><span class="op">)</span>, selectGenesMethod <span class="op">=</span> <span class="st">"HVGs"</span>, gene.number <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>  <span class="co"># </span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="add-the-model-setting">Add the model setting<a class="anchor" aria-label="anchor" href="#add-the-model-setting"></a>
 </h3>
+<p>We recommend <code>int.model = 'mclust'</code> for DLPFC data.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## check the number of genes/features after filtering step</span>
-<span class="va">preobj</span><span class="op">@</span><span class="va">seulist</span>
-<span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt; An object of class Seurat </span>
-<span class="co">#&gt; 2000 features across 4015 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (2000 features, 2000 variable features)</span>
-<span class="co">## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.</span>
-<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddAdjList.html">AddAdjList</a></span><span class="op">(</span><span class="va">preobj</span>, platform <span class="op">=</span> <span class="st">"Visium"</span><span class="op">)</span>
-<span class="co">## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the</span>
-<span class="co">## information in the algorithm.</span>
-<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddParSetting.html">AddParSetting</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, Sigma_equal <span class="op">=</span> <span class="cn">FALSE</span>, coreNum <span class="op">=</span> <span class="fl">1</span>, maxIter <span class="op">=</span> <span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## check the number of genes/features after filtering step</span></span>
+<span><span class="va">preobj</span><span class="op">@</span><span class="va">seulist</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 2000 features across 4015 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: RNA (2000 features, 2000 variable features)</span></span>
+<span><span class="co">#&gt;  2 layers present: counts, data</span></span>
+<span><span class="co">## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.</span></span>
+<span><span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddAdjList.html">AddAdjList</a></span><span class="op">(</span><span class="va">preobj</span>, platform <span class="op">=</span> <span class="st">"Visium"</span><span class="op">)</span></span>
+<span><span class="co">## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the</span></span>
+<span><span class="co">## information in the algorithm.</span></span>
+<span><span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddParSetting.html">AddParSetting</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, Sigma_equal <span class="op">=</span> <span class="cn">FALSE</span>, coreNum <span class="op">=</span> <span class="fl">1</span>, init.nstart <span class="op">=</span> <span class="fl">5</span>, int.model <span class="op">=</span> <span class="st">"mclust"</span>,</span>
+<span>    maxIter <span class="op">=</span> <span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="fit-precast">Fit PRECAST<a class="anchor" aria-label="anchor" href="#fit-precast"></a>
 </h3>
-<p>For function <code>PRECAST</code>, users can specify the number of clusters <span class="math inline">\(K\)</span> or set <code>K</code> to be an integer vector by using modified BIC(MBIC) to determine <span class="math inline">\(K\)</span>. Here, we use user-specified number of clusters.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co">### Given K</span></a>
-<a class="sourceLine" id="cb8-2" title="2">PRECASTObj &lt;-<span class="st"> </span><span class="kw">PRECAST</span>(PRECASTObj, <span class="dt">K =</span> <span class="dv">7</span>)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt; fitting ...</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb8-5" title="5">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="st">  </span><span class="er">|</span><span class="st">                                                                      </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</a>
-<a class="sourceLine" id="cb8-7" title="7">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="st">  </span><span class="er">|===================================</span><span class="st">                                   </span><span class="er">|</span><span class="st">  </span><span class="dv">50</span>%</a>
-<a class="sourceLine" id="cb8-9" title="9">  <span class="op">|</span><span class="st">                                                                            </span></a>
-<a class="sourceLine" id="cb8-10" title="10"><span class="st">  </span><span class="er">|======================================================================|</span><span class="st"> </span><span class="dv">100</span>%</a>
-<a class="sourceLine" id="cb8-11" title="11"><span class="co">#&gt; variable initialize finish! </span></a>
-<a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-13" title="13"><span class="co">#&gt; diff Energy = 4.357544 </span></a>
-<a class="sourceLine" id="cb8-14" title="14"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-15" title="15"><span class="co">#&gt; iter = 2, loglik= 720694.125000, dloglik=1.000336 </span></a>
-<a class="sourceLine" id="cb8-16" title="16"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-17" title="17"><span class="co">#&gt; diff Energy = 0.043552 </span></a>
-<a class="sourceLine" id="cb8-18" title="18"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-19" title="19"><span class="co">#&gt; iter = 3, loglik= 736531.125000, dloglik=0.021975 </span></a>
-<a class="sourceLine" id="cb8-20" title="20"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-21" title="21"><span class="co">#&gt; diff Energy = 0.107110 </span></a>
-<a class="sourceLine" id="cb8-22" title="22"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-23" title="23"><span class="co">#&gt; iter = 4, loglik= 742609.375000, dloglik=0.008253 </span></a>
-<a class="sourceLine" id="cb8-24" title="24"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-25" title="25"><span class="co">#&gt; diff Energy = 5.270334 </span></a>
-<a class="sourceLine" id="cb8-26" title="26"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-27" title="27"><span class="co">#&gt; iter = 5, loglik= 745399.875000, dloglik=0.003758 </span></a>
-<a class="sourceLine" id="cb8-28" title="28"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-29" title="29"><span class="co">#&gt; diff Energy = 0.852004 </span></a>
-<a class="sourceLine" id="cb8-30" title="30"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-31" title="31"><span class="co">#&gt; iter = 6, loglik= 747061.250000, dloglik=0.002229 </span></a>
-<a class="sourceLine" id="cb8-32" title="32"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-33" title="33"><span class="co">#&gt; diff Energy = 8.872446 </span></a>
-<a class="sourceLine" id="cb8-34" title="34"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-35" title="35"><span class="co">#&gt; iter = 7, loglik= 748162.437500, dloglik=0.001474 </span></a>
-<a class="sourceLine" id="cb8-36" title="36"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-37" title="37"><span class="co">#&gt; diff Energy = 10.323227 </span></a>
-<a class="sourceLine" id="cb8-38" title="38"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-39" title="39"><span class="co">#&gt; iter = 8, loglik= 748905.937500, dloglik=0.000994 </span></a>
-<a class="sourceLine" id="cb8-40" title="40"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-41" title="41"><span class="co">#&gt; diff Energy = 3.204909 </span></a>
-<a class="sourceLine" id="cb8-42" title="42"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-43" title="43"><span class="co">#&gt; iter = 9, loglik= 749436.375000, dloglik=0.000708 </span></a>
-<a class="sourceLine" id="cb8-44" title="44"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-45" title="45"><span class="co">#&gt; diff Energy = 10.411241 </span></a>
-<a class="sourceLine" id="cb8-46" title="46"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-47" title="47"><span class="co">#&gt; iter = 10, loglik= 749835.500000, dloglik=0.000533 </span></a>
-<a class="sourceLine" id="cb8-48" title="48"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-49" title="49"><span class="co">#&gt; diff Energy = 3.299855 </span></a>
-<a class="sourceLine" id="cb8-50" title="50"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-51" title="51"><span class="co">#&gt; iter = 11, loglik= 750150.312500, dloglik=0.000420 </span></a>
-<a class="sourceLine" id="cb8-52" title="52"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-53" title="53"><span class="co">#&gt; diff Energy = 8.352915 </span></a>
-<a class="sourceLine" id="cb8-54" title="54"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-55" title="55"><span class="co">#&gt; iter = 12, loglik= 750402.625000, dloglik=0.000336 </span></a>
-<a class="sourceLine" id="cb8-56" title="56"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-57" title="57"><span class="co">#&gt; diff Energy = 4.246870 </span></a>
-<a class="sourceLine" id="cb8-58" title="58"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-59" title="59"><span class="co">#&gt; iter = 13, loglik= 750611.250000, dloglik=0.000278 </span></a>
-<a class="sourceLine" id="cb8-60" title="60"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-61" title="61"><span class="co">#&gt; diff Energy = 10.693586 </span></a>
-<a class="sourceLine" id="cb8-62" title="62"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-63" title="63"><span class="co">#&gt; iter = 14, loglik= 750778.875000, dloglik=0.000223 </span></a>
-<a class="sourceLine" id="cb8-64" title="64"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-65" title="65"><span class="co">#&gt; diff Energy = 4.404526 </span></a>
-<a class="sourceLine" id="cb8-66" title="66"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-67" title="67"><span class="co">#&gt; iter = 15, loglik= 750928.625000, dloglik=0.000199 </span></a>
-<a class="sourceLine" id="cb8-68" title="68"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-69" title="69"><span class="co">#&gt; diff Energy = 7.872126 </span></a>
-<a class="sourceLine" id="cb8-70" title="70"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-71" title="71"><span class="co">#&gt; iter = 16, loglik= 751058.375000, dloglik=0.000173 </span></a>
-<a class="sourceLine" id="cb8-72" title="72"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-73" title="73"><span class="co">#&gt; diff Energy = 1.442411 </span></a>
-<a class="sourceLine" id="cb8-74" title="74"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-75" title="75"><span class="co">#&gt; iter = 17, loglik= 751176.250000, dloglik=0.000157 </span></a>
-<a class="sourceLine" id="cb8-76" title="76"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-77" title="77"><span class="co">#&gt; diff Energy = 6.422405 </span></a>
-<a class="sourceLine" id="cb8-78" title="78"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-79" title="79"><span class="co">#&gt; iter = 18, loglik= 751273.625000, dloglik=0.000130 </span></a>
-<a class="sourceLine" id="cb8-80" title="80"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-81" title="81"><span class="co">#&gt; diff Energy = 3.737015 </span></a>
-<a class="sourceLine" id="cb8-82" title="82"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-83" title="83"><span class="co">#&gt; iter = 19, loglik= 751367.812500, dloglik=0.000125 </span></a>
-<a class="sourceLine" id="cb8-84" title="84"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-85" title="85"><span class="co">#&gt; diff Energy = 2.975575 </span></a>
-<a class="sourceLine" id="cb8-86" title="86"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-87" title="87"><span class="co">#&gt; iter = 20, loglik= 751445.375000, dloglik=0.000103 </span></a>
-<a class="sourceLine" id="cb8-88" title="88"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-89" title="89"><span class="co">#&gt; diff Energy = 1.618512 </span></a>
-<a class="sourceLine" id="cb8-90" title="90"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-91" title="91"><span class="co">#&gt; iter = 21, loglik= 751520.062500, dloglik=0.000099 </span></a>
-<a class="sourceLine" id="cb8-92" title="92"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-93" title="93"><span class="co">#&gt; diff Energy = 1.663198 </span></a>
-<a class="sourceLine" id="cb8-94" title="94"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-95" title="95"><span class="co">#&gt; iter = 22, loglik= 751574.187500, dloglik=0.000072 </span></a>
-<a class="sourceLine" id="cb8-96" title="96"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-97" title="97"><span class="co">#&gt; diff Energy = 5.080723 </span></a>
-<a class="sourceLine" id="cb8-98" title="98"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-99" title="99"><span class="co">#&gt; iter = 23, loglik= 751639.687500, dloglik=0.000087 </span></a>
-<a class="sourceLine" id="cb8-100" title="100"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-101" title="101"><span class="co">#&gt; diff Energy = 1.346914 </span></a>
-<a class="sourceLine" id="cb8-102" title="102"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-103" title="103"><span class="co">#&gt; iter = 24, loglik= 751708.500000, dloglik=0.000092 </span></a>
-<a class="sourceLine" id="cb8-104" title="104"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-105" title="105"><span class="co">#&gt; diff Energy = 0.617952 </span></a>
-<a class="sourceLine" id="cb8-106" title="106"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-107" title="107"><span class="co">#&gt; iter = 25, loglik= 751756.312500, dloglik=0.000064 </span></a>
-<a class="sourceLine" id="cb8-108" title="108"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-109" title="109"><span class="co">#&gt; diff Energy = 2.145776 </span></a>
-<a class="sourceLine" id="cb8-110" title="110"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-111" title="111"><span class="co">#&gt; iter = 26, loglik= 751795.812500, dloglik=0.000053 </span></a>
-<a class="sourceLine" id="cb8-112" title="112"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-113" title="113"><span class="co">#&gt; diff Energy = 1.444635 </span></a>
-<a class="sourceLine" id="cb8-114" title="114"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-115" title="115"><span class="co">#&gt; iter = 27, loglik= 751831.187500, dloglik=0.000047 </span></a>
-<a class="sourceLine" id="cb8-116" title="116"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-117" title="117"><span class="co">#&gt; diff Energy = 1.244554 </span></a>
-<a class="sourceLine" id="cb8-118" title="118"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-119" title="119"><span class="co">#&gt; iter = 28, loglik= 751862.750000, dloglik=0.000042 </span></a>
-<a class="sourceLine" id="cb8-120" title="120"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-121" title="121"><span class="co">#&gt; diff Energy = 7.400049 </span></a>
-<a class="sourceLine" id="cb8-122" title="122"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-123" title="123"><span class="co">#&gt; iter = 29, loglik= 751889.437500, dloglik=0.000035 </span></a>
-<a class="sourceLine" id="cb8-124" title="124"><span class="co">#&gt; predict Y and V! </span></a>
-<a class="sourceLine" id="cb8-125" title="125"><span class="co">#&gt; diff Energy = 2.148208 </span></a>
-<a class="sourceLine" id="cb8-126" title="126"><span class="co">#&gt; Finish ICM step! </span></a>
-<a class="sourceLine" id="cb8-127" title="127"><span class="co">#&gt; iter = 30, loglik= 751919.687500, dloglik=0.000040</span></a></code></pre></div>
-<p>Use the function <code><a href="../reference/selectModel.html">SelectModel()</a></code> to re-organize the fitted results in PRECASTObj.</p>
+<p>For function <code>PRECAST</code>, users can specify the number of
+clusters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+or set <code>K</code> to be an integer vector by using modified
+BIC(MBIC) to determine
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>.
+Here, we use user-specified number of clusters.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">### Given K</span></span>
+<span><span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PRECAST.html">PRECAST</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, K <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="co">#&gt; iter = 2, loglik= 720724.625000, dloglik=1.000336 </span></span>
+<span><span class="co">#&gt; iter = 3, loglik= 736529.687500, dloglik=0.021929 </span></span>
+<span><span class="co">#&gt; iter = 4, loglik= 742523.250000, dloglik=0.008138 </span></span>
+<span><span class="co">#&gt; iter = 5, loglik= 745466.500000, dloglik=0.003964 </span></span>
+<span><span class="co">#&gt; iter = 6, loglik= 747162.437500, dloglik=0.002275 </span></span>
+<span><span class="co">#&gt; iter = 7, loglik= 748235.312500, dloglik=0.001436 </span></span>
+<span><span class="co">#&gt; iter = 8, loglik= 748948.250000, dloglik=0.000953 </span></span>
+<span><span class="co">#&gt; iter = 9, loglik= 749468.625000, dloglik=0.000695 </span></span>
+<span><span class="co">#&gt; iter = 10, loglik= 749864.937500, dloglik=0.000529 </span></span>
+<span><span class="co">#&gt; iter = 11, loglik= 750168.937500, dloglik=0.000405 </span></span>
+<span><span class="co">#&gt; iter = 12, loglik= 750410.500000, dloglik=0.000322 </span></span>
+<span><span class="co">#&gt; iter = 13, loglik= 750607.625000, dloglik=0.000263 </span></span>
+<span><span class="co">#&gt; iter = 14, loglik= 750782.375000, dloglik=0.000233 </span></span>
+<span><span class="co">#&gt; iter = 15, loglik= 750930.375000, dloglik=0.000197 </span></span>
+<span><span class="co">#&gt; iter = 16, loglik= 751062.437500, dloglik=0.000176 </span></span>
+<span><span class="co">#&gt; iter = 17, loglik= 751171.625000, dloglik=0.000145 </span></span>
+<span><span class="co">#&gt; iter = 18, loglik= 751278.687500, dloglik=0.000143 </span></span>
+<span><span class="co">#&gt; iter = 19, loglik= 751359.000000, dloglik=0.000107 </span></span>
+<span><span class="co">#&gt; iter = 20, loglik= 751439.687500, dloglik=0.000107 </span></span>
+<span><span class="co">#&gt; iter = 21, loglik= 751505.062500, dloglik=0.000087 </span></span>
+<span><span class="co">#&gt; iter = 22, loglik= 751571.687500, dloglik=0.000089 </span></span>
+<span><span class="co">#&gt; iter = 23, loglik= 751615.687500, dloglik=0.000059 </span></span>
+<span><span class="co">#&gt; iter = 24, loglik= 751677.812500, dloglik=0.000083 </span></span>
+<span><span class="co">#&gt; iter = 25, loglik= 751741.562500, dloglik=0.000085 </span></span>
+<span><span class="co">#&gt; iter = 26, loglik= 751788.312500, dloglik=0.000062 </span></span>
+<span><span class="co">#&gt; iter = 27, loglik= 751831.062500, dloglik=0.000057 </span></span>
+<span><span class="co">#&gt; iter = 28, loglik= 751873.312500, dloglik=0.000056 </span></span>
+<span><span class="co">#&gt; iter = 29, loglik= 751877.187500, dloglik=0.000005</span></span></code></pre></div>
+<p>Use the function <code><a href="../reference/selectModel.html">SelectModel()</a></code> to re-organize the fitted
+results in PRECASTObj.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## backup the fitting results in resList</span>
-<span class="va">resList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span>
-<span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">SelectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span>
-<span class="va">ari_precast</span> <span class="op">&lt;-</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span></code></pre></div>
-<details><p><summary><strong>Other options</strong></summary> Users are also able to set multiple K, then choose the best one</p>
+<code class="sourceCode R"><span><span class="co">## backup the fitting results in resList</span></span>
+<span><span class="va">resList</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span></span>
+<span><span class="va">PRECASTObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">SelectModel</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">)</span></span>
+<span><span class="va">ari_precast</span> <span class="op">&lt;-</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span></span></code></pre></div>
+<details><summary><strong>Other options</strong>
+</summary><p>Users are also able to set multiple K, then choose the best one</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">PRECASTObj2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddParSetting.html">AddParSetting</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, Sigma_equal <span class="op">=</span> <span class="cn">FALSE</span>, coreNum <span class="op">=</span> <span class="fl">4</span>, maxIter <span class="op">=</span> <span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># set 4 cores to run in parallel.</span>
-<span class="va">PRECASTObj2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PRECAST.html">PRECAST</a></span><span class="op">(</span><span class="va">PRECASTObj2</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>
-<span class="co">## backup the fitting results in resList</span>
-<span class="va">resList2</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">resList</span>
-<span class="va">PRECASTObj2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">SelectModel</a></span><span class="op">(</span><span class="va">PRECASTObj2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">resList</span><span class="op">)</span>
-<span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span></code></pre></div>
-<p>Besides, user can also use different initialization method by setting <code>int.model</code>, for example, set <code>int.model=NULL</code>; see the functions <code><a href="../reference/AddParSetting.html">AddParSetting()</a></code> and <code><a href="../reference/model_set.html">model_set()</a></code> for more details.</p>
+<code class="sourceCode R"><span><span class="va">PRECASTObj2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddParSetting.html">AddParSetting</a></span><span class="op">(</span><span class="va">PRECASTObj</span>, Sigma_equal <span class="op">=</span> <span class="cn">FALSE</span>, coreNum <span class="op">=</span> <span class="fl">4</span>, maxIter <span class="op">=</span> <span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># set 4 cores to run in parallel.</span></span>
+<span><span class="va">PRECASTObj2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PRECAST.html">PRECAST</a></span><span class="op">(</span><span class="va">PRECASTObj2</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span></span>
+<span><span class="co">## backup the fitting results in resList</span></span>
+<span><span class="va">resList2</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">resList</span></span>
+<span><span class="va">PRECASTObj2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectModel.html">SelectModel</a></span><span class="op">(</span><span class="va">PRECASTObj2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">resList</span><span class="op">)</span></span>
+<span><span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">PRECASTObj2</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span></span></code></pre></div>
+<p>Besides, user can also use different initialization method by setting
+<code>int.model</code>, for example, set <code>int.model=NULL</code>;
+see the functions <code><a href="../reference/AddParSetting.html">AddParSetting()</a></code> and
+<code><a href="../reference/model_set.html">model_set()</a></code> for more details.</p>
 </details><p>Put the reults into a Seurat object seuInt.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="va">seuInt</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span><span class="op">)</span>
-<span class="va">seuInt</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Add_embed.html">Add_embed</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">hZ</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">seuInt</span>, embed_name <span class="op">=</span> <span class="st">"PRECAST"</span><span class="op">)</span>
-<span class="va">posList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">row</span>, <span class="va">x</span><span class="op">$</span><span class="va">col</span><span class="op">)</span><span class="op">)</span>
-<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Add_embed.html">Add_embed</a></span><span class="op">(</span><span class="va">posList</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">seuInt</span>, embed_name <span class="op">=</span> <span class="st">"position"</span><span class="op">)</span>
-<span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-
-<span class="va">seuInt</span>
-<span class="co">#&gt; An object of class Seurat </span>
-<span class="co">#&gt; 2000 features across 4015 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (2000 features, 2000 variable features)</span>
-<span class="co">#&gt;  1 dimensional reduction calculated: PRECAST</span>
-<span class="co">## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">seuInt</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">seuInt</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Add_embed.html">Add_embed</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">resList</span><span class="op">$</span><span class="va">hZ</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">seuInt</span>, embed_name <span class="op">=</span> <span class="st">"PRECAST"</span><span class="op">)</span></span>
+<span><span class="va">posList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">row</span>, <span class="va">x</span><span class="op">$</span><span class="va">col</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Add_embed.html">Add_embed</a></span><span class="op">(</span><span class="va">posList</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">seuInt</span>, embed_name <span class="op">=</span> <span class="st">"position"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">seuInt</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">seuInt</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 2000 features across 4015 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: RNA (2000 features, 2000 variable features)</span></span>
+<span><span class="co">#&gt;  2 layers present: counts, data</span></span>
+<span><span class="co">#&gt;  2 dimensional reductions calculated: PRECAST, position</span></span>
+<span><span class="co">## The low-dimensional embeddings obtained by PRECAST are saved in PRECAST reduction slot.</span></span></code></pre></div>
 <p>Save the spatial and tSNE scatter plots for clusters from PRECAST</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p_sp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, point_size <span class="op">=</span> <span class="fl">3</span>, combine <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"PRECAST: ARI="</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ari_precast</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"row"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"col"</span><span class="op">)</span>
-<span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTSNE.html">AddTSNE</a></span><span class="op">(</span><span class="va">seuInt</span>, n_comp <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="va">p_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span>
-<span class="va">p_tsne</span> <span class="op">&lt;-</span> <span class="va">p_tsne</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PRECAST"</span><span class="op">)</span></code></pre></div>
-<p>Fit DR-SC and Plot the spatial and tSNE scatter plots for clusters</p>
+<code class="sourceCode R"><span><span class="va">p_sp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpaPlot.html">SpaPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span>, point_size <span class="op">=</span> <span class="fl">3</span>, combine <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"PRECAST: ARI="</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ari_precast</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"row"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"col"</span><span class="op">)</span></span>
+<span><span class="va">seuInt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTSNE.html">AddTSNE</a></span><span class="op">(</span><span class="va">seuInt</span>, n_comp <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">p_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimPlot.html">dimPlot</a></span><span class="op">(</span><span class="va">seuInt</span>, item <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span>
+<span><span class="va">p_tsne</span> <span class="op">&lt;-</span> <span class="va">p_tsne</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PRECAST"</span><span class="op">)</span></span></code></pre></div>
+<p>Fit DR-SC and Plot the spatial and tSNE scatter plots for
+clusters</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seu_drsc</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/DR.SC.html" class="external-link">DR.SC</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, K <span class="op">=</span> <span class="fl">7</span>, verbose <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co">#&gt; iter = 2, loglik= 731518.206960, dloglik=1.000341 </span>
-<span class="co">#&gt; iter = 3, loglik= 738726.830540, dloglik=0.009854 </span>
-<span class="co">#&gt; iter = 4, loglik= 741042.145388, dloglik=0.003134 </span>
-<span class="co">#&gt; iter = 5, loglik= 742243.453375, dloglik=0.001621 </span>
-<span class="co">#&gt; iter = 6, loglik= 743007.759324, dloglik=0.001030 </span>
-<span class="co">#&gt; iter = 7, loglik= 743526.931419, dloglik=0.000699 </span>
-<span class="co">#&gt; iter = 8, loglik= 743896.859337, dloglik=0.000498 </span>
-<span class="co">#&gt; iter = 9, loglik= 744181.669833, dloglik=0.000383 </span>
-<span class="co">#&gt; iter = 10, loglik= 744422.250825, dloglik=0.000323 </span>
-<span class="co">#&gt; iter = 11, loglik= 744622.719658, dloglik=0.000269 </span>
-<span class="co">#&gt; iter = 12, loglik= 744794.842008, dloglik=0.000231 </span>
-<span class="co">#&gt; iter = 13, loglik= 744951.307556, dloglik=0.000210 </span>
-<span class="co">#&gt; iter = 14, loglik= 745086.270102, dloglik=0.000181 </span>
-<span class="co">#&gt; iter = 15, loglik= 745197.659202, dloglik=0.000149 </span>
-<span class="co">#&gt; iter = 16, loglik= 745308.735367, dloglik=0.000149 </span>
-<span class="co">#&gt; iter = 17, loglik= 745407.013373, dloglik=0.000132 </span>
-<span class="co">#&gt; iter = 18, loglik= 745494.350941, dloglik=0.000117 </span>
-<span class="co">#&gt; iter = 19, loglik= 745568.379036, dloglik=0.000099 </span>
-<span class="co">#&gt; iter = 20, loglik= 745634.241643, dloglik=0.000088 </span>
-<span class="co">#&gt; iter = 21, loglik= 745702.910177, dloglik=0.000092 </span>
-<span class="co">#&gt; iter = 22, loglik= 745756.835958, dloglik=0.000072 </span>
-<span class="co">#&gt; iter = 23, loglik= 745802.778415, dloglik=0.000062 </span>
-<span class="co">#&gt; iter = 24, loglik= 745849.510135, dloglik=0.000063 </span>
-<span class="co">#&gt; iter = 25, loglik= 745886.892357, dloglik=0.000050</span>
-<span class="va">ari_drsc</span> <span class="op">&lt;-</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">$</span><span class="va">spatial.drsc.cluster</span>, <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span>
-<span class="va">p_tsne_drsc</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/drscPlot.html" class="external-link">drscPlot</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">)</span>
-<span class="va">p_tsne_drsc</span> <span class="op">&lt;-</span> <span class="va">p_tsne_drsc</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"DR-SC"</span><span class="op">)</span>
-<span class="va">p_sp2</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/spatialPlotClusters.html" class="external-link">spatialPlotClusters</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">)</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"DR-SC ARI="</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ari_drsc</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">seu_drsc</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/DR.SC.html" class="external-link">DR.SC</a></span><span class="op">(</span><span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, K <span class="op">=</span> <span class="fl">7</span>, verbose <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="co">#&gt; iter = 2, loglik= 731518.206960, dloglik=1.000341 </span></span>
+<span><span class="co">#&gt; iter = 3, loglik= 738726.830540, dloglik=0.009854 </span></span>
+<span><span class="co">#&gt; iter = 4, loglik= 741042.145388, dloglik=0.003134 </span></span>
+<span><span class="co">#&gt; iter = 5, loglik= 742243.453375, dloglik=0.001621 </span></span>
+<span><span class="co">#&gt; iter = 6, loglik= 743007.759324, dloglik=0.001030 </span></span>
+<span><span class="co">#&gt; iter = 7, loglik= 743526.931419, dloglik=0.000699 </span></span>
+<span><span class="co">#&gt; iter = 8, loglik= 743896.859337, dloglik=0.000498 </span></span>
+<span><span class="co">#&gt; iter = 9, loglik= 744181.669833, dloglik=0.000383 </span></span>
+<span><span class="co">#&gt; iter = 10, loglik= 744422.250825, dloglik=0.000323 </span></span>
+<span><span class="co">#&gt; iter = 11, loglik= 744622.719658, dloglik=0.000269 </span></span>
+<span><span class="co">#&gt; iter = 12, loglik= 744794.842008, dloglik=0.000231 </span></span>
+<span><span class="co">#&gt; iter = 13, loglik= 744951.307556, dloglik=0.000210 </span></span>
+<span><span class="co">#&gt; iter = 14, loglik= 745086.270102, dloglik=0.000181 </span></span>
+<span><span class="co">#&gt; iter = 15, loglik= 745197.659202, dloglik=0.000149 </span></span>
+<span><span class="co">#&gt; iter = 16, loglik= 745308.735367, dloglik=0.000149 </span></span>
+<span><span class="co">#&gt; iter = 17, loglik= 745407.013373, dloglik=0.000132 </span></span>
+<span><span class="co">#&gt; iter = 18, loglik= 745494.350941, dloglik=0.000117 </span></span>
+<span><span class="co">#&gt; iter = 19, loglik= 745568.379036, dloglik=0.000099 </span></span>
+<span><span class="co">#&gt; iter = 20, loglik= 745634.241643, dloglik=0.000088 </span></span>
+<span><span class="co">#&gt; iter = 21, loglik= 745702.910177, dloglik=0.000092 </span></span>
+<span><span class="co">#&gt; iter = 22, loglik= 745756.835958, dloglik=0.000072 </span></span>
+<span><span class="co">#&gt; iter = 23, loglik= 745802.778415, dloglik=0.000062 </span></span>
+<span><span class="co">#&gt; iter = 24, loglik= 745849.510135, dloglik=0.000063 </span></span>
+<span><span class="co">#&gt; iter = 25, loglik= 745886.892357, dloglik=0.000050</span></span>
+<span><span class="va">ari_drsc</span> <span class="op">&lt;-</span> <span class="fu">mclust</span><span class="fu">::</span><span class="fu"><a href="https://mclust-org.github.io/mclust/reference/adjustedRandIndex.html" class="external-link">adjustedRandIndex</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">$</span><span class="va">spatial.drsc.cluster</span>, <span class="va">PRECASTObj</span><span class="op">@</span><span class="va">seulist</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">layer_guess_reordered</span><span class="op">)</span></span>
+<span><span class="va">p_tsne_drsc</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/drscPlot.html" class="external-link">drscPlot</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">)</span></span>
+<span><span class="va">p_tsne_drsc</span> <span class="op">&lt;-</span> <span class="va">p_tsne_drsc</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"DR-SC"</span><span class="op">)</span></span>
+<span><span class="va">p_sp2</span> <span class="op">&lt;-</span> <span class="fu">DR.SC</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DR.SC/man/spatialPlotClusters.html" class="external-link">spatialPlotClusters</a></span><span class="op">(</span><span class="va">seu_drsc</span><span class="op">)</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">theme_cowplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"DR-SC ARI="</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ari_drsc</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Compare the clustering performance of PRECAST and DR-SC.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p_sp1</span>, <span class="va">p_sp2</span><span class="op">)</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p_sp1</span>, <span class="va">p_sp2</span><span class="op">)</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PRECAST.DLPFC_files/figure-html/unnamed-chunk-15-1.png" width="960"></p>
 <p>Compare the tSNE visualiztion performance of PRECAST and DR-SC.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p_tsne</span>, <span class="va">p_tsne_drsc</span><span class="op">)</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/drawFigs.html">drawFigs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p_tsne</span>, <span class="va">p_tsne_drsc</span><span class="op">)</span>, layout.dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PRECAST.DLPFC_files/figure-html/unnamed-chunk-16-1.png" width="960"></p>
-<details><p><summary><strong>Session Info</strong></summary></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
-<span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
-<span class="co">#&gt; Running under: Windows 10 x64 (build 22621)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; locale:</span>
-<span class="co">#&gt; [1] LC_COLLATE=Chinese (Simplified)_China.936 </span>
-<span class="co">#&gt; [2] LC_CTYPE=Chinese (Simplified)_China.936   </span>
-<span class="co">#&gt; [3] LC_MONETARY=Chinese (Simplified)_China.936</span>
-<span class="co">#&gt; [4] LC_NUMERIC=C                              </span>
-<span class="co">#&gt; [5] LC_TIME=Chinese (Simplified)_China.936    </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attached base packages:</span>
-<span class="co">#&gt; [1] parallel  stats     graphics  grDevices utils     datasets  methods  </span>
-<span class="co">#&gt; [8] base     </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] sp_1.5-0           SeuratObject_4.1.0 Seurat_4.1.1       PRECAST_1.6       </span>
-<span class="co">#&gt; [5] gtools_3.9.2.2    </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] utf8_1.2.3                  reticulate_1.25            </span>
-<span class="co">#&gt;   [3] tidyselect_1.1.2            htmlwidgets_1.5.4          </span>
-<span class="co">#&gt;   [5] grid_4.1.2                  BiocParallel_1.28.3        </span>
-<span class="co">#&gt;   [7] Rtsne_0.16                  munsell_0.5.0              </span>
-<span class="co">#&gt;   [9] ScaledMatrix_1.2.0          codetools_0.2-18           </span>
-<span class="co">#&gt;  [11] ragg_1.2.2                  ica_1.0-2                  </span>
-<span class="co">#&gt;  [13] future_1.26.1               miniUI_0.1.1.1             </span>
-<span class="co">#&gt;  [15] withr_2.5.0                 spatstat.random_2.2-0      </span>
-<span class="co">#&gt;  [17] colorspace_2.1-0            progressr_0.10.1           </span>
-<span class="co">#&gt;  [19] Biobase_2.54.0              highr_0.9                  </span>
-<span class="co">#&gt;  [21] knitr_1.37                  rstudioapi_0.13            </span>
-<span class="co">#&gt;  [23] stats4_4.1.2                SingleCellExperiment_1.16.0</span>
-<span class="co">#&gt;  [25] ROCR_1.0-11                 ggsignif_0.6.3             </span>
-<span class="co">#&gt;  [27] tensor_1.5                  listenv_0.8.0              </span>
-<span class="co">#&gt;  [29] labeling_0.4.2              MatrixGenerics_1.6.0       </span>
-<span class="co">#&gt;  [31] GenomeInfoDbData_1.2.7      polyclip_1.10-0            </span>
-<span class="co">#&gt;  [33] farver_2.1.1                rprojroot_2.0.3            </span>
-<span class="co">#&gt;  [35] parallelly_1.32.0           vctrs_0.6.1                </span>
-<span class="co">#&gt;  [37] generics_0.1.2              xfun_0.29                  </span>
-<span class="co">#&gt;  [39] ggthemes_4.2.4              R6_2.5.1                   </span>
-<span class="co">#&gt;  [41] GenomeInfoDb_1.30.1         ggbeeswarm_0.6.0           </span>
-<span class="co">#&gt;  [43] rsvd_1.0.5                  bitops_1.0-7               </span>
-<span class="co">#&gt;  [45] spatstat.utils_3.0-1        cachem_1.0.6               </span>
-<span class="co">#&gt;  [47] DelayedArray_0.20.0         assertthat_0.2.1           </span>
-<span class="co">#&gt;  [49] promises_1.2.0.1            scales_1.2.1               </span>
-<span class="co">#&gt;  [51] rgeos_0.5-9                 beeswarm_0.4.0             </span>
-<span class="co">#&gt;  [53] gtable_0.3.3                beachmat_2.10.0            </span>
-<span class="co">#&gt;  [55] globals_0.15.0              goftest_1.2-3              </span>
-<span class="co">#&gt;  [57] rlang_1.1.0                 systemfonts_1.0.4          </span>
-<span class="co">#&gt;  [59] splines_4.1.2               rstatix_0.7.0              </span>
-<span class="co">#&gt;  [61] lazyeval_0.2.2              broom_0.7.12               </span>
-<span class="co">#&gt;  [63] spatstat.geom_2.4-0         yaml_2.3.6                 </span>
-<span class="co">#&gt;  [65] reshape2_1.4.4              abind_1.4-5                </span>
-<span class="co">#&gt;  [67] backports_1.4.1             httpuv_1.6.5               </span>
-<span class="co">#&gt;  [69] tools_4.1.2                 ggplot2_3.4.1              </span>
-<span class="co">#&gt;  [71] ellipsis_0.3.2              spatstat.core_2.4-4        </span>
-<span class="co">#&gt;  [73] jquerylib_0.1.4             RColorBrewer_1.1-3         </span>
-<span class="co">#&gt;  [75] BiocGenerics_0.40.0         ggridges_0.5.3             </span>
-<span class="co">#&gt;  [77] Rcpp_1.0.10                 plyr_1.8.7                 </span>
-<span class="co">#&gt;  [79] sparseMatrixStats_1.6.0     zlibbioc_1.40.0            </span>
-<span class="co">#&gt;  [81] purrr_0.3.4                 RCurl_1.98-1.6             </span>
-<span class="co">#&gt;  [83] ggpubr_0.4.0                rpart_4.1.16               </span>
-<span class="co">#&gt;  [85] deldir_1.0-6                viridis_0.6.2              </span>
-<span class="co">#&gt;  [87] pbapply_1.5-0               cowplot_1.1.1              </span>
-<span class="co">#&gt;  [89] S4Vectors_0.32.3            zoo_1.8-10                 </span>
-<span class="co">#&gt;  [91] SummarizedExperiment_1.24.0 ggrepel_0.9.1              </span>
-<span class="co">#&gt;  [93] cluster_2.1.2               fs_1.5.2                   </span>
-<span class="co">#&gt;  [95] magrittr_2.0.3              GiRaF_1.0.1                </span>
-<span class="co">#&gt;  [97] data.table_1.14.2           scattermore_0.8            </span>
-<span class="co">#&gt;  [99] lmtest_0.9-40               RANN_2.6.1                 </span>
-<span class="co">#&gt; [101] fitdistrplus_1.1-8          matrixStats_0.62.0         </span>
-<span class="co">#&gt; [103] patchwork_1.1.1             mime_0.12                  </span>
-<span class="co">#&gt; [105] evaluate_0.15               xtable_1.8-4               </span>
-<span class="co">#&gt; [107] mclust_5.4.10               IRanges_2.28.0             </span>
-<span class="co">#&gt; [109] gridExtra_2.3               compiler_4.1.2             </span>
-<span class="co">#&gt; [111] scater_1.25.1               tibble_3.2.1               </span>
-<span class="co">#&gt; [113] KernSmooth_2.23-20          crayon_1.5.1               </span>
-<span class="co">#&gt; [115] htmltools_0.5.2             mgcv_1.8-39                </span>
-<span class="co">#&gt; [117] later_1.3.0                 tidyr_1.2.0                </span>
-<span class="co">#&gt; [119] DBI_1.1.2                   formatR_1.11               </span>
-<span class="co">#&gt; [121] MASS_7.3-55                 car_3.0-12                 </span>
-<span class="co">#&gt; [123] Matrix_1.4-0                cli_3.2.0                  </span>
-<span class="co">#&gt; [125] igraph_1.3.5                DR.SC_3.2                  </span>
-<span class="co">#&gt; [127] GenomicRanges_1.46.1        pkgconfig_2.0.3            </span>
-<span class="co">#&gt; [129] pkgdown_2.0.6               plotly_4.10.0              </span>
-<span class="co">#&gt; [131] scuttle_1.4.0               spatstat.sparse_2.1-1      </span>
-<span class="co">#&gt; [133] vipor_0.4.5                 bslib_0.3.1                </span>
-<span class="co">#&gt; [135] XVector_0.34.0              CompQuadForm_1.4.3         </span>
-<span class="co">#&gt; [137] stringr_1.4.0               digest_0.6.29              </span>
-<span class="co">#&gt; [139] sctransform_0.3.3           RcppAnnoy_0.0.19           </span>
-<span class="co">#&gt; [141] spatstat.data_3.0-0         rmarkdown_2.11             </span>
-<span class="co">#&gt; [143] leiden_0.4.2                uwot_0.1.11                </span>
-<span class="co">#&gt; [145] DelayedMatrixStats_1.16.0   shiny_1.7.1                </span>
-<span class="co">#&gt; [147] lifecycle_1.0.3             nlme_3.1-155               </span>
-<span class="co">#&gt; [149] jsonlite_1.8.0              carData_3.0-5              </span>
-<span class="co">#&gt; [151] BiocNeighbors_1.12.0        desc_1.4.0                 </span>
-<span class="co">#&gt; [153] viridisLite_0.4.1           fansi_1.0.4                </span>
-<span class="co">#&gt; [155] pillar_1.9.0                lattice_0.20-45            </span>
-<span class="co">#&gt; [157] fastmap_1.1.0               httr_1.4.3                 </span>
-<span class="co">#&gt; [159] survival_3.2-13             glue_1.6.2                 </span>
-<span class="co">#&gt; [161] png_0.1-7                   stringi_1.7.6              </span>
-<span class="co">#&gt; [163] sass_0.4.1                  textshaping_0.3.6          </span>
-<span class="co">#&gt; [165] BiocSingular_1.10.0         memoise_2.0.1              </span>
-<span class="co">#&gt; [167] dplyr_1.0.9                 irlba_2.3.5                </span>
-<span class="co">#&gt; [169] future.apply_1.9.0</span></code></pre></div>
+<details><summary><strong>Session Info</strong>
+</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.4.1 (2024-06-14 ucrt)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
+<span><span class="co">#&gt; Running under: Windows 11 x64 (build 26100)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=Chinese (Simplified)_China.utf8 </span></span>
+<span><span class="co">#&gt; [2] LC_CTYPE=Chinese (Simplified)_China.utf8   </span></span>
+<span><span class="co">#&gt; [3] LC_MONETARY=Chinese (Simplified)_China.utf8</span></span>
+<span><span class="co">#&gt; [4] LC_NUMERIC=C                               </span></span>
+<span><span class="co">#&gt; [5] LC_TIME=Chinese (Simplified)_China.utf8    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: Asia/Shanghai</span></span>
+<span><span class="co">#&gt; tzcode source: internal</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] parallel  stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">#&gt; [8] base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] irlba_2.3.5.1      Matrix_1.7-0       Seurat_5.1.0       SeuratObject_5.0.2</span></span>
+<span><span class="co">#&gt; [5] sp_2.1-4           PRECAST_1.7        gtools_3.9.5      </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;   [1] RcppAnnoy_0.0.22            splines_4.4.1              </span></span>
+<span><span class="co">#&gt;   [3] later_1.3.2                 tibble_3.2.1               </span></span>
+<span><span class="co">#&gt;   [5] polyclip_1.10-7             fastDummies_1.7.4          </span></span>
+<span><span class="co">#&gt;   [7] lifecycle_1.0.4             rstatix_0.7.2              </span></span>
+<span><span class="co">#&gt;   [9] globals_0.16.3              lattice_0.22-6             </span></span>
+<span><span class="co">#&gt;  [11] MASS_7.3-60.2               backports_1.5.0            </span></span>
+<span><span class="co">#&gt;  [13] magrittr_2.0.3              plotly_4.10.4              </span></span>
+<span><span class="co">#&gt;  [15] sass_0.4.9                  rmarkdown_2.28             </span></span>
+<span><span class="co">#&gt;  [17] jquerylib_0.1.4             yaml_2.3.10                </span></span>
+<span><span class="co">#&gt;  [19] httpuv_1.6.15               sctransform_0.4.1          </span></span>
+<span><span class="co">#&gt;  [21] spam_2.10-0                 spatstat.sparse_3.1-0      </span></span>
+<span><span class="co">#&gt;  [23] reticulate_1.39.0           cowplot_1.1.3              </span></span>
+<span><span class="co">#&gt;  [25] pbapply_1.7-2               RColorBrewer_1.1-3         </span></span>
+<span><span class="co">#&gt;  [27] abind_1.4-8                 zlibbioc_1.50.0            </span></span>
+<span><span class="co">#&gt;  [29] Rtsne_0.17                  GenomicRanges_1.56.2       </span></span>
+<span><span class="co">#&gt;  [31] purrr_1.0.2                 BiocGenerics_0.50.0        </span></span>
+<span><span class="co">#&gt;  [33] GenomeInfoDbData_1.2.12     IRanges_2.38.1             </span></span>
+<span><span class="co">#&gt;  [35] S4Vectors_0.42.1            ggrepel_0.9.6              </span></span>
+<span><span class="co">#&gt;  [37] listenv_0.9.1               spatstat.utils_3.1-0       </span></span>
+<span><span class="co">#&gt;  [39] goftest_1.2-3               RSpectra_0.16-2            </span></span>
+<span><span class="co">#&gt;  [41] spatstat.random_3.3-2       fitdistrplus_1.2-1         </span></span>
+<span><span class="co">#&gt;  [43] parallelly_1.38.0           pkgdown_2.1.1              </span></span>
+<span><span class="co">#&gt;  [45] DelayedMatrixStats_1.26.0   leiden_0.4.3.1             </span></span>
+<span><span class="co">#&gt;  [47] codetools_0.2-20            DelayedArray_0.30.1        </span></span>
+<span><span class="co">#&gt;  [49] scuttle_1.14.0              tidyselect_1.2.1           </span></span>
+<span><span class="co">#&gt;  [51] UCSC.utils_1.0.0            farver_2.1.2               </span></span>
+<span><span class="co">#&gt;  [53] viridis_0.6.5               ScaledMatrix_1.12.0        </span></span>
+<span><span class="co">#&gt;  [55] matrixStats_1.4.1           stats4_4.4.1               </span></span>
+<span><span class="co">#&gt;  [57] spatstat.explore_3.3-2      jsonlite_1.8.9             </span></span>
+<span><span class="co">#&gt;  [59] BiocNeighbors_1.22.0        Formula_1.2-5              </span></span>
+<span><span class="co">#&gt;  [61] progressr_0.14.0            ggridges_0.5.6             </span></span>
+<span><span class="co">#&gt;  [63] survival_3.6-4              scater_1.32.1              </span></span>
+<span><span class="co">#&gt;  [65] systemfonts_1.1.0           tools_4.4.1                </span></span>
+<span><span class="co">#&gt;  [67] ragg_1.3.3                  ica_1.0-3                  </span></span>
+<span><span class="co">#&gt;  [69] Rcpp_1.0.13                 glue_1.7.0                 </span></span>
+<span><span class="co">#&gt;  [71] gridExtra_2.3               SparseArray_1.4.8          </span></span>
+<span><span class="co">#&gt;  [73] xfun_0.47                   MatrixGenerics_1.16.0      </span></span>
+<span><span class="co">#&gt;  [75] ggthemes_5.1.0              GenomeInfoDb_1.40.1        </span></span>
+<span><span class="co">#&gt;  [77] dplyr_1.1.4                 withr_3.0.1                </span></span>
+<span><span class="co">#&gt;  [79] formatR_1.14                fastmap_1.2.0              </span></span>
+<span><span class="co">#&gt;  [81] fansi_1.0.6                 digest_0.6.37              </span></span>
+<span><span class="co">#&gt;  [83] rsvd_1.0.5                  R6_2.5.1                   </span></span>
+<span><span class="co">#&gt;  [85] mime_0.12                   textshaping_0.4.0          </span></span>
+<span><span class="co">#&gt;  [87] colorspace_2.1-1            scattermore_1.2            </span></span>
+<span><span class="co">#&gt;  [89] tensor_1.5                  spatstat.data_3.1-2        </span></span>
+<span><span class="co">#&gt;  [91] utf8_1.2.4                  tidyr_1.3.1                </span></span>
+<span><span class="co">#&gt;  [93] generics_0.1.3              data.table_1.16.0          </span></span>
+<span><span class="co">#&gt;  [95] httr_1.4.7                  htmlwidgets_1.6.4          </span></span>
+<span><span class="co">#&gt;  [97] S4Arrays_1.4.1              uwot_0.2.2                 </span></span>
+<span><span class="co">#&gt;  [99] pkgconfig_2.0.3             gtable_0.3.5               </span></span>
+<span><span class="co">#&gt; [101] lmtest_0.9-40               SingleCellExperiment_1.26.0</span></span>
+<span><span class="co">#&gt; [103] XVector_0.44.0              htmltools_0.5.8.1          </span></span>
+<span><span class="co">#&gt; [105] carData_3.0-5               dotCall64_1.1-1            </span></span>
+<span><span class="co">#&gt; [107] scales_1.3.0                Biobase_2.64.0             </span></span>
+<span><span class="co">#&gt; [109] png_0.1-8                   harmony_1.2.1              </span></span>
+<span><span class="co">#&gt; [111] spatstat.univar_3.0-1       knitr_1.48                 </span></span>
+<span><span class="co">#&gt; [113] rstudioapi_0.16.0           reshape2_1.4.4             </span></span>
+<span><span class="co">#&gt; [115] nlme_3.1-164                cachem_1.1.0               </span></span>
+<span><span class="co">#&gt; [117] zoo_1.8-12                  stringr_1.5.1              </span></span>
+<span><span class="co">#&gt; [119] KernSmooth_2.23-24          vipor_0.4.7                </span></span>
+<span><span class="co">#&gt; [121] miniUI_0.1.1.1              GiRaF_1.0.1                </span></span>
+<span><span class="co">#&gt; [123] desc_1.4.3                  pillar_1.9.0               </span></span>
+<span><span class="co">#&gt; [125] grid_4.4.1                  vctrs_0.6.5                </span></span>
+<span><span class="co">#&gt; [127] RANN_2.6.2                  ggpubr_0.6.0               </span></span>
+<span><span class="co">#&gt; [129] promises_1.3.0              car_3.1-3                  </span></span>
+<span><span class="co">#&gt; [131] BiocSingular_1.20.0         DR.SC_3.4                  </span></span>
+<span><span class="co">#&gt; [133] beachmat_2.20.0             xtable_1.8-4               </span></span>
+<span><span class="co">#&gt; [135] cluster_2.1.6               beeswarm_0.4.0             </span></span>
+<span><span class="co">#&gt; [137] evaluate_1.0.0              cli_3.6.3                  </span></span>
+<span><span class="co">#&gt; [139] compiler_4.4.1              rlang_1.1.4                </span></span>
+<span><span class="co">#&gt; [141] crayon_1.5.3                ggsignif_0.6.4             </span></span>
+<span><span class="co">#&gt; [143] future.apply_1.11.2         labeling_0.4.3             </span></span>
+<span><span class="co">#&gt; [145] mclust_6.1.1                plyr_1.8.9                 </span></span>
+<span><span class="co">#&gt; [147] fs_1.6.4                    ggbeeswarm_0.7.2           </span></span>
+<span><span class="co">#&gt; [149] stringi_1.8.4               viridisLite_0.4.2          </span></span>
+<span><span class="co">#&gt; [151] deldir_2.0-4                BiocParallel_1.38.0        </span></span>
+<span><span class="co">#&gt; [153] munsell_0.5.1               lazyeval_0.2.2             </span></span>
+<span><span class="co">#&gt; [155] spatstat.geom_3.3-3         CompQuadForm_1.4.3         </span></span>
+<span><span class="co">#&gt; [157] RcppHNSW_0.6.0              patchwork_1.3.0            </span></span>
+<span><span class="co">#&gt; [159] sparseMatrixStats_1.16.0    future_1.34.0              </span></span>
+<span><span class="co">#&gt; [161] ggplot2_3.5.2               shiny_1.9.1                </span></span>
+<span><span class="co">#&gt; [163] highr_0.11                  SummarizedExperiment_1.34.0</span></span>
+<span><span class="co">#&gt; [165] ROCR_1.0-11                 broom_1.0.7                </span></span>
+<span><span class="co">#&gt; [167] igraph_2.0.3                bslib_0.8.0</span></span></code></pre></div>
 </details>
 </div>
 </div>
@@ -487,9 +425,7 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -502,16 +438,16 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

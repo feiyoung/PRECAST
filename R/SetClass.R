@@ -49,173 +49,173 @@ replaceStr <- function(strVec, pattern="_tmp", by="RNA"){
   }
   return(ystr)
 }
-gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1, 
-                           p =100, q=10, K=7,  G=4, beta=1.2, sigma2=1, 
-                           alpha=8, seed=1, view=FALSE){
-  
-  #height1=30; width1=30;height2=height1; width2=width1; 
-  #p =100; q=10; K=7;  G=4; beta=1.2; sigma2=1; alpha=8; seed=1; view=TRUE
-  
-  # suppressMessages(require(GiRaF))
-  # suppressMessages(require(MASS))
-  # suppressMessages(require(Seurat))
-  
-  
-  
-  
-  ###############Model parameters setting
-  if(q <2) stop("error:gendata_sp::q must be greater than 1!")
-  if(length(beta) <2) beta <- rep(beta, 2)
-  n1 <- height1 * width1 # # of cell in each indviduals 
-  n2 <- height2 * width2
-  n_vec <- c(n1, n2)
-  sigmaW=c(0.5,0.8,1);
-  sigmaZ = 2*c(1,2, 0.5);
-  qvec=rep(2, 3); 
-  ## generate deterministic parameters, fixed after generation
-  
-  if(length(sigma2)==1){
-    Lambda1 <- sigma2*(abs(rnorm(p, sd=1)))
-    Lambda2 <- sigma2*(abs(rnorm(p, sd=1)))
-  }else{
-    Lambda1 <- rep(sigma2[1], p)
-    Lambda2 <- rep(sigma2[2], p)
-  }
-  LamMat <- rbind(Lambda1, Lambda2)
-  
-  W1 <- matrix(rnorm(p*q), p, q)
-  W <- qr.Q(qr(W1))
-  Wlist <- list()
-  for(r in 1:2){
-     # sigma12 control the correlation strength, if sigma12 is small, correlation is strong
-    Wtt1 <- matrix(rnorm(p* qvec[r]), p, qvec[r]) 
-    W1 <- Wtt1 + sigmaW[r] * matrix(rnorm(p* qvec[r]), p, qvec[r])
-    W1 <- qr.Q(qr(W1))
-    Wlist[[r]] <- W1
-    # cat('cor(W,W1)=', mean(cancor(W, Wlist[[r]])$cor), '\n')
-  }
-  
-  
-  mu <- matrix(0, q,  K)
-  diagmat = array(0, dim = c(q, q, K))
-  if(q > K){
-    q1 <- floor(K/2)
-    for(j in 1:q1){
-      if(j <= (q1/2)) mu[j,j] <- alpha
-      if(j > (q1/2)) mu[j,j] <- -alpha
-    }
-    mu[(q1+1):q, K] <- -alpha
-    
-  }else if(q <= K){
-    for(k in 1:K)
-      mu[,k] <- rep(alpha/8 *k, q) #
-  }
-  for(k in 1:K){
-    tmp  <- rep(1, q)
-    if(k <= K/2){
-      tmp[q] <- alpha
-    }
-    diag(diagmat[,,k]) <- tmp
-  }
-  Mu <- t(mu)
-  Sigma <- diagmat
-  
-  
-  tauMat <- matrix(0, 2, q)
-  tauMat[1, ] <- rep(5, q);
-  tauMat[2,1] <- 10; tauMat[2,2] <- -10 
-
-  
-  tau0Mat <- matrix(NA, 2, p)
-  for(r in 1:2){
-    
-    tau0 <- rnorm(p, sd=2)
-    tau0Mat[r, ] <- tau0
-  }
-  
-  
-  
-  
-  ################## Start to generate data
-  set.seed(seed)
-  # generate the spatial dependence for state variable y, a hidden Markov RF
-  y1 <- sampler.mrf(iter = n1, sampler = "Gibbs", h = height1, w = width1, ncolors = K, nei = G, param = beta[1],
-                    initialise = FALSE, view = view)
-  y1 <- c(y1) + 1
-  y2 <- sampler.mrf(iter = n2, sampler = "Gibbs", h = height2, w = width2, ncolors = K, 
-                    nei = G, param = beta[2],
-                    initialise = FALSE, view = view)
-  y2 <- c(y2) + 1
-  
-  yList <- list(y1, y2)
-  # make position
-  pos1 <- cbind(rep(1:height1, width1), rep(1:height1, each=width1))
-  pos2 <- cbind(rep(1:height2, width2), rep(1:height2, each=width2))
-  posList <- list(pos1, pos2)
-  
-  Zlist <- list()
-  VList <- list()
-  for(r in 1:2){
-    Z_tmp <- matrix(0, n_vec[r], q)
-    for(k in 1:K){
-      nk <- sum(yList[[r]]==k) # include conditional and sequencing batch
-      if(nk > 0)
-        Z_tmp[yList[[r]]==k, ] <- MASS::mvrnorm(nk, Mu[k,],Sigma[,,k])
-    }
-    Zlist[[r]] <- Z_tmp
-    VList[[r]] <- MASS::mvrnorm(n_vec[r], tauMat[r, ],Sigma[,,1]+ 3*(r-1)*diag(q))
-  }
-  
-  
-  ## batch effect
-  Zrlist <- list()
-  for(r in 1:2){
-    
-    Zrlist[[r]] <- matrix(rnorm(n_vec[r]* qvec[r], sd=sigmaZ[r]), n_vec[r], qvec[r])
-  }
-  sapply(Zrlist, dim)
-  
-  
-  
-  XtList <- list()
-  for(r in 1:2){
-    X1 <- (Zlist[[r]] + VList[[r]] ) %*% t(W) + Zrlist[[r]] %*% t(Wlist[[r]])+ 
-      MASS::mvrnorm(n_vec[r], rep(0,p), diag(LamMat[r,]))
-    
-    tauMat0 <- matrix(tau0Mat[r, ], n_vec[r], p, byrow = T)
-    Eta <- exp((X1 + tauMat0))
-    summary(colSums(Eta))
-    #X1 <- matrix(rpois(n_vec[r]*p, Eta), n_vec[r], p)
-    XtList[[r]] <- matrix(rpois(n_vec[r]*p, Eta), n_vec[r], p)
-  }
-  
-  
-  # XList <- lapply(XtList, function(x) log(1+x))
-  
- 
-  
-  
-  
-  XtList <- addnames(XtList)
-  seulist <- list()
-  for(r in 1:length(XtList)){
-    
-    seulist[[r]] <- CreateSeuratObject(counts= t(XtList[[r]]), assay='RNA')
-    seulist[[r]]$row <- posList[[r]][,1]
-    seulist[[r]]$col <- posList[[r]][,2]
-    seulist[[r]]$true_cluster <- yList[[r]]
-    seulist[[r]] <- Add_embed(Zlist[[r]],seulist[[r]],embed_name='trueEmbed' , assay = "RNA" )
-    
-    #colnames(seulist[[r]]@meta.data)[c(2,3)] <- replaceStr(colnames(seulist[[r]]@meta.data)[c(2,3)] ,"tmp", by="RNA")
-  }
-  # paraList <- list(LamList=list(Lambda1, Lambda2), betaVec=beta)
-  # attr(seulist,"paraList") <- paraList
-  
-  
-  return(seulist)
-  
-}
-
+# gendata_seulist <- function(height1=30, width1=30,height2=height1, width2=width1, 
+#                            p =100, q=10, K=7,  G=4, beta=1.2, sigma2=1, 
+#                            alpha=8, seed=1, view=FALSE){
+#   
+#   #height1=30; width1=30;height2=height1; width2=width1; 
+#   #p =100; q=10; K=7;  G=4; beta=1.2; sigma2=1; alpha=8; seed=1; view=TRUE
+#   
+#   # suppressMessages(require(GiRaF))
+#   # suppressMessages(require(MASS))
+#   # suppressMessages(require(Seurat))
+#   
+#   
+#   
+#   
+#   ###############Model parameters setting
+#   if(q <2) stop("error:gendata_sp::q must be greater than 1!")
+#   if(length(beta) <2) beta <- rep(beta, 2)
+#   n1 <- height1 * width1 # # of cell in each indviduals 
+#   n2 <- height2 * width2
+#   n_vec <- c(n1, n2)
+#   sigmaW=c(0.5,0.8,1);
+#   sigmaZ = 2*c(1,2, 0.5);
+#   qvec=rep(2, 3); 
+#   ## generate deterministic parameters, fixed after generation
+#   
+#   if(length(sigma2)==1){
+#     Lambda1 <- sigma2*(abs(rnorm(p, sd=1)))
+#     Lambda2 <- sigma2*(abs(rnorm(p, sd=1)))
+#   }else{
+#     Lambda1 <- rep(sigma2[1], p)
+#     Lambda2 <- rep(sigma2[2], p)
+#   }
+#   LamMat <- rbind(Lambda1, Lambda2)
+#   
+#   W1 <- matrix(rnorm(p*q), p, q)
+#   W <- qr.Q(qr(W1))
+#   Wlist <- list()
+#   for(r in 1:2){
+#      # sigma12 control the correlation strength, if sigma12 is small, correlation is strong
+#     Wtt1 <- matrix(rnorm(p* qvec[r]), p, qvec[r]) 
+#     W1 <- Wtt1 + sigmaW[r] * matrix(rnorm(p* qvec[r]), p, qvec[r])
+#     W1 <- qr.Q(qr(W1))
+#     Wlist[[r]] <- W1
+#     # cat('cor(W,W1)=', mean(cancor(W, Wlist[[r]])$cor), '\n')
+#   }
+#   
+#   
+#   mu <- matrix(0, q,  K)
+#   diagmat = array(0, dim = c(q, q, K))
+#   if(q > K){
+#     q1 <- floor(K/2)
+#     for(j in 1:q1){
+#       if(j <= (q1/2)) mu[j,j] <- alpha
+#       if(j > (q1/2)) mu[j,j] <- -alpha
+#     }
+#     mu[(q1+1):q, K] <- -alpha
+#     
+#   }else if(q <= K){
+#     for(k in 1:K)
+#       mu[,k] <- rep(alpha/8 *k, q) #
+#   }
+#   for(k in 1:K){
+#     tmp  <- rep(1, q)
+#     if(k <= K/2){
+#       tmp[q] <- alpha
+#     }
+#     diag(diagmat[,,k]) <- tmp
+#   }
+#   Mu <- t(mu)
+#   Sigma <- diagmat
+#   
+#   
+#   tauMat <- matrix(0, 2, q)
+#   tauMat[1, ] <- rep(5, q);
+#   tauMat[2,1] <- 10; tauMat[2,2] <- -10 
+# 
+#   
+#   tau0Mat <- matrix(NA, 2, p)
+#   for(r in 1:2){
+#     
+#     tau0 <- rnorm(p, sd=2)
+#     tau0Mat[r, ] <- tau0
+#   }
+#   
+#   
+#   
+#   
+#   ################## Start to generate data
+#   set.seed(seed)
+#   # generate the spatial dependence for state variable y, a hidden Markov RF
+#   y1 <- sampler.mrf(iter = n1, sampler = "Gibbs", h = height1, w = width1, ncolors = K, nei = G, param = beta[1],
+#                     initialise = FALSE, view = view)
+#   y1 <- c(y1) + 1
+#   y2 <- sampler.mrf(iter = n2, sampler = "Gibbs", h = height2, w = width2, ncolors = K, 
+#                     nei = G, param = beta[2],
+#                     initialise = FALSE, view = view)
+#   y2 <- c(y2) + 1
+#   
+#   yList <- list(y1, y2)
+#   # make position
+#   pos1 <- cbind(rep(1:height1, width1), rep(1:height1, each=width1))
+#   pos2 <- cbind(rep(1:height2, width2), rep(1:height2, each=width2))
+#   posList <- list(pos1, pos2)
+#   
+#   Zlist <- list()
+#   VList <- list()
+#   for(r in 1:2){
+#     Z_tmp <- matrix(0, n_vec[r], q)
+#     for(k in 1:K){
+#       nk <- sum(yList[[r]]==k) # include conditional and sequencing batch
+#       if(nk > 0)
+#         Z_tmp[yList[[r]]==k, ] <- MASS::mvrnorm(nk, Mu[k,],Sigma[,,k])
+#     }
+#     Zlist[[r]] <- Z_tmp
+#     VList[[r]] <- MASS::mvrnorm(n_vec[r], tauMat[r, ],Sigma[,,1]+ 3*(r-1)*diag(q))
+#   }
+#   
+#   
+#   ## batch effect
+#   Zrlist <- list()
+#   for(r in 1:2){
+#     
+#     Zrlist[[r]] <- matrix(rnorm(n_vec[r]* qvec[r], sd=sigmaZ[r]), n_vec[r], qvec[r])
+#   }
+#   sapply(Zrlist, dim)
+#   
+#   
+#   
+#   XtList <- list()
+#   for(r in 1:2){
+#     X1 <- (Zlist[[r]] + VList[[r]] ) %*% t(W) + Zrlist[[r]] %*% t(Wlist[[r]])+ 
+#       MASS::mvrnorm(n_vec[r], rep(0,p), diag(LamMat[r,]))
+#     
+#     tauMat0 <- matrix(tau0Mat[r, ], n_vec[r], p, byrow = T)
+#     Eta <- exp((X1 + tauMat0))
+#     summary(colSums(Eta))
+#     #X1 <- matrix(rpois(n_vec[r]*p, Eta), n_vec[r], p)
+#     XtList[[r]] <- matrix(rpois(n_vec[r]*p, Eta), n_vec[r], p)
+#   }
+#   
+#   
+#   # XList <- lapply(XtList, function(x) log(1+x))
+#   
+#  
+#   
+#   
+#   
+#   XtList <- addnames(XtList)
+#   seulist <- list()
+#   for(r in 1:length(XtList)){
+#     
+#     seulist[[r]] <- CreateSeuratObject(counts= t(XtList[[r]]), assay='RNA')
+#     seulist[[r]]$row <- posList[[r]][,1]
+#     seulist[[r]]$col <- posList[[r]][,2]
+#     seulist[[r]]$true_cluster <- yList[[r]]
+#     seulist[[r]] <- Add_embed(Zlist[[r]],seulist[[r]],embed_name='trueEmbed' , assay = "RNA" )
+#     
+#     #colnames(seulist[[r]]@meta.data)[c(2,3)] <- replaceStr(colnames(seulist[[r]]@meta.data)[c(2,3)] ,"tmp", by="RNA")
+#   }
+#   # paraList <- list(LamList=list(Lambda1, Lambda2), betaVec=beta)
+#   # attr(seulist,"paraList") <- paraList
+#   
+#   
+#   return(seulist)
+#   
+# }
+# 
 
 
 

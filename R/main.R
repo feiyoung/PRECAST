@@ -5,9 +5,10 @@
 # build_article(name="PRECAST.DLPFC4") # Solely compile one article for updating.
 # build_article(name="PRECAST.BreastCancer")
 # build_article(name="PRECAST.Simu")
+# build_article(name="PRECAST.DLPFC")
 # R CMD check --as-cran PRECAST_1.6.5.tar.gz
 # devtools::check_win_release()
-
+# setwd("D:\\Working\\Research paper\\GithubCode\\PRECAST\\vignettes_data")
 
 
 # Basic functions ---------------------------------------------------------
@@ -51,21 +52,131 @@
   
   
 }
-model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
-                      error_heter=TRUE, Sp2=TRUE, wpca_int=FALSE,int.model='EEE',
-                      coreNum = 1, coreNum_int=coreNum,
-                      beta_grid=seq(0.2,4, by=0.2),
-                      maxIter_ICM=6,maxIter=20, epsLogLik=1e-5, verbose=TRUE, seed=1){
-  para_settings <- list(Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
-                        mix_prop_heter=mix_prop_heter,
-                        error_heter=error_heter, Sp2=Sp2, wpca_int=wpca_int,int.model=int.model,
-                        coreNum = coreNum, coreNum_int=coreNum_int,
-                        beta_grid= beta_grid,
-                        maxIter_ICM = maxIter_ICM, maxIter = maxIter, epsLogLik = epsLogLik,
-                        verbose = verbose, seed = seed)
-  return(para_settings)
+# model_set <- function(Sigma_equal=FALSE, Sigma_diag=TRUE,mix_prop_heter=TRUE,
+#                       error_heter=TRUE, Sp2=TRUE, wpca_int=FALSE,int.model='EEE',
+#                       coreNum = 1, coreNum_int=coreNum,
+#                       beta_grid=seq(0.2,4, by=0.2),
+#                       maxIter_ICM=6,maxIter=20, epsLogLik=1e-5, verbose=TRUE, seed=1){
+#   para_settings <- list(Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
+#                         mix_prop_heter=mix_prop_heter,
+#                         error_heter=error_heter, Sp2=Sp2, wpca_int=wpca_int,int.model=int.model,
+#                         coreNum = coreNum, coreNum_int=coreNum_int,
+#                         beta_grid= beta_grid,
+#                         maxIter_ICM = maxIter_ICM, maxIter = maxIter, epsLogLik = epsLogLik,
+#                         verbose = verbose, seed = seed)
+#   return(para_settings)
+#   
+# }
+# 参数验证函数
+validate_parameters <- function(Sigma_equal, Sigma_diag, mix_prop_heter, error_heter,
+                                Sp2, wpca_int, int.model, coreNum, coreNum_int, beta_grid, init.nstart,
+                                maxIter_ICM, maxIter, epsLogLik, verbose, seed) {
   
+  # 检查逻辑参数
+  logical_params <- list(Sigma_equal, Sigma_diag, mix_prop_heter, error_heter, 
+                         Sp2, wpca_int, verbose)
+  if (!all(sapply(logical_params, is.logical))) {
+    stop("All flag parameters (Sigma_equal, Sigma_diag, etc.) must be logical values")
+  }
+  
+  # 检查整型参数
+  if (!is.numeric(coreNum) || coreNum < 1 || coreNum != round(coreNum)) {
+    stop("coreNum must be a positive integer")
+  }
+  if (!is.numeric(coreNum_int) || coreNum_int < 1 || coreNum_int != round(coreNum_int)) {
+    stop("coreNum_int must be a positive integer")
+  }
+  if (!is.numeric(maxIter_ICM) || maxIter_ICM < 1 || maxIter_ICM != round(maxIter_ICM)) {
+    stop("maxIter_ICM must be a positive integer")
+  }
+  if (!is.numeric(maxIter) || maxIter < 1 || maxIter != round(maxIter)) {
+    stop("maxIter must be a positive integer")
+  }
+  if (!is.numeric(seed) || seed != round(seed)) {
+    stop("seed must be an integer")
+  }
+  
+  # 检查数值参数
+  if (!is.numeric(epsLogLik) || epsLogLik <= 0) {
+    stop("epsLogLik must be a positive numeric value")
+  }
+  if (!is.numeric(beta_grid) || any(beta_grid <= 0)) {
+    stop("beta_grid must contain positive numeric values")
+  }
+  if (is.unsorted(beta_grid)) {
+    warning("beta_grid is not sorted. Consider sorting it for better performance.")
+  }
+  if (!is.numeric(init.nstart) || init.nstart < 1 || init.nstart != round(init.nstart)) {
+    stop("init.nstart must be a positive integer")
+  }
+  
+  # 检查字符串参数
+  valid_models <- c('kmeans', 'mclust')
+  if (!int.model %in% valid_models) {
+    stop("int.model must be one of: ", paste(valid_models, collapse = ", "))
+  }
 }
+model_set <- function(Sigma_equal = FALSE, 
+                      Sigma_diag = TRUE,
+                      mix_prop_heter = TRUE,
+                      error_heter = TRUE, 
+                      Sp2 = TRUE, 
+                      wpca_int = FALSE,
+                      int.model = c('mclust', 'kmeans'),
+                      coreNum = 1, 
+                      coreNum_int = coreNum,
+                      beta_grid = seq(0.2, 4, by = 0.2),
+                      init.nstart=5,
+                      maxIter_ICM = 6,
+                      maxIter = 20, 
+                      epsLogLik = 1e-5, 
+                      verbose = TRUE, 
+                      seed = 1) {
+  
+  int.model <- match.arg(int.model)
+  # 参数验证
+  validate_parameters(Sigma_equal, Sigma_diag, mix_prop_heter, error_heter, 
+                      Sp2, wpca_int, int.model, coreNum, coreNum_int, beta_grid,init.nstart,
+                      maxIter_ICM, maxIter, epsLogLik, verbose, seed)
+  
+  # 使用 modifyList 处理默认值，更灵活
+  default_settings <- list(
+    Sigma_equal = FALSE,
+    Sigma_diag = TRUE,
+    mix_prop_heter = TRUE,
+    error_heter = TRUE,
+    Sp2 = TRUE,
+    wpca_int = FALSE,
+    int.model = 'kmeans',
+    coreNum = 1,
+    coreNum_int = 1,
+    beta_grid = seq(0.2, 4, by = 0.2),
+    init.nstart = 5,
+    maxIter_ICM = 6,
+    maxIter = 20,
+    epsLogLik = 1e-5,
+    verbose = TRUE,
+    seed = 1
+  )
+  
+  # 合并用户提供的参数和默认值
+  user_settings <- list(Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
+                          mix_prop_heter=mix_prop_heter,
+                          error_heter=error_heter, Sp2=Sp2, wpca_int=wpca_int,int.model=int.model,
+                          coreNum = coreNum, coreNum_int=coreNum_int,
+                          beta_grid= beta_grid, init.nstart=init.nstart,
+                          maxIter_ICM = maxIter_ICM, maxIter = maxIter, epsLogLik = epsLogLik,
+                          verbose = verbose, seed = seed)
+  para_settings <- modifyList(default_settings, user_settings)
+  
+  # 确保 coreNum_int 正确设置
+  if (!"coreNum_int" %in% names(user_settings)) {
+    para_settings$coreNum_int <- para_settings$coreNum
+  }
+  return(para_settings)
+}
+
+
 ICM.EM_structure  <- function(XList,  K, AdjList, q=15,parameterList=NULL){
   
   if(is.null(parameterList)){
@@ -73,7 +184,7 @@ ICM.EM_structure  <- function(XList,  K, AdjList, q=15,parameterList=NULL){
   }
   ### initialize variables
   beta_grid <- maxIter_ICM<- maxIter<- epsLogLik<- verbose<-mix_prop_heter<- Sigma_equal<- Sigma_diag<- NULL
-  error_heter<-Sp2<- wpca_int<-int.model<- seed<- coreNum <- coreNum_int <- NULL
+  error_heter<-Sp2<- wpca_int<-int.model<- seed<- coreNum <- coreNum_int <- init.nstart<- NULL
   n_par <- length(parameterList)
   for(i in 1:n_par){
     assign(names(parameterList)[i], parameterList[[i]])
@@ -84,7 +195,7 @@ ICM.EM_structure  <- function(XList,  K, AdjList, q=15,parameterList=NULL){
   ## centering in ICM.EM() function
   
   resList <- ICM.EM(XList, q, K, AdjList=AdjList, 
-              beta_grid=beta_grid,
+              beta_grid=beta_grid, init.nstart=init.nstart,
               maxIter_ICM=maxIter_ICM,maxIter=maxIter, epsLogLik=epsLogLik, verbose=verbose,
               mix_prop_heter=mix_prop_heter, Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
               error_heter=error_heter, Sp2=Sp2,
@@ -92,15 +203,14 @@ ICM.EM_structure  <- function(XList,  K, AdjList, q=15,parameterList=NULL){
   return(resList)
 }
 ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, platform = "ST",
-                   beta_grid=seq(0.2,4, by=0.2),
+                   beta_grid=seq(0.2,4, by=0.2), init.nstart=5, 
                    maxIter_ICM=6,maxIter=20, epsLogLik=1e-5, verbose=TRUE,
                    mix_prop_heter=TRUE, Sigma_equal=FALSE, Sigma_diag=TRUE,error_heter=TRUE, Sp2=TRUE,
-                   wpca_int=FALSE,int.model='EEE', seed=1,coreNum = 1, coreNum_int=coreNum){
+                   wpca_int=FALSE,int.model=c('kmeans', 'mclust'), seed=1,coreNum = 1, coreNum_int=coreNum){
   
-  
-  
-  
-  
+  int.model <- match.arg(int.model)
+  # library(harmony)
+  # library(irlba)
   
   r_max <- length(XList)
   
@@ -108,12 +218,12 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   # if(is.null(posList) && is.null(AdjList)) stop("Check the values of arguments!")
   if(sum(pf!=pf[1]) > 0) stop("ncols of XList's components must be same!")
   if(is.null(posList) && is.null(AdjList)) stop("posList or AdjList must be provided one!")
-  n <- sum(sapply(XList, nrow))
+  nvec <- sapply(XList, nrow)
+  n <- sum(nvec)
   p <-  pf[1]
   if(verbose){
     message("-----Intergrative data info.: ", r_max, ' samples, ', p , " genes X ", n, " spots------")
-    message("-----PRECAST model setting: ", 'error_heter=',error_heter,", Sigma_equal=",Sigma_equal,
-            ", Sigma_diag=", Sigma_diag, ', mix_prop_heter=', mix_prop_heter)
+    message("-----Numbers of spots are: ", paste(nvec, collapse = ", "), '-----')
   }
   
   
@@ -127,26 +237,40 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   ## Centering
   XList <- lapply(XList, scale, scale=FALSE)
   
-  
-  Xmat <- NULL
-  for(r in 1:r_max){
-    Xmat <- rbind(Xmat, XList[[r]])
-  }
-  ## yangyi
-  
-  # require(mclust)
-  if(verbose)
-     message('Start computing intial values... \n')
-  tstart <- Sys.time()
-  princ1 <- wpca(Xmat, q, weighted = wpca_int)
-  hZ <- princ1$PCs
-  W0 <- princ1$loadings
+  # Xmat <- NULL
+  # for(r in 1:r_max){
+  #   Xmat <- rbind(Xmat, XList[[r]])
+  # }
+  Xmat <- do.call("rbind", XList)
+ 
+  message(paste0("Starting computing initial values using ", int.model ," ..."))
   set.seed(seed)
+  tstart <- Sys.time()
+  if(wpca_int){
+    princ1 <- wpca(Xmat, q, weighted = wpca_int)
+  }else{
+    princ1 <- approxPCA(Xmat, q)
+  }
+  W0 <- princ1$loadings
+  sampleID <- get_sampleID(XList)
+  if(r_max >1){
+    hZ <- RunHarmony(princ1$PCs, meta_data=data.frame(batch=factor(sampleID)), vars_use='batch', verbose=FALSE)
+  }else{
+    hZ <- princ1$PCs
+  }
+  ## Delete the big objects and free the memory
+  rm(princ1)
+  rm(Xmat)
+  gc()
+  
+  
+  
+  
   ### parallel to obtain the initial values 
   alpha <- FALSE
   nK <- length(K)
   if(nK>1){
-    ## at most use 80% CPU
+    ## at most use 10 cores
     if(is.null(coreNum_int)){
       cores <- ifelse(nK < 10,  
                       nK, 10)
@@ -161,17 +285,15 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
     }
     # Mclust <- mclust::Mclust
     # mclustBIC <- mclust::mclustBIC
-    message("Starting parallel computing initial values...")
-    # parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
-    # Run
     
+    # parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
     intList <- parallel::parLapply(cl, X=K, parafun_int, Z=hZ, alpha=alpha, 
                                    Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
-                                   int.model =int.model, verbose=verbose)
+                                   int.model =int.model, init.nstart=init.nstart, verbose=verbose)
     parallel::stopCluster(cl)
   }else{
     intList <- list(parafun_int(K, Z=hZ, alpha=alpha, Sigma_equal, Sigma_diag,
-                                int.model =int.model ,verbose=verbose))
+                                int.model =int.model,init.nstart=init.nstart, verbose=verbose))
   }
   
   .logDiffTime(sprintf(paste0("%s Initialization finished!"), "*****"), t1 = tstart, verbose = verbose)
@@ -194,8 +316,7 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
   
   
   
-  if(verbose)
-    message("----Fitting PRECAST model----------------\n")
+  message("----Fitting PRECAST model...----------------\n")
   tstart <- Sys.time()
   beta0  =1.5
   resList <- idrsc2Cpp(XList, AdjList, Adjlist_car, hZ, ymat, Mu0List, 
@@ -220,17 +341,17 @@ ICM.EM <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL,
 
 
 
-
+### Following function is the early version of ICM.EM
 idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, platform = "ST",
-                  beta_grid=seq(0.2,4, by=0.2),
+                  beta_grid=seq(0.2,4, by=0.2), init.nstart=5,
                    maxIter_ICM=6,maxIter=20, epsLogLik=1e-5, verbose=TRUE,
                    mix_prop_heter=TRUE, Sigma_equal=FALSE, Sigma_diag=TRUE,error_heter=TRUE, Sp2=TRUE,
-                   wpca_int=FALSE,int.model='EEE', seed=1,coreNum = 1, coreNum_int=coreNum){
+                   wpca_int=FALSE,int.model=c('kmeans', 'mclust'), seed=1,coreNum = 1, coreNum_int=coreNum){
   
   
   
   
-  
+  int.model <- match.arg(int.model)
   
   r_max <- length(XList)
   
@@ -251,26 +372,42 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
   
   if(is.null(Adjlist_car)) Adjlist_car <- AdjList
  
-  Xmat <- NULL
-  for(r in 1:r_max){
-    Xmat <- rbind(Xmat, XList[[r]])
-  }
+  # Xmat <- NULL
+  # for(r in 1:r_max){
+  #   Xmat <- rbind(Xmat, XList[[r]])
+  # }
+  Xmat <- do.call("rbind", XList)
   
-  
-  # require(mclust)
-  message('Start computing intial values... \n')
-  princ1 <- wpca(Xmat, q, weighted = wpca_int)
-  hZ <- princ1$PCs
-  W0 <- princ1$loadings
+  message(paste0("Starting computing initial values using ", int.model ," ..."))
   set.seed(seed)
+  tstart <- Sys.time()
+  if(wpca_int){
+    princ1 <- wpca(Xmat, q, weighted = wpca_int)
+  }else{
+    princ1 <- approxPCA(Xmat, q)
+  }
+  W0 <- princ1$loadings
+  sampleID <- get_sampleID(XList[[1]])
+  if(r_max >1){
+    hZ <- RunHarmony(princ1$PCs, meta_data=data.frame(batch=factor(sampleID)), vars_use='batch', verbose=FALSE)
+  }else{
+    hZ <- princ1$PCs
+  }
+  ## Delete the big objects and free the memory
+  rm(princ1)
+  rm(Xmat)
+  gc()
+  
+  
+  
   ### parallel to obtain the initial values 
   alpha <- FALSE
   nK <- length(K)
   if(nK>1){
-    ## at most use 80% CPU
+    ## at most use 10 cores
     if(is.null(coreNum_int)){
-      cores <- ifelse(nK < parallel::detectCores()*0.8,  
-                      nK, parallel::detectCores()*0.8)
+      cores <- ifelse(nK < 10,  
+                      nK, 10)
     }else{
       cores <- coreNum_int
     }
@@ -280,19 +417,22 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
     }else{
       cl <- parallel::makeCluster(cores, type='FORK') # memory-shared type in linux or Mac.
     }
+    # Mclust <- mclust::Mclust
+    # mclustBIC <- mclust::mclustBIC
     
-  message("Starting parallel computing initial values...")
-  # parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
-  # Run
-  
-  intList <- parallel::parLapply(cl, X=K, parafun_int, Z=hZ, alpha=alpha, 
-                                 Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
-                                 int.model =int.model, verbose=verbose)
-  parallel::stopCluster(cl)
+    # parallel::clusterExport(cl, varlist = c("Mclust", "mclustBIC"))
+    # Run
+    
+    intList <- parallel::parLapply(cl, X=K, parafun_int, Z=hZ, alpha=alpha, 
+                                   Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
+                                   int.model =int.model, init.nstart=init.nstart, verbose=verbose)
+    parallel::stopCluster(cl)
   }else{
     intList <- list(parafun_int(K, Z=hZ, alpha=alpha, Sigma_equal, Sigma_diag,
-                                int.model =int.model ,verbose=verbose))
+                                int.model =int.model, init.nstart=init.nstart,verbose=verbose))
   }
+  
+  .logDiffTime(sprintf(paste0("%s Initialization finished!"), "*****"), t1 = tstart, verbose = verbose)
   
   alpha0List = list()
   Mu0List = list()
@@ -311,50 +451,78 @@ idrsc <- function(XList, q, K, AdjList=NULL,  Adjlist_car=NULL, posList = NULL, 
   }
   
   
+    
+  message("----Fitting PRECAST model----------------\n")
+  beta0  =1.5
+  resList <- idrsc2Cpp(XList, AdjList, Adjlist_car, hZ, ymat, Mu0List, 
+                         Sigma0List, W0, alpha0List, beta0, 
+                         beta_grid, maxIter_ICM, 
+                         maxIter, epsLogLik, verbose,(!error_heter),
+                         Sigma_equal, Sigma_diag, mix_prop_heter, Sp2, max(K), min(K), coreNum)
+    
   
-    
-    message("----Fitting iDR-SC model----------------\n")
-    beta0  =1.5
-    resList <- idrsc2Cpp(XList, AdjList, Adjlist_car, hZ, ymat, Mu0List, 
-                           Sigma0List, W0, alpha0List, beta0, 
-                           beta_grid, maxIter_ICM, 
-                           maxIter, epsLogLik, verbose,(!error_heter),
-                           Sigma_equal, Sigma_diag, mix_prop_heter, Sp2, max(K), min(K), coreNum)
-      
-    
-    
-    
-    para_settings <- list(K=K, n=n, p=p,q=q,r_max=r_max,
-                          Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
-                          mix_prop_heter=mix_prop_heter)
-    attr(resList, "para_settings") <- para_settings
-    class(resList) <- "SeqK_PRECAST_Object"
-    return(resList)
+  
+  
+  para_settings <- list(K=K, n=n, p=p,q=q,r_max=r_max,
+                        Sigma_equal=Sigma_equal, Sigma_diag=Sigma_diag,
+                        mix_prop_heter=mix_prop_heter)
+  attr(resList, "para_settings") <- para_settings
+  class(resList) <- "SeqK_PRECAST_Object"
+  return(resList)
     
 
 }
 
 
 ## Define a new function mycluster to avoid using parallel::clusterExport in parallel
-mycluster <- function(Z, G, int.model='EEE', verbose=FALSE){
+mycluster <- function(Z, G, int.model=c('kmeans', 'mclust'), init.nstart=5, verbose=FALSE){
   # require(mclust)
-  mclus2 <- mclust::Mclust(Z, G=G,modelNames =int.model ,verbose=verbose)
-  return(mclus2)
+  int.model <- match.arg(int.model)
+  q <- ncol(Z)
+  clslist <- list()
+  if(int.model == 'mclust'){
+    #mclust_z <- mclust::Mclust(Z, G=G,modelNames ='EEE' ,verbose=verbose)
+    results <- replicate(init.nstart, mclust::Mclust(data = Z, G = G,
+                                                     modelNames = "EEE", verbose = FALSE), simplify = FALSE)
+    best_index <- which.max(sapply(results, function(x) x$bic))
+    mclust_z <- results[[best_index]]
+    clslist$cluster <- mclust_z$classification
+    clslist$mu <- t(mclust_z$parameters$mean) # K * q
+    clslist$sigma <- mclust_z$parameters$variance$sigma
+    clslist$pro <- mclust_z$parameters$pro
+    rm(mclust_z)
+  }else if(int.model == 'kmeans'){
+    km_z <- stats::kmeans(x = Z, centers = G,
+                          iter.max = 100, nstart = init.nstart)
+    clslist$cluster <- km_z$cluster
+    clslist$mu <- km_z$centers
+    clslist$pro <- rep(1/G, G)
+    Sigma_int <- array(dim=c(q, q, G))
+    for(k in 1:G){
+      Sigma_int[,,k] <- var(Z[km_z$cluster==k,])
+    }
+    clslist$sigma <- Sigma_int
+    rm(km_z)
+  }
+  
+  return(clslist)
 }
-parafun_int <- function(k, Z, alpha, Sigma_equal, Sigma_diag,int.model='EEE', verbose=FALSE){
+parafun_int <- function(k, Z, alpha, Sigma_equal, Sigma_diag, int.model=c('kmeans', 'mclust'), init.nstart=5, verbose=FALSE){
   
-  mclus2 <- mycluster(Z, G=k, int.model =int.model ,verbose=verbose)
+  int.model <- match.arg(int.model)
   
-  ymatk <- mclus2$classification
+  clslist <- mycluster(Z, G=k, int.model = int.model, init.nstart=init.nstart, verbose=verbose)
+  
+  ymatk <- clslist$cluster
   
   if(alpha){
-    alpha0k <- mclus2$parameters$pro
+    alpha0k <- clslist$pro
   }else{
     alpha0k <- rep(0, k)
   }
   
-  Mu0k <- t(mclus2$parameters$mean)
-  Sigmak <- mclus2$parameters$variance$sigma
+  Mu0k <- clslist$mu
+  Sigmak <- clslist$sigma
   Sigma0k <- Sigmak
   if(Sigma_diag){
     Sigma0k <- array(0, dim=dim(Sigmak))
@@ -363,12 +531,13 @@ parafun_int <- function(k, Z, alpha, Sigma_equal, Sigma_diag,int.model='EEE', ve
     }
     Sigmak <- Sigma0k
   }
+  
   if(Sigma_equal){
     for(kk in 1:k){
       Sigma0k[,,kk] <- apply(Sigmak, c(1,2), mean)
     }
   }
-  Pi0k <- mclus2$parameters$pro
+  Pi0k <- clslist$pro
   return(list(ymatk=ymatk, alpha0k=alpha0k, Mu0k=Mu0k, Sigma0k=Sigma0k, Pi0k=Pi0k))
 }
 
@@ -458,103 +627,103 @@ SelectModel.SeqK_PRECAST_Object <- function(obj, criteria = 'MBIC',pen_const=1, 
 
 
 
-gendataInte_sp <- function(height1=30, width1=30,height2=height1, width2=width1, 
-                           p =100, q=10, K=7,  G=4, beta=1.2, sigma2=1, 
-                           alpha=8, seed=1, view=TRUE){
-  # height <- 70
-  # width <- 70
-  # G <- 4
-  # beta <- 1.0
-  # K <- 7
-  # q <- 10
-  # p <- 1000
-  if(q <2) stop("error:gendata_sp::q must be greater than 2!")
-  
-  if(length(beta) <2) beta <- rep(beta, 2)
-  # require(GiRaF)
-  # require(MASS)
-  n1 <- height1 * width1 # # of cell in each indviduals 
-  n2 <- height2 * width2
-  index1 <- 1:n1; index2 <- (n1+1):(n1+n2)
-  ## generate deterministic parameters, fixed after generation
- 
-  if(length(sigma2)==1){
-    Lambda1 <- sigma2*(abs(rnorm(p, sd=1)))
-    Lambda2 <- sigma2*(abs(rnorm(p, sd=1)))
-  }else{
-    Lambda1 <- rep(sigma2[1], p)
-    Lambda2 <- rep(sigma2[2], p)
-  }
-  
-  
-  W1 <- matrix(rnorm(p*q), p, q)
-  W <- qr.Q(qr(W1))
-  
-  mu <- matrix(0, q,  K)
-  diagmat = array(0, dim = c(q, q, K))
-  if(q > K){
-    q1 <- floor(K/2)
-    for(j in 1:q1){
-      if(j <= (q1/2)) mu[j,j] <- alpha
-      if(j > (q1/2)) mu[j,j] <- -alpha
-    }
-    mu[(q1+1):q, K] <- -alpha
-    
-  }else if(q <= K){
-    for(k in 1:K)
-      mu[,k] <- rep(alpha/8 *k, q) #
-  }
-  for(k in 1:K){
-    tmp  <- rep(1, q)
-    if(k <= K/2){
-      tmp[q] <- alpha
-    }
-    diag(diagmat[,,k]) <- tmp
-  }
-  
-  Mu <- t(mu)
-  Sigma <- diagmat
-  tau2 <- rep(1, q); tau2[1] <- 4; tau2[2] <- -4
-  set.seed(seed)
-  # generate the spatial dependence for state variable y, a hidden Markov RF
-  y1 <- sampler.mrf(iter = n1, sampler = "Gibbs", h = height1, w = width1, ncolors = K, nei = G, param = beta[1],
-                    initialise = FALSE, view = view)
-  y1 <- c(y1) + 1
-  y2 <- sampler.mrf(iter = n2, sampler = "Gibbs", h = height2, w = width2, ncolors = K, nei = G, param = beta[2],
-                    initialise = FALSE, view = view)
-  y2 <- c(y2) + 1
-  
-  Z1 <- matrix(0, n1, q)
-  Z2 <- matrix(0, n2, q)
-  for(k in 1:K){
-    nk1 <- sum(y1==k)
-    Z1[y1==k, ] <- MASS::mvrnorm(nk1, Mu[k,], Sigma[,,k])
-    
-    nk2 <- sum(y2==k)
-    Z2[y2==k, ] <- MASS::mvrnorm(nk2, Mu[k,]+tau2, Sigma[,,k])
-  }
-  X1 <- Z1 %*% t(W)+  MASS::mvrnorm(n1, rep(0,p), diag(Lambda1))
-  X2 <- Z2 %*% t(W) + MASS::mvrnorm(n2, rep(0,p), diag(Lambda2))
-  # compute the strength of signal
-  svd_Sig1 <- svd(cov(Z1))
-  W11 <- W %*% svd_Sig1$u %*% diag(sqrt(svd_Sig1$d))
-  snr1 <- sum(svd(W11)$d^2) / (sum(svd(W11)$d^2)+ sum(Lambda1))
-  svd_Sig2 <- svd(cov(Z2))
-  W22 <- W %*% svd_Sig2$u %*% diag(sqrt(svd_Sig2$d))
-  snr2 <- sum(svd(W22)$d^2) / (sum(svd(W22)$d^2)+ sum(Lambda2))
-  
-  message("SNR1=", round(snr1,4),", SNR2=", round(snr2, 4),  '\n')
-  
-  # make position
-  pos1 <- cbind(rep(1:height1, width1), rep(1:height1, each=width1))
-  pos2 <- cbind(rep(1:height2, width2), rep(1:height2, each=width2))
-  return(list(X1=X1,X2=X2, Z1=Z1, Z2=Z2, cluster=c(y1,y2), Mu=Mu, Sigma=Sigma,
-              W=W, Lambda1=Lambda1, Lambda2=Lambda2, tau2=tau2, 
-              beta=beta,pos1=pos1,pos2=pos2, snr=c(snr1,snr2),
-              index1=index1,index2=index2))
-  
-}
-
+# gendataInte_sp <- function(height1=30, width1=30,height2=height1, width2=width1, 
+#                            p =100, q=10, K=7,  G=4, beta=1.2, sigma2=1, 
+#                            alpha=8, seed=1, view=TRUE){
+#   # height <- 70
+#   # width <- 70
+#   # G <- 4
+#   # beta <- 1.0
+#   # K <- 7
+#   # q <- 10
+#   # p <- 1000
+#   if(q <2) stop("error:gendata_sp::q must be greater than 2!")
+#   
+#   if(length(beta) <2) beta <- rep(beta, 2)
+#   # require(GiRaF)
+#   # require(MASS)
+#   n1 <- height1 * width1 # # of cell in each indviduals 
+#   n2 <- height2 * width2
+#   index1 <- 1:n1; index2 <- (n1+1):(n1+n2)
+#   ## generate deterministic parameters, fixed after generation
+#  
+#   if(length(sigma2)==1){
+#     Lambda1 <- sigma2*(abs(rnorm(p, sd=1)))
+#     Lambda2 <- sigma2*(abs(rnorm(p, sd=1)))
+#   }else{
+#     Lambda1 <- rep(sigma2[1], p)
+#     Lambda2 <- rep(sigma2[2], p)
+#   }
+#   
+#   
+#   W1 <- matrix(rnorm(p*q), p, q)
+#   W <- qr.Q(qr(W1))
+#   
+#   mu <- matrix(0, q,  K)
+#   diagmat = array(0, dim = c(q, q, K))
+#   if(q > K){
+#     q1 <- floor(K/2)
+#     for(j in 1:q1){
+#       if(j <= (q1/2)) mu[j,j] <- alpha
+#       if(j > (q1/2)) mu[j,j] <- -alpha
+#     }
+#     mu[(q1+1):q, K] <- -alpha
+#     
+#   }else if(q <= K){
+#     for(k in 1:K)
+#       mu[,k] <- rep(alpha/8 *k, q) #
+#   }
+#   for(k in 1:K){
+#     tmp  <- rep(1, q)
+#     if(k <= K/2){
+#       tmp[q] <- alpha
+#     }
+#     diag(diagmat[,,k]) <- tmp
+#   }
+#   
+#   Mu <- t(mu)
+#   Sigma <- diagmat
+#   tau2 <- rep(1, q); tau2[1] <- 4; tau2[2] <- -4
+#   set.seed(seed)
+#   # generate the spatial dependence for state variable y, a hidden Markov RF
+#   y1 <- sampler.mrf(iter = n1, sampler = "Gibbs", h = height1, w = width1, ncolors = K, nei = G, param = beta[1],
+#                     initialise = FALSE, view = view)
+#   y1 <- c(y1) + 1
+#   y2 <- sampler.mrf(iter = n2, sampler = "Gibbs", h = height2, w = width2, ncolors = K, nei = G, param = beta[2],
+#                     initialise = FALSE, view = view)
+#   y2 <- c(y2) + 1
+#   
+#   Z1 <- matrix(0, n1, q)
+#   Z2 <- matrix(0, n2, q)
+#   for(k in 1:K){
+#     nk1 <- sum(y1==k)
+#     Z1[y1==k, ] <- MASS::mvrnorm(nk1, Mu[k,], Sigma[,,k])
+#     
+#     nk2 <- sum(y2==k)
+#     Z2[y2==k, ] <- MASS::mvrnorm(nk2, Mu[k,]+tau2, Sigma[,,k])
+#   }
+#   X1 <- Z1 %*% t(W)+  MASS::mvrnorm(n1, rep(0,p), diag(Lambda1))
+#   X2 <- Z2 %*% t(W) + MASS::mvrnorm(n2, rep(0,p), diag(Lambda2))
+#   # compute the strength of signal
+#   svd_Sig1 <- svd(cov(Z1))
+#   W11 <- W %*% svd_Sig1$u %*% diag(sqrt(svd_Sig1$d))
+#   snr1 <- sum(svd(W11)$d^2) / (sum(svd(W11)$d^2)+ sum(Lambda1))
+#   svd_Sig2 <- svd(cov(Z2))
+#   W22 <- W %*% svd_Sig2$u %*% diag(sqrt(svd_Sig2$d))
+#   snr2 <- sum(svd(W22)$d^2) / (sum(svd(W22)$d^2)+ sum(Lambda2))
+#   
+#   message("SNR1=", round(snr1,4),", SNR2=", round(snr2, 4),  '\n')
+#   
+#   # make position
+#   pos1 <- cbind(rep(1:height1, width1), rep(1:height1, each=width1))
+#   pos2 <- cbind(rep(1:height2, width2), rep(1:height2, each=width2))
+#   return(list(X1=X1,X2=X2, Z1=Z1, Z2=Z2, cluster=c(y1,y2), Mu=Mu, Sigma=Sigma,
+#               W=W, Lambda1=Lambda1, Lambda2=Lambda2, tau2=tau2, 
+#               beta=beta,pos1=pos1,pos2=pos2, snr=c(snr1,snr2),
+#               index1=index1,index2=index2))
+#   
+# }
+# 
 
 
 find_neighbors <- function(pos, platform=c('ST', "Visium")) {
@@ -690,7 +859,16 @@ wpca <- function(X, q, weighted=T){
   out <- wpcaCpp(X, q, weighted)
   return(out)
 }
-
+approxPCA <- function (X, q) {
+  # require(irlba)
+  n <- nrow(X)
+  svdX <- irlba(A = X, nv = q)
+  PCs <- svdX$u %*% diag(svdX$d[1:q])
+  loadings <- svdX$v
+  dX <- PCs %*% t(loadings) - X
+  Lam_vec <- colSums(dX^2)/n
+  return(list(PCs = PCs, loadings = loadings, Lam_vec = Lam_vec))
+}
 getAdjList <- function(posList, platform='Visium', ...){
   
   if(!inherits(posList, "list")) stop("posList must be a list consisting of matrix.")

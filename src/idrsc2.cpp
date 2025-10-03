@@ -12,7 +12,7 @@
 
 
 
-#define INT_MIN (-INT_MAX - 1)
+
 
 using namespace Rcpp;
 using namespace arma;
@@ -155,68 +155,128 @@ MATTYPE update_Mu1(const arma::field<MATTYPE>& Rf, const arma::field<CUBETYPE>& 
   MATTYPE Mu(q, K, fill::zeros), A_muk;
   VECTYPE b_muk;
   
+  // 预计算所有 Sigma^{-1} 避免在循环中重复计算
+  arma::field<MATTYPE> inv_Sigma(K);
+  for(int k = 0; k < K; ++k) {
+    inv_Sigma(k) = inv_sympd(Sigma.slice(k));
+  }
+  
   for(k=0;k < K ; ++k){
     A_muk = zeros<MATTYPE>(q,q);
     b_muk = zeros<VECTYPE>(q,1);
     for(r=0; r< r_max; ++r){
-      MATTYPE inv_sympd_Sigma = inv_sympd(Sigma.slice(k)); //yangyi
-      A_muk += Nmat(r,k) * inv_sympd_Sigma; //yangyi
-      b_muk += inv_sympd_Sigma * (trans(Ez(r).slice(k)) * Rf(r).col(k)); //yangyi
+
+      A_muk += Nmat(r,k) * inv_Sigma(k); 
+      b_muk += inv_Sigma(k) * (trans(Ez(r).slice(k)) * Rf(r).col(k)); 
       
     }
     //Mu.col(k) = A_muk.i() * b_muk;
-      Mu.col(k) = solve(A_muk, b_muk);
+      Mu.col(k) = solve(A_muk, b_muk, arma::solve_opts::fast);
   }
   return Mu.t();
 }
   
 
 // update covariance component of GMM: Sigma0
+// CUBETYPE update_Sigma12(const field<MATTYPE>& Rf, const field<CUBETYPE>& Ez, const field<CUBETYPE>& Ci,
+//                          const MATTYPE& Mu, const MATTYPE& Nmat, 
+//                          const bool& homoClust=false, const bool& Sigma_diag=false){
+//   int r,k, K= Mu.n_rows, q=Mu.n_cols, r_max=Rf.n_elem;
+//   CUBETYPE Sigma0(q,q , K);
+//   MATTYPE Smat(q, q, fill::zeros);
+//   float n_sum;
+//   if(homoClust){// Sigma is not related to  k.
+//     Smat = zeros<MATTYPE>(q,q);
+//     n_sum = 0;
+//     for(k = 0; k<K; ++k){  
+//       for(r=0; r< r_max; ++r){
+//           Smat += (trans(Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) % trans(repmat(Rf(r).col(k), 1, q))) * 
+//             (Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) + Nmat(r,k)*  (Ci(r).slice(k)); //yangyi n-by-n matrix to n-by-q matrix
+//           n_sum  += Nmat(r,k);
+//       }
+//     }
+//     for(k = 0; k<K; ++k){ 
+//         if(Sigma_diag){
+//           Sigma0.slice(k) = diagmat(Smat) / n_sum;
+//         }else{
+//           Sigma0.slice(k) = Smat / n_sum;
+//         }
+//     }
+//     }else{// Sigma is  related to  k.
+//       for(k = 0; k<K; ++k){  
+//         Smat = zeros<MATTYPE>(q,q);
+//         n_sum = 0;
+//         for(r=0; r< r_max; ++r){
+//           Smat += (trans(Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) % trans(repmat(Rf(r).col(k), 1, q))) * 
+//             (Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) + Nmat(r,k)*  (Ci(r).slice(k)); //yangyi n-by-n matrix to n-by-q matrix
+//           n_sum  += Nmat(r,k);
+//         }
+//         if(Sigma_diag){
+//           Sigma0.slice(k) = diagmat(Smat) / n_sum;
+//         }else{
+//           Sigma0.slice(k) = Smat / n_sum;
+//         }
+//       }
+//     }   
+// 
+//   return(Sigma0);
+// }
+//   
 CUBETYPE update_Sigma1(const field<MATTYPE>& Rf, const field<CUBETYPE>& Ez, const field<CUBETYPE>& Ci,
-                         const MATTYPE& Mu, const MATTYPE& Nmat, 
-                         const bool& homoClust=false, const bool& Sigma_diag=false){
-  int r,k, K= Mu.n_rows, q=Mu.n_cols, r_max=Rf.n_elem;
-  CUBETYPE Sigma0(q,q , K);
-  MATTYPE Smat(q, q, fill::zeros);
-  float n_sum;
-  if(homoClust){// Sigma is not related to  k.
-    Smat = zeros<MATTYPE>(q,q);
-    n_sum = 0;
-    for(k = 0; k<K; ++k){  
-      for(r=0; r< r_max; ++r){
-          Smat += (trans(Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) % trans(repmat(Rf(r).col(k), 1, q))) * 
-            (Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) + Nmat(r,k)*  (Ci(r).slice(k)); //yangyi n-by-n matrix to n-by-q matrix
-          n_sum  += Nmat(r,k);
+                                 const MATTYPE& Mu, const MATTYPE& Nmat, 
+                                 const bool& homoClust=false, const bool& Sigma_diag=false) {
+  
+  int K = Mu.n_rows, q = Mu.n_cols, r_max = Rf.n_elem;
+  CUBETYPE Sigma0(q, q, K);
+  MATTYPE final_Smat;
+  
+  if (homoClust) {
+    // Sigma is not related to k
+    MATTYPE Smat = zeros<MATTYPE>(q, q);
+    float n_sum = 0;
+    
+    // 预计算所有需要的量
+    for (int k = 0; k < K; ++k) {  
+      for (int r = 0; r < r_max; ++r) {
+        MATTYPE diff = Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1);
+        MATTYPE weighted_diff = diff.each_col() % Rf(r).col(k);
+        Smat += weighted_diff.t() * diff + Nmat(r, k) * Ci(r).slice(k);
+        n_sum += Nmat(r, k);
       }
     }
-    for(k = 0; k<K; ++k){ 
-        if(Sigma_diag){
-          Sigma0.slice(k) = diagmat(Smat) / n_sum;
-        }else{
-          Sigma0.slice(k) = Smat / n_sum;
-        }
+    
+    // 填充所有k的slice
+    if(Sigma_diag){
+      final_Smat = diagmat(Smat) / n_sum;
+    }else{
+      final_Smat = Smat / n_sum;
     }
-    }else{// Sigma is  related to  k.
-      for(k = 0; k<K; ++k){  
-        Smat = zeros<MATTYPE>(q,q);
-        n_sum = 0;
-        for(r=0; r< r_max; ++r){
-          Smat += (trans(Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) % trans(repmat(Rf(r).col(k), 1, q))) * 
-            (Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1)) + Nmat(r,k)*  (Ci(r).slice(k)); //yangyi n-by-n matrix to n-by-q matrix
-          n_sum  += Nmat(r,k);
-        }
-        if(Sigma_diag){
-          Sigma0.slice(k) = diagmat(Smat) / n_sum;
-        }else{
-          Sigma0.slice(k) = Smat / n_sum;
-        }
+    for (int k = 0; k < K; ++k) {
+      Sigma0.slice(k) = final_Smat;
+    }
+    
+  } else {
+    // Sigma is related to k
+    for (int k = 0; k < K; ++k) {  
+      MATTYPE Smat = zeros<MATTYPE>(q, q);
+      float n_sum = 0;
+      
+      for (int r = 0; r < r_max; ++r) {
+        MATTYPE diff = Ez(r).slice(k) - repmat(Mu.row(k), Rf(r).n_rows, 1);
+        MATTYPE weighted_diff = diff.each_col() % Rf(r).col(k);
+        Smat += weighted_diff.t() * diff + Nmat(r, k) * Ci(r).slice(k);
+        n_sum += Nmat(r, k);
       }
-    }   
-
-  return(Sigma0);
-}
+      if (Sigma_diag) {
+        Sigma0.slice(k) = diagmat(Smat) / n_sum;
+      } else {
+        Sigma0.slice(k) = Smat / n_sum;
+      }
+    }
+  }
   
-  
+  return Sigma0;
+}  
 
   
   
@@ -237,7 +297,8 @@ MATTYPE update_W1(const field<MATTYPE>& Xf, const field<MATTYPE>& Rf, const fiel
   CUBETYPE B_arr(q,q,r_max, fill::zeros);
   for(r=0; r<r_max; ++r){
     for(k=0; k<K; ++k){
-      B_arr.slice(r) += (Ez(r).slice(k).t()%trans(repmat(Rf(r).col(k), 1, q)))*  Ez(r).slice(k) + sum(Rf(r).col(k))*Ci(r).slice(k);
+
+      B_arr.slice(r) += (Ez(r).slice(k).each_col() % Rf(r).col(k)).t()*  Ez(r).slice(k) + accu(Rf(r).col(k))*Ci(r).slice(k);
       
     }
   }
@@ -260,32 +321,35 @@ MATTYPE update_W1(const field<MATTYPE>& Xf, const field<MATTYPE>& Rf, const fiel
 MATTYPE update_Lam1(const field<MATTYPE>& Rf, const field<MATTYPE>& Xf, const MATTYPE& W, const field<CUBETYPE>& Ez, 
                 const field<CUBETYPE>& Ci,
                 const MATTYPE& Nmat, const bool& homo = false){
-  int r, k, K= Rf(0).n_cols, p = Xf(0).n_cols, r_max=Rf.n_elem;
+  int r, k, n_r, K= Rf(0).n_cols, p = Xf(0).n_cols, r_max=Rf.n_elem;
   VECTYPE Lsum(p,fill::zeros);
   MATTYPE Lam(r_max, p);
+  const MATTYPE& Wt = W.t();
   for(r=0; r< r_max; ++r){
+    n_r = Xf(r).n_rows;
     Lsum = zeros<VECTYPE>(p,1);
     MATTYPE tmpXk;
     for(k=0; k<K; ++k){
-      tmpXk = (Xf(r) - Ez(r).slice(k) * W.t() );
-      Lsum += trans(sum(tmpXk % tmpXk % repmat(Rf(r).col(k), 1, p)));
-      Lsum += Nmat(r,k) * decomp(Ci(r).slice(k), W); // fast SVD method
+      tmpXk = Xf(r) - Ez(r).slice(k) * Wt;
+      tmpXk.each_col() %= sqrt(Rf(r).col(k));
+      Lsum += sum(tmpXk % tmpXk).t() + Nmat(r,k) * decomp(Ci(r).slice(k), W); // fast SVD method
     }
     if(homo){
-      Lam.row(r) = mean(Lsum)* ones<MATTYPE>(1, p) / (Xf(r).n_rows*1.0);
+      Lam.row(r) = mean(Lsum)* ones<MATTYPE>(1, p) / n_r;
     }else{
-      Lam.row(r) = Lsum.t()/(Xf(r).n_rows*1.0);
+      Lam.row(r) = Lsum.t()/ n_r;
     }
     
   }
   // replace little values to increase the stability of the algorithm.
-  uvec id1 =  find(Lam <1e-7);
-  Lam(id1) = 1e-7*ones<VECTYPE>(id1.n_elem, 1);
+  // uvec id1 =  find(Lam <1e-7);
+  // Lam(id1) = 1e-7*ones<VECTYPE>(id1.n_elem, 1);
+  Lam.elem(find(Lam < 1e-7)).fill(1e-7);
   return Lam; 
 }
 
 // evaluate the mean of spatial component of each spot in latent features.
-MATTYPE get_Vmean(const MATTYPE& V, const arma::sp_mat& Adj){
+MATTYPE get_Vmean2(const MATTYPE& V, const arma::sp_mat& Adj){
   int i, n = V.n_rows, q= V.n_cols;
   VECTYPE m(n);
   MATTYPE Uv(n, q, fill::zeros);
@@ -294,7 +358,7 @@ MATTYPE get_Vmean(const MATTYPE& V, const arma::sp_mat& Adj){
     arma::vec col(Adj.col(i)); // the class label of neighbors of i-th sample.
     uvec q1 = find(col > 0);
     // cout<<q1.n_rows<<endl;
-    if( q1.n_rows>0){
+    if(q1.n_rows>0){
       Uv.row(i) = mean(V.rows(q1));
     }
     
@@ -302,7 +366,28 @@ MATTYPE get_Vmean(const MATTYPE& V, const arma::sp_mat& Adj){
 
   return Uv;
 }
+
+MATTYPE get_Vmean(const MATTYPE& V, const arma::sp_mat& Adj) {
+  int n = V.n_rows, q = V.n_cols;
+  MATTYPE Uv(n, q, arma::fill::zeros);
   
+  // 预计算邻居关系
+  std::vector<arma::uvec> neighbors(n);
+  for (arma::sp_mat::const_iterator it = Adj.begin(); it != Adj.end(); ++it) {
+    if (*it > 0) {
+      neighbors[it.col()].resize(neighbors[it.col()].n_elem + 1);
+      neighbors[it.col()](neighbors[it.col()].n_elem - 1) = it.row();
+    }
+  }
+  
+  for (int i = 0; i < n; i++) {
+    if (!neighbors[i].empty()) {
+      Uv.row(i) = arma::mean(V.rows(neighbors[i]), 0);
+    }
+  }
+  
+  return Uv;
+}
 
 // Conduct ICM step in ICM-EM algorithm
 void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::field<ivec>& yf, const MATTYPE& W0, 
@@ -325,18 +410,28 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
   // two cached objects used for parameters update.
   field<MATTYPE> Ux(r_max);
   field<CUBETYPE> WtSW(r_max), XSW(r_max); // q*q*K, n*q*K
-  
   float  logdSk;
   // evaluate energy of x, Ux
-  MATTYPE Crk, bCrk, WtLrW, WtbSrkW;
+  MATTYPE Crk, bCrk, WtLrW, WtbSrkW, Lam_inv_r;
+  
+  // pre-compute the inverse of Sigama0.slice(k) and Psi0.slice(r)
+  field<MATTYPE> inv_Sigma0(K), inv_Psi0(r_max);
+  for (k = 0; k < K; ++k) {
+    inv_Sigma0(k) = inv_sympd(Sigma0.slice(k));
+  }
+  for (r = 0; r < r_max; ++r) {
+    inv_Psi0(r) = inv_sympd(Psi0.slice(r));
+  }
   
   for(r = 0; r < r_max; ++r){
     // evaluate energy of x, Ux
-    
-    //
-    MATTYPE Lam0_rW0 = trans(repmat(1.0/ Lam0.row(r), q, 1))%W0; //yangyi
-    WtLrW = W0.t() * Lam0_rW0; // O(p^2 q)
-    MATTYPE XrLrW = Xf(r)* Lam0_rW0; // O(npq + p^2 q)
+    // MATTYPE Lam0_rW0 = trans(repmat(1.0/ Lam0.row(r), q, 1))%W0; //yangyi
+    // WtLrW = W0.t() * Lam0_rW0; // O(p^2 q)
+    // MATTYPE XrLrW = Xf(r)* Lam0_rW0; // O(npq + p^2 q)
+    Lam_inv_r = 1.0 / (Lam0.row(r).t()); 
+    MATTYPE Lam0_rW0 = W0.each_col() % Lam_inv_r;  // p × q
+    WtLrW = W0.t() * Lam0_rW0;  // q × q
+    MATTYPE XrLrW = Xf(r) * Lam0_rW0;   // n × q
     MATTYPE  XrbSrkW_uv;
     n = Xf(r).n_rows; // tmp object
     Ux(r) = zeros<MATTYPE>(n, K);
@@ -350,7 +445,7 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
       
       if(Sp2){
         // save some objects for predict V.
-        Crk = WtLrW +  inv_sympd(Sigma0.slice(k));
+        Crk = WtLrW +  inv_Sigma0(k);
         WtSW(r).slice(k) = WtLrW -WtLrW*Crk.i()*WtLrW; // save some objects for update v
         XSW(r).slice(k) = XrLrW * (diagmat(ones<VECTYPE>(q,1))- Crk.i()*WtLrW); // O(nq^2)
         
@@ -361,7 +456,7 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
       bCrk = WtLrW +  inv_sympd(Sigma0.slice(k) + Psi0.slice(r));
       WtbSrkW = WtLrW -WtLrW*bCrk.i()*WtLrW; // O(q^3)
       XrbSrkW_uv = XrLrW * (diagmat(ones<VECTYPE>(q,1))- bCrk.i()*WtLrW) -
-        (Muv(r)+repmat(Mu0.row(k), n, 1))* WtbSrkW; // O(pq^2+nq^2)
+        (Muv(r).each_row()+Mu0.row(k))* WtbSrkW; // O(pq^2+nq^2)
       
       
       Ez(r).slice(k) = XrbSrkW_uv*Sigma0.slice(k) + repmat(Mu0.row(k), n, 1); // complexity: O(nq^2)
@@ -393,7 +488,7 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
   //--------------------------------------------------------------------------------
   
   field<MATTYPE> U(r_max);
-  Rprintf("predict Y and V! \n");
+  // Rprintf("predict Y and V! \n");
   for(r= 0; r< r_max; r++){
     
     Energy(0) = INFINITY;
@@ -412,31 +507,19 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
       U1min = min(U1, 1);
       y1_u = index_min(U1, 1);
       yf(r) = conv_to< ivec >::from(y1_u) + 1;
-      // Rprintf("predict Y and V! \n");
+      
       if(Sp2){
         Muv(r) = get_Vmean(Vf(r),  Adjf_car(r));
-        // cout<<"iter="<< iter <<endl;
-        // for(i=0; i<n; i++){  // O(nq^2*maxIter_ICM)
-        // 
-        //   Vf(r).row(i)= (XSW(r).slice(y1_u(i)).row(i) - (Mu0.row(y1_u(i)))* WtSW(r).slice(y1_u(i)) +  Muv(r).row(i)* (Psi0.slice(r)).i())*
-        //     inv_sympd(WtSW(r).slice(y1_u(i)) + (Psi0.slice(r)).i());
-        // 
-        // }
-        
         for(k = 0; k<K; ++k){
           uvec index_k = find(y1_u == k);
           int nk = index_k.n_elem;
           // Rprintf("k= %d,  nk = %d ! \n", k, nk);
           if(nk > 0){// if the number of spots whose cluster is k is greater than 0
-            Vf(r).rows(index_k) = (XSW(r).slice(k).rows(index_k)- repmat(Mu0.row(k), nk,1) * WtSW(r).slice(k) + Muv(r).rows(index_k)*Psi0.slice(r).i()) *
-              inv_sympd(WtSW(r).slice(k) + Psi0.slice(r).i());
+            Vf(r).rows(index_k) = (XSW(r).slice(k).rows(index_k)- repmat(Mu0.row(k), nk,1) * WtSW(r).slice(k) + Muv(r).rows(index_k)*inv_Psi0(r)) *
+              inv_sympd(WtSW(r).slice(k) + inv_Psi0(r));
           }
 
         }
-        
-        
-        // Since energy_V is computationally high, we do not caculate it.
-        // Energy(iter) = energy_V(X, V, W0, Lam_vec0, Muv, Mu0, Sigma0,Psi0,y, Cki) + sum(Umin); // 
         
       }
       
@@ -444,7 +527,7 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
       Energy(iter) = sum(U1min);
       if (Energy(iter) - Energy(iter - 1) > 1e-5) {
         // cout << "diff Energy = " << Energy(iter) - Energy(iter - 1)  << endl;
-        Rprintf("diff Energy = %4f \n", Energy(iter) - Energy(iter - 1));
+        // Rprintf("diff Energy = %4f \n", Energy(iter) - Energy(iter - 1));
         break;
       }
       
@@ -514,7 +597,9 @@ void runICM_sp1(const arma::field<MATTYPE>& Xf, arma::field<MATTYPE>& Vf, arma::
 }
     
 
-  
+    
+
+      
 Objidrsc2 idrsc2(const field<MATTYPE>& Xf, const field<sp_mat> Adjf, const field<sp_mat> Adjf_car, field<ivec> yf,
                                const MATTYPE& Mu_int, CUBETYPE Sigma0, const MATTYPE& W_int,
                                const MATTYPE& Lam_int,  const CUBETYPE& Psi_int,
@@ -538,7 +623,7 @@ Objidrsc2 idrsc2(const field<MATTYPE>& Xf, const field<sp_mat> Adjf, const field
   // If p is sufficient large, loglik can not be computed.
   // But this can be solved by some programming tricks.
   VECTYPE loglik(maxIter);
-  loglik(0) = INT_MIN;
+  loglik(0) = -1e20;
   MATTYPE Nmat(r_max, K);
   
   // Initiailize some objects that will be used in algorithm
@@ -551,7 +636,6 @@ Objidrsc2 idrsc2(const field<MATTYPE>& Xf, const field<sp_mat> Adjf, const field
     n = Xf(r).n_rows; // tmp object
     Muv(r) = zeros<MATTYPE>(n, q);
     Vf(r) = Muv(r);
-    
     Ezv(r) = zeros<CUBETYPE>(n, q, K);
     Ez(r) = Ezv(r);
     Ev(r) = Ezv(r);
@@ -563,84 +647,47 @@ Objidrsc2 idrsc2(const field<MATTYPE>& Xf, const field<sp_mat> Adjf, const field
   float loglikVal;
   int k, iter;
   
-  Rprintf("variable initialize finish! \n");
+  // Rprintf("variable initialize finish! \n");
   
   
   // begin ICM-EM algorithm
   for(iter = 1; iter < maxIter; iter++){
-    //clock_t start1, finish1; // compute the running time of codes.
-    //start1 = clock();
-    // cache some objects
+    
     // predict y and V, update beta and Psi, and cache some object
     // Rprintf("Satrt ICM step! \n");
     runICM_sp1(Xf, Vf, yf, W0, Lam0, Mu0,Sigma0, Psi0,
                          Adjf, Adjf_car, alpha, beta_grid,beta0, maxIter_ICM, mix_prop_heter, Sp2,
                          Rf, Muv, Ezv, Varzv, Ez, Varz, Ev, Varv, loglikVal);
     loglik(iter) = loglikVal; // obtain the pseudo observed log-likelihood.
-    Rprintf("Finish ICM step! \n");
+    // Rprintf("Finish ICM step! \n");
     
     // compute N
     for(r=0; r< r_max; ++r){
       Nmat.row(r) = sum(Rf(r));
     }
     
-    // double Q1 = Q_fun1(Xf, Rf, Ez,Ci_ara, W0, Mu0, Sigma0,
-    //                                      Lam0, tau0);
-    
-    
     // update Mu0
     Mu0 = update_Mu1(Rf,  Ez,  Sigma0,  Nmat);
-    // cout<<"good!"<< Mu0.row(0)<<endl;
-    // double Q2 =  Q_fun1(Xf, Rf, Ez,Ci_ara, W0, Mu0, Sigma0, Lam0, tau0);
-    // cout<<"dQ_Mu="<< Q2-Q1<<endl;
     
-    // cout<<"tau0="<< tau0.row(1)<<endl;
-    // double Q21 = Q_fun1(Xf, Rf, Ez,Ci_ara, W0, Mu0, Sigma0, Lam0, tau0);
-    //cout<<"dQ_tau20="<< Q21-Q2<<endl;
-    // update Sigma0
-    //clock_t start, finish;
-    //start = clock();
     Sigma0 = update_Sigma1(Rf, Ez, Varz, Mu0, Nmat, homoClust, Sigma_diag); // 
-    // cout<<"Sigma0="<< Sigma0.slice(0).row(3)<<endl;
-    //finish = clock();
-    //cout << finish - start << "/" << CLOCKS_PER_SEC << " (s) " << endl;
     
-    // double Q3 =  Q_fun1(Xf, Rf, Ez,Ci_ara, W0, Mu0, Sigma0, Lam0, tau0);
-    // cout<<"dQ_Sigma0="<< Q3-Q21<<endl;
-    // update W
-    // start = clock();
     W0 = update_W1(Xf, Rf,  Ezv,  Lam0,  Varzv);
-    // cout<<"W05="<< W0.row(5)<<endl;
-    // double Q4 =  Q_fun1(Xf, Rf, Ez,Ci_ara, W0, Mu0, Sigma0, Lam0, tau0);
-    // cout<<"dQ_W="<< Q4-Q3<<endl;
-    //finish = clock();
-    //cout << finish - start << "/" << CLOCKS_PER_SEC << " (s) " << endl;
     
-    // update  Lambda
-    // start = clock();
     
     Lam0 = update_Lam1(Rf, Xf, W0, Ezv, Varzv, Nmat, homo);
-    // cout<<"Lam1="<< Lam0.row(0).subvec(0,3)<<endl;
-    // double Q5 =  Q_fun1(Xf, Rf, Ez,Ci_ara, W0, Mu0, Sigma0, Lam0, tau0);
-    // cout<<"dQ_Lambda="<< Q5-Q4<<endl;
-    //finish = clock();
-    //cout << finish - start << "/" << CLOCKS_PER_SEC << " (s) " << endl;
     
-    // calculate loglikelihood
-    if(loglik(iter)  - loglik(iter-1)   < -1e-7){
-      // perror("The likelihood failed to increase!");
-      break;
-    }
+    // calculate loglikelihood, 
+    // if(loglik(iter)  - loglik(iter-1)   < -1e-7){
+    //   // perror("The likelihood failed to increase!");
+    //   break;
+    // }
     
-    //finish1 = clock();
-    //cout << finish1 - start1 << "/" << CLOCKS_PER_SEC << " (s) " << endl;
     // output algorithm info.
     if(verbose){
       Rprintf("iter = %d, loglik= %4f, dloglik=%4f \n", 
               iter +1, loglik(iter), (loglik(iter)  - loglik(iter-1))/ abs(loglik(iter-1)));
     }
     if(abs((loglik(iter)  - loglik(iter-1))/ loglik(iter-1)) < epsLogLik) break;
-    // if(abs(Q  - tmp_Q) < epsLogLik) break;
     
   }
   

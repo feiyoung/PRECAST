@@ -40,26 +40,31 @@ importFrom(ggthemes, tableau_color_pal)
 importFrom(patchwork, wrap_plots)
 importFrom(pbapply, pbapply)
 importFrom(scater, calculateTSNE, calculateUMAP)
-importFrom(GiRaF, sampler.mrf)
+
 importFrom(MASS, mvrnorm)
 importFrom(Matrix, t, sparseMatrix)
 importFrom(mclust, Mclust, mclustBIC)
 importFrom(ggpubr, ggarrange)
 importFrom(colorspace, adjust_transparency)
-
+importFrom(irlba, irlba)
+importFrom(harmony, RunHarmony)
 #export(Mclust, mclustBIC)
 
 importFrom(Seurat, CreateDimReducObject, NormalizeData, CreateSeuratObject, FindVariableFeatures,  
            "Idents<-", Idents, DefaultAssay, "DefaultAssay<-", ScaleData, GetAssayData,
            SetAssayData, Embeddings)
 # export(ScaleData)
+
 importFrom("graphics", "barplot")
 importFrom(grDevices, hcl, rgb, col2rgb)
 importFrom(stats,quantile,coef, dist, rnorm, median, 
            cov, rpois, lm, sd, hclust,  complete.cases, model.matrix.lm)
+importFrom("stats", "var")
+importFrom("utils", "modifyList")
 importFrom("methods", "new")
 importFrom("utils", "data")
 importFrom(scales, hue_pal)
 importFrom("utils", "getFromNamespace")
 
 # importFrom(ggridges, geom_density_ridges, theme_ridges)
+# importFrom(GiRaF, sampler.mrf)

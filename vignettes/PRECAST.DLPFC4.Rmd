@@ -57,8 +57,10 @@ for(i in 1:n_ID){
   cat('input brain data', i, '\n')
   # load and read data
   dlpfc <- readRDS(url(paste0(url_brainA, name_ID4[i],url_brainB) ))
+  # dlpfc <- readRDS((paste0('', name_ID4[i],url_brainB) ))
   count <- dlpfc@assays@data$counts
   row.names(count) <- ProFAST::transferGeneNames(row.names(count), species = "Human")
+  row.names(count) <- make.unique(row.names(count))
   seu1 <- CreateSeuratObject(counts = count, 
                              meta.data = as.data.frame(colData(dlpfc)), 
                               min.cells = 10,min.features = 10)
@@ -109,8 +111,9 @@ preobj@seulist
 ## Add adjacency matrix list for a PRECASTObj object to prepare for PRECAST model fitting.
 PRECASTObj <-  AddAdjList(preobj, platform = "Visium")
 ## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the
-## information in the algorithm.
-PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = TRUE, coreNum = 1,
+## information in the algorithm. We provide two initial model to obtain initial values: 'mclust' and 'kmeans',
+## and recommend using 'mclust' in LIBD data.
+PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = TRUE, coreNum = 1,  int.model='mclust',
                             maxIter=30, verbose = TRUE)
 
 ```

@@ -13,7 +13,7 @@ getAdj_fixedNumber(pos, number=6)
  A sparse matrix containing the neighbourhood.
 }
 \seealso{
-  \link{getAdj_auto}, \link{getAdj}.
+  \link[DR.SC]{getAdj}, \link[DR.SC]{getAdj_auto}.
 }
 \description{
  an efficient function to find the neighborhood based on the matrix of position and a  user-specified number of neighbors of each spot.

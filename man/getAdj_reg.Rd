@@ -15,5 +15,5 @@ getAdj_reg(pos, platform= "Visium")
  A sparse matrix containing the neighbourhood.
 }
 \seealso{
-  \link{getAdj_auto}, \link{getAdj}, \link{getAdj_fixedNumber}.
+  \link[DR.SC]{getAdj}, \link[DR.SC]{getAdj_auto}, \link{getAdj_fixedNumber}.
 }

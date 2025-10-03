@@ -11,7 +11,7 @@
   \item{PRECASTObj}{a PRECASTObj object created by \link{CreatePRECASTObject}.}
   \item{type}{an optional string, specify which type of neighbors' definition. Here we provide two definition: one is "fixed_distance", the other is "fixed_number".}
   \item{platform}{a string, specify the platform of the provided data, default as "Visium". There are more platforms to be chosen, including "Visuim", "ST" and "Other_SRT" ("Other_SRT" represents the other SRT platforms except for 'Visium' and 'ST'), which means there are spatial coordinates information in the metadata of PRECASTObj. The platform helps to calculate the adjacency matrix by defining the neighborhoods when type="fixed_distance" is chosen.}
-  \item{...}{other arguments to be passed to \link{getAdj}, \link{getAdj_auto}  and \link{getAdj_fixedNumber} funciton.}
+  \item{...}{other arguments to be passed to \link[DR.SC]{getAdj}, \link[DR.SC]{getAdj_auto}  and \link{getAdj_fixedNumber} funciton.}
 }
 \details{
   When the type = "fixed_distance", then the spots within the Euclidean distance cutoffs from one spot are regarded as the neighbors of this spot. When the type = "fixed_number",  the K-nearest spots are regarded as the neighbors of each spot. 

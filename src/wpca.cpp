@@ -8,7 +8,6 @@
 #include "idrsc2.h"
 
 
-#define INT_MIN (-INT_MAX - 1)
 
 using namespace Rcpp;
 using namespace arma;

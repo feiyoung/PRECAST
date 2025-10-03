@@ -83,6 +83,8 @@ preobj <- CreatePRECASTObject(seuList = list(dlpfc_151672), selectGenesMethod="H
                               gene.number = 2000) # 
 ```
 ### Add the model setting
+
+We recommend `int.model = 'mclust'` for DLPFC data.
 ```{r  eval = FALSE}
 ## check the number of genes/features after filtering step
 preobj@seulist
@@ -90,8 +92,8 @@ preobj@seulist
 PRECASTObj <-  AddAdjList(preobj, platform = "Visium")
 ## Add a model setting in advance for a PRECASTObj object. verbose =TRUE helps outputing the
 ## information in the algorithm.
-PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = FALSE, coreNum = 1,
-                            maxIter=30, verbose = TRUE)
+PRECASTObj <- AddParSetting(PRECASTObj, Sigma_equal = FALSE, coreNum = 1, init.nstart = 5,
+                            int.model = 'mclust', maxIter=30, verbose = TRUE)
 
 ```
 
