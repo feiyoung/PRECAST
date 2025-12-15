@@ -6,7 +6,7 @@
 # build_article(name="PRECAST.BreastCancer")
 # build_article(name="PRECAST.Simu")
 # build_article(name="PRECAST.DLPFC")
-# R CMD check --as-cran PRECAST_1.6.5.tar.gz
+# R CMD check --as-cran PRECAST_1.8.tar.gz
 # devtools::check_win_release()
 # setwd("D:\\Working\\Research paper\\GithubCode\\PRECAST\\vignettes_data")
 
@@ -887,7 +887,7 @@ getAdjList <- function(posList, platform='Visium', ...){
 get_data_fromSeurat <- function(seu, assay=NULL, slot='counts'){
   
   if(is.null(assay)) assay <- DefaultAssay(seu)
-  dat <- GetAssayData(seu, assay = assay, slot= slot)
+  dat <- GetAssayData(seu, assay = assay, layer= slot)
   
   
   return(dat)

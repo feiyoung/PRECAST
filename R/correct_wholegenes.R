@@ -182,9 +182,9 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
       return(seu)
     })
     seuList <- lapply(seuList, NormalizeData, verbose=FALSE)
-    XList <- lapply(1:n_r,  function(r) Matrix::t(GetAssayData(seuList[[r]], assay = defAssay_vec[r], slot='data')))
+    XList <- lapply(1:n_r,  function(r) Matrix::t(get_data_fromSeurat(seuList[[r]], assay = defAssay_vec[r], slot='data')))
   }else{
-    XList <- lapply(1:n_r,  function(r) Matrix::t(GetAssayData(PRECASTObj@seulist[[r]], assay = defAssay_vec[r], slot='data')))
+    XList <- lapply(1:n_r,  function(r) Matrix::t(get_data_fromSeurat(PRECASTObj@seulist[[r]], assay = defAssay_vec[r], slot='data')))
     
   }
   
@@ -282,7 +282,7 @@ IntegrateSpaData <- function(PRECASTObj, species="Human", custom_housekeep=NULL,
   seuInt <- CreateSeuratObject(counts = count, assay = 'PRE_CAST', meta.data=meta_data)
   if(inherits(seuInt[['PRE_CAST']], "Assay5") ){
     
-    seuInt <- SetAssayData(object = seuInt, slot='data', assay = "PRE_CAST", new.data =  t(hX))
+    seuInt <- SetAssayData(object = seuInt, layer='data', assay = "PRE_CAST", new.data =  t(hX))
   }else{
     seuInt[['PRE_CAST']]@data <- t(hX)
   }

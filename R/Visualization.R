@@ -276,7 +276,7 @@ featurePlot <- function(seu, feature=NULL, cols=NULL, pt_size=1, title_size=16,
   colnames(dat) <- c("Spatial_1", "Spatial_2")
   if(is.null(feature)) feature <- row.names(seu)[1]
   #dat$Expression <- seu[[assay]]@scale.data[feature,]
-  dat$Expression <- GetAssayData(seu, slot='scale.data')[feature,]
+  dat$Expression <- get_data_fromSeurat(seu, slot='scale.data')[feature,]
   if(is.null(cols)) cols <- c("#0571B0",  "#CA0020")
   med <- quantile(dat$Expression, quant)
   ggplot(data=dat, aes_string(x='Spatial_1', y='Spatial_2', color='Expression')) + geom_point(size=pt_size) +

@@ -235,9 +235,9 @@ filter_gene <- function(seu, min_spots=20, assay= NULL){
   
     count_matrix <- data_matrix <- NULL
     suppressWarnings({
-      out1 <- try(count_matrix <- GetAssayData(seu, assay = assay, slot='counts'),
+      out1 <- try(count_matrix <- get_data_fromSeurat(seu, assay = assay, slot='counts'),
                   silent=TRUE)
-      out2 <- try(data_matrix <- GetAssayData(seu, assay =assay, slot='data'),
+      out2 <- try(data_matrix <- get_data_fromSeurat(seu, assay =assay, slot='data'),
                   silent=TRUE)
     })
    
@@ -277,7 +277,7 @@ selectIntFeatures <- function(seulist, spaFeatureList, IntFeatures=2000){
   # Remove zero-variance genes
   genes_zeroVar <- unique(unlist(lapply(seulist, function(x){
     assay <- DefaultAssay(x)
-    count_matrix <- GetAssayData(x, assay = assay, slot='counts')
+    count_matrix <- get_data_fromSeurat(x, assay = assay, slot='counts')
     geneUnion[Matrix::rowSums(count_matrix[geneUnion,])==0]
     })))
   
@@ -364,7 +364,7 @@ setMethod(
   # require(Seurat)
   sparkx <- getFromNamespace("sparkx", "DR.SC")
   assy <- DefaultAssay(seu)
-  sp_count <- GetAssayData(seu, assay = assy, slot='counts') #seu[[assy]]@counts
+  sp_count <- get_data_fromSeurat(seu, assay = assy, slot='counts') #seu[[assy]]@counts
   
   # if(nrow(sp_count)> (2*nfeatures) && nrow(sp_count) >10000){
   #   
